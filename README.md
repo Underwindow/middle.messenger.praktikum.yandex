@@ -7,5 +7,6 @@ Netlify-домен: https://elaborate-medovik-c1bd79.netlify.app/
 Проект находится на стадии разработки.
 
 Доступные команды:
-    Сборка для разработки: npm run dev (PORT 1234)
-    Билд последней версии: npm run start (PORT 3000)
+    npm run build,
+    npm run dev,
+    npm run start,
