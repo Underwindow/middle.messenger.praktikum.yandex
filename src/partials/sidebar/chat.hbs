@@ -1,0 +1,20 @@
+<a class="chatlist-chat" href="">
+    <div class="chat-active-hint"></div>
+    {{> 'avatar/avatar' avatar}}
+    <div class="user-caption">
+        <p class="dialog-title">
+            <span class="user-title">
+                <span class="peer-title">{{title}}</span>
+            </span>
+            <span class="dialog-title-details">
+                <span class="message-time">{{time}}</span>
+            </span>                                    
+        </p>
+        <p class="dialog-subtitle">
+            <span class="user-last-message">{{last-message}}</span>
+            {{#if badge}}
+            <span class="dialog-subtitle-badge">{{badge}}</span>
+            {{/if}}
+        </p>                                
+    </div>
+</a>

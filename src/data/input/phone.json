@@ -1,0 +1,5 @@
+{
+    "name" : "phone",
+    "type" : "text",
+    "placeholder": "Телефон"
+}

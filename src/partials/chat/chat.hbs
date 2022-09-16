@@ -1,0 +1,25 @@
+<div class="chat whole">
+    {{#if notSelected}}
+    <div class="chat-not-selected">
+        <div class="content-center whole">
+            <p>{{text}}</p>
+        </div>
+    </div>
+    {{else}}
+    {{> 'header/header' header.chat}}
+
+    <div class="chat-scrollable">
+
+    </div>
+    <div class="chat-input">
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                {{> 'input/input' input.message }}
+                <div class="chat-btn-container">
+                    <button class="send-btn material-icons">send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+</div>

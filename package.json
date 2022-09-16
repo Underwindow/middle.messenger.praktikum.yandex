@@ -1,0 +1,20 @@
+{
+  "name": "compileonserver",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "parcel src/pages/main/index.hbs --no-cache",
+    "start": "parcel build src/pages/main/index.hbs && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@anikin/parcel-transformer-handlebars": "^1.0.9",
+    "express": "^4.18.1",
+    "parcel": "^2.7.0",
+    "postcss": "^8.4.16",
+    "postcss-import": "^14.1.0"
+  }
+}
