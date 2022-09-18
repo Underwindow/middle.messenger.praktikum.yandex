@@ -1,0 +1,5 @@
+{
+    "name" : "login",
+    "type" : "text",
+    "placeholder": "Логин"
+}

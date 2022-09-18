@@ -1,0 +1,5 @@
+{
+    "name" : "display_name",
+    "type" : "text",
+    "placeholder": "Имя в чате"
+}

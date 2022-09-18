@@ -1,0 +1,12 @@
+.user-avatar {
+    position: relative;
+    width: 54px;
+    height: 54px;
+}
+
+.avatar-photo {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    object-fit: cover;
+}
