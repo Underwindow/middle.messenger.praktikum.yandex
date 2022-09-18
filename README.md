@@ -9,4 +9,4 @@ Netlify-домен: https://elaborate-medovik-c1bd79.netlify.app/
 Доступные команды:
     npm run build,
     npm run dev,
-    npm run start,
+    npm run start
