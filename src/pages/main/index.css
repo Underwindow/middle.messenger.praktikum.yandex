@@ -3,19 +3,20 @@
 @import '../../partials/sidebar/chat.css';
 @import '../../partials/header/header.css';
 @import '../../partials/chat/chat.css';
+@import '../../partials/bubbles/bubbles.css';
 
-.page-chats {
+.main-layout {
     display: flex;
     height: 100%;
 }
 
 .sidebar {
     min-width: 420px;
-    /* width: 480px; */
     display: flex;
     flex-flow: column;
     height: 100%;
     box-sizing: border-box;
+    z-index: 2;
 }
 
 .sidebar-content {
@@ -35,7 +36,7 @@
     flex: 0 0 auto;
     border: solid;
     border-width: 1px 0 1px 0;
-    border-color: var(--background);
+    border-color: var(--bg);
     box-sizing: border-box;
 }
 
@@ -46,5 +47,5 @@
     box-sizing: inherit;
     padding: 0 16px;
     flex: 1 1 auto;
-    overflow-y: auto;
+    position: relative;
 }

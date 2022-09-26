@@ -11,14 +11,19 @@
     align-items: center;
     flex: 0 0 auto;
     box-sizing: border-box;
+    justify-content: space-between;
 }
 
 .chatlist-chat:hover {
     background-color: var(--hover);
 }
 
+.chatlist-chat:active {
+    background-color: var(--fg);
+}
+
 .chatlist-chat:active .chat-active-hint {
-    visibility: visible!important;
+    visibility: visible;
 }
 
 .chatlist-chat:active .user-last-message {
@@ -30,13 +35,7 @@
 }
 
 .chatlist-chat:visited .chat-active-hint {
-    visibility: hidden!important;
-}
-
-.chatlist-chat span {
-    line-height: 27px;
-    overflow: inherit;
-    white-space: nowrap;
+    visibility: hidden;
 }
 
 .chat-active-hint {
@@ -54,7 +53,7 @@
 
 .user-caption {
     position: relative;
-    flex: 1 1 auto;
+    flex: auto;
     overflow: hidden;
     padding: 1 0 1 9;
     box-sizing: border-box;
@@ -67,31 +66,25 @@
     margin: 0;
     align-items: center;
     justify-content: space-between;
+    overflow: inherit;
 }
 
-.user-title, .dialog-subtitle {
-    flex-grow: 1;
-    position: relative;
-    align-items: center;
-    display: flex!important;
-    overflow: hidden;
+.user-title{
+    color: var(--white);
 }
 
 .dialog-title-details {
-    flex: 0 0 auto;
+    flex: 0 auto;
     font-size: .75rem;
     margin-left: 0.5rem;
     padding: 1px 0 0;
 }
 
-.peer-title {
-    color: var(--white);
-}
-
-.peer-title, .user-last-message {
-    max-width: 30ch;
-    overflow: hidden!important;
+.user-title, .user-last-message {
+    width: 80%;
+    overflow: inherit;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .message-time, .user-last-message {
@@ -104,7 +97,7 @@
     justify-content: center;
     border-radius: 50%;
     border: 1px solid var(--hint);
-    background-color: var(--background);
+    background-color: var(--bg);
     font-weight: 500;
     color: var(--hint);
     width: 26px;

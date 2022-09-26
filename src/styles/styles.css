@@ -1,7 +1,9 @@
 :root {
-    --background: #0D0C0C;
+    --bg: #0D0C0C;
+    --bgAlpha: #0D0C0Ccc;
     --white: #fff;
-    --foreground: #191717;
+    --halfwhite: #ffffffcc;
+    --fg: #191717;
     --hint: #3988FF;
     --grey: #969696;
     --lightgrey: #707070;
@@ -15,7 +17,7 @@
 }
 
 html {
-    background-color: var(--background);
+    background-color: var(--bg);
 }
 
 body, html {
@@ -56,11 +58,11 @@ button {
 }
 
 .panel {
-    background-color: var(--foreground)!important;
+    background-color: var(--fg);
 }
 
 .back-panel {
-    background-color: var(--background)!important;
+    background-color: var(--bg);
 }
 
 .no-hover {
@@ -73,9 +75,9 @@ button {
     align-items: center;
 }
 
-.icon-btn {
+.icon-btn.material-icons {
     width: auto;
-    font-size: 42px !important;
+    font-size: 42px;
     line-height: 42px;
     color: var(--hint);
     background: transparent;
@@ -85,6 +87,15 @@ button {
     outline: none;
     border: none;
     text-decoration: none;
+}
+
+.scrollable-y {
+    overflow-y: auto;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
 }
 
 /* width */
@@ -98,7 +109,7 @@ button {
 
 /* Track */
 ::-webkit-scrollbar-track {
-	background: var(--background); 
+	background: var(--bg); 
 }
  
 /* Handle */

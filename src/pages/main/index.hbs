@@ -12,8 +12,45 @@
 
 <body>
     <div class="whole">
-        <div class="page-chats">
-            {{> 'chat/chat' notSelected=false text="Выберите чат, чтобы отправить сообщение"}}
+        <div class="main-layout">
+            {{!-- {{> 'chat/chat' notSelected=false text="Выберите чат, чтобы отправить сообщение"}} --}}
+            <div class="chat whole">
+                {{#if notSelected}}
+                <div class="chat-not-selected">
+                    <div class="content-center whole">
+                        <p>{{text}}</p>
+                    </div>
+                </div>
+                {{else}}
+                {{> 'header/header' header.chat}}
+
+                <div class="chat-selected">
+                    <div class="scrollable-y">
+                        <div class="chat-inner">
+                            {{#each bubblesGroups}}
+                            {{> 'bubbles/group' this}}
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <div class="chat-input-container">
+                        <div class="rows-wrapper">
+                            <div class="chat-input-wrapper">
+                                <div class="new-message-wrapper">
+                                    <div class="input-message-container">
+                                        {{> 'input/input' input.message }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-send-container">
+                            <button class="btn-send material-icons clear-btn">send</button>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
             <div class="sidebar panel">
                 {{> 'header/header' header.user title-link='../profile/profile.hbs'}}
                 <div class="sidebar-content">
@@ -22,14 +59,18 @@
                         <button class="material-icons icon-btn add-btn">add</button>
                     </div>
                     <div class="sidebar-chatlist">
-                        {{#each chatlist}}
-                        {{> 'sidebar/chat' this}}
-                        {{/each}}
+                        <div class="scrollable-y">
+                            {{#each chatlist}}
+                            {{> 'sidebar/chat' this}}
+                            {{/each}}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
+<script type="text/javascript" src="index.ts"></script>
 
 </html>

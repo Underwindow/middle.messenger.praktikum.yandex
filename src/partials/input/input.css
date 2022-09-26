@@ -17,7 +17,7 @@
     background: transparent;
     border: none;
     outline: none;
-    color: var(--grey);
+    color: var(--white);
     font-size: 20px;
 }
 
@@ -61,8 +61,8 @@
     color: gray;
 }
 
-.material-input-icon {
-    font-size: 30px !important;
+.input-icon.material-icons {
+    font-size: 30px;
     padding: 0 4 0 8;
     color: var(--grey);
     text-align: center;

@@ -5,8 +5,8 @@
     box-sizing: border-box;
     border: solid;
     border-width: 0 1px 0 0;
-    border-color: var(--background);
-    background-color: var(--background);
+    border-color: var(--bg);
+    background-color: var(--bg);
 }
 
 .chat-not-selected {
@@ -23,39 +23,105 @@
     color: var(--grey);
 }
 
-.chat-scrollable {
+.chat-selected {
     flex: 1 1 auto;
+    position: relative;
+    width: 100%;
+}
+
+.chat-selected>.scrollable-y {
+    display: block;
+    height:auto;
+}
+
+.chat-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin: 0 auto;
+    max-width: 670px;
+    min-height: 100%;
+    width: 100%;
 }
 
 .chat-input {
-    flex: 0 1 100px;
-    padding: 4 0 0 0;
+    padding: 8 0 0 0;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    z-index: 1;
 }
 
 .chat-input-container {
-    padding: 0 32 16 32;
+    padding: 0 0 16 0;
+    align-items: flex-end;
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+}
+
+.rows-wrapper {
+    display: flex;
+    width: 100%;
 }
 
 .chat-input-wrapper {
-    display: flex;
-    width: 100%;
     align-items: center;
-    justify-content: space-between;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 30rem;
+    min-height: 50px;
+    width: 600px;
+    position: relative;
 }
 
-.chat-btn-container {
+.chat-input-wrapper::before {
+    content: "";
+    color: var(--white);
+    border: var(--hint) solid;
+    border-width: 0 0 0 1;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+    width: inherit;
+}
+
+.new-message-wrapper {
+    align-items: flex-end;
+    min-height: 50px;
+    width: 100%;
+}
+
+.input-message-container {
+    align-items: center;
+    align-self: center;
+    display: flex;
+    flex: 1 1 auto;
+    max-height: inherit;
+    min-height: 50px;
+    overflow: hidden;
+    position: relative;
+}
+
+.btn-send-container {
+    align-items: center;
+    display: flex;
+    justify-content: center;
     margin-left: 16px;
 }
 
-.send-btn {
+.btn-send.material-icons {
     background-color: var(--hint);
     width: 54px;
     height: 54px;
-    font-size: 32px !important;
+    font-size: 32px;
     color: var(--white);
     border-radius: 50%;
-    border: none;
-    outline: none;
     padding: 0;
     box-sizing: border-box;
 }
