@@ -1,0 +1,51 @@
+@import '../../styles/styles.pcss';
+@import '../../partials/input/input.pcss';
+@import '../../partials/sidebar/chat.pcss';
+@import '../../partials/header/header.pcss';
+@import '../../partials/chat/chat.pcss';
+@import '../../partials/bubbles/bubbles.pcss';
+
+.main-layout {
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    min-width: 420px;
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    box-sizing: border-box;
+    z-index: 2;
+}
+
+.sidebar-content {
+    width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column;
+    box-sizing: inherit;
+}
+
+.sidebar-actions {
+    min-height: 72px;
+    width: 100%;
+    padding: 0 18px 0 32;
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    border: solid;
+    border-width: 1px 0 1px 0;
+    border-color: var(--bg);
+    box-sizing: border-box;
+}
+
+.sidebar-chatlist {
+    width: 100%;
+    max-height: 765px;
+    align-items: center;
+    box-sizing: inherit;
+    padding: 0 16px;
+    flex: 1 1 auto;
+    position: relative;
+}

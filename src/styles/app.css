@@ -1,0 +1,116 @@
+@import './variables.css';
+
+* {
+    font-family: arial;
+    letter-spacing: 0.01em;
+}
+
+html {
+    background-color: var(--bg);
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+button {
+    cursor:pointer;
+}
+
+/* width */
+::-webkit-scrollbar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+	width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: var(--bg); 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: var(--grey);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555; 
+}
+
+.scrollable-y {
+    overflow-y: auto;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+}
+
+.clear-link {
+    text-decoration: none;
+    color: initial;
+}
+
+.clear-btn {
+    all: unset;
+    cursor: pointer;
+}
+
+.white {
+    color: var(--white);
+}
+
+.color-hint {
+    color: var(--hint);
+}
+
+.screen {
+    width: 100vw;
+    height: 100vh;
+}
+
+.whole {
+    width: 100%;
+    height: 100%;
+}
+
+.disabled {
+    display: none;
+}
+
+.panel {
+    background-color: var(--fg);
+}
+
+.back-panel {
+    background-color: var(--bg);
+}
+
+.no-hover {
+    pointer-events: none;
+}
+
+.content-center {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.icon-btn.material-icons {
+    width: auto;
+    font-size: 42px;
+    line-height: 42px;
+    color: var(--hint);
+    background: transparent;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}

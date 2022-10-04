@@ -8,7 +8,7 @@
     "chat" : {
         "avatar" : "https://www.w3schools.com/tags/img_girl.jpg",
         "title" : "Эмиль",
-        "right-btn-name" : "more_vert"
+        "rightButton" : "more_vert"
     },
     "profile" : {
         "left-link" : "../main/index.hbs",

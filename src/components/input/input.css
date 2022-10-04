@@ -1,0 +1,34 @@
+.input {
+    width: 100%;
+    height: 4.5vh;
+    border: solid;
+    border-width: 0 0 1px 1px;
+    border-radius: 0 0 0 1.5vh;
+    border-color: var(--hint);
+    box-sizing: inherit;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.input-invalid.input {
+    border-color: var(--error);
+}
+
+.input__icon-container {
+    width: auto;
+    min-width: 1.125vh;
+    flex: 0 0 auto;
+    align-items: center;
+    display: flex;
+    pointer-events: none;
+}
+
+.input__icon.material-icons {
+    font-size: 2.8vh;
+    padding: 0 0.375vh 0 0.75vh;
+    color: var(--grey);
+    text-align: center;
+    width: 100%;
+}
+

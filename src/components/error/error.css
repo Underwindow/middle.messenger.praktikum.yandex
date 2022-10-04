@@ -1,0 +1,15 @@
+.error-message-container {
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+}
+
+.error-code {
+    font-size: 64px;
+    margin: 0
+}
+
+.error-code, .error-text {
+    color: var(--grey);
+    font-weight: 100;
+}

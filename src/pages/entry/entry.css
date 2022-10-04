@@ -1,6 +1,3 @@
-@import '../../styles/styles.css';
-@import '../../partials/input/input.css';
-
 .entry-container {
     position: relative;
     display: flex;
@@ -8,12 +5,13 @@
     justify-content:space-between;
     box-sizing: border-box;
     text-align: center;
-    width: 40vh;
+    width: calc(120vw - (100% - 200px));
+    max-width: calc(50vh);
 }
 
 .entry-header {
-    flex: 0 1 100px;
-    font-size: 32px;
+    flex: 0 1 9.26vh;
+    font-size: 4vh;
     color: var(--white);
 }
 
@@ -24,7 +22,7 @@
 
 .entry-input-item {
     width: 100%;
-    margin: 8px 0;
+    margin: 1vh 0;
 }
 
 .entry-footer {
@@ -35,19 +33,18 @@
 
 .entry-submit-btn {
     width: 100%;
-    height: 48px;
-    line-height: 48px;
-    margin-top: 16px;
-    font-size: 18px;
-    border-radius: 16px;
+    height: 4.5vh;
+    line-height: 4.5vh;
+    margin-top: 1.5vh;
+    font-size: 2vh;
+    border-radius: 1.5vh;
     background-color: var(--hint);
     color: var(--white);
 }
 
 .entry-signup-link {
-    margin-top: 24px;
     width: 100%;
-    text-align: center;
-    height: 48px;
-    font-size: 18px;
+    height: 4.5vh;
+    margin-top: 1.5vh;
+    font-size: 2vh;
 }

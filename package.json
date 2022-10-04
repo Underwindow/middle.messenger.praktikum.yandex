@@ -1,26 +1,40 @@
 {
-  "name": "compileonserver",
-  "version": "1.0.0",
-  "description": "",
-  "engines": {
-    "node": ">=14.15.1"
-  },
-  "scripts": {
-    "dev": "parcel src/pages/main/index.hbs --no-cache",
-    "build": "parcel build src/pages/main/index.hbs --no-cache",
-    "start": "parcel build src/pages/main/index.hbs && node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@anikin/parcel-transformer-handlebars": "^1.0.9",
-    "express": "^4.18.1",
-    "parcel": "^2.7.0",
-    "postcss": "^8.4.16",
-    "postcss-import": "^14.1.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.8.3"
-  }
+    "name": "compileonserver",
+    "version": "1.0.0",
+    "description": "",
+    "engines": {
+        "node": ">=14.15.1"
+    },
+    "scripts": {
+        "dev": "parcel src/index.html --no-cache",
+        "build": "parcel build src/pages/main/index.hbs --no-cache",
+        "start": "parcel build src/pages/main/index.hbs && node server.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "alias": {
+        "core": "./src/core",
+        "components": "./src/components",
+        "helpers": "./src/helpers",
+        "pages": "./src/pages",
+        "styles": "./src/styles"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@anikin/parcel-transformer-handlebars": "^1.0.9",
+        "@anikin/parcel-transformer-handlebars-precompile": "^1.0.1",
+        "@types/node": "18.7.23",
+        "express": "4.18.1",
+        "parcel": "2.7.0",
+        "parcel-plugin-handlebars-precompile": "^1.0.2",
+        "postcss": "8.4.12",
+        "postcss-import": "12.0.1",
+        "typescript": "^4.8.4"
+    },
+    "dependencies": {
+        "babel-core": "6.26.3",
+        "handlebars": "4.7.7",
+        "nanoid": "4.0.0"
+    }
 }
