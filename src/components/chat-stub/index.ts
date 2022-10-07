@@ -1,1 +1,1 @@
-export { ChatStub as default } from './chatStub';
+export { default as ChatStub } from './chatStub';

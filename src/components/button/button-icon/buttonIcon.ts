@@ -1,6 +1,5 @@
-import ButtonProps, { Button } from '../button';
-
 import './buttonIcon.css';
+import ButtonProps, { Button } from '../button';
 
 export interface ButtonIconProps extends ButtonProps {
     icon: Icons,
@@ -10,15 +9,17 @@ export interface ButtonIconProps extends ButtonProps {
 type Icons = Values<typeof ButtonIcon.ICONS>;
 type Colors = Values<typeof ButtonIcon.COLORS>;
 
-export class ButtonIcon extends Button {
+export default class ButtonIcon extends Button {
     public static readonly NAME = 'ButtonIcon';
+
     public static readonly ICONS = {
         LOGOUT: 'logout',
         MORE_VERT: 'more_vert',
         ADD: 'add',
         BACK: 'arrow_back_ios_new',
-        SEND: 'send'
+        SEND: 'send',
     } as const;
+
     public static readonly COLORS = {
         WHITE: getComputedStyle(document.documentElement).getPropertyValue('--white'),
         HINT: getComputedStyle(document.documentElement).getPropertyValue('--hint'),
@@ -26,17 +27,18 @@ export class ButtonIcon extends Button {
         GREEN: getComputedStyle(document.documentElement).getPropertyValue('--green'),
     } as const;
 
-    constructor({ icon, color = ButtonIcon.COLORS.HINT, type, ...props }: ButtonIconProps) {
+    constructor({
+        icon, color = ButtonIcon.COLORS.HINT, type, ...props
+    }: ButtonIconProps) {
         super({
             ...props,
             type: 'button',
-            color: color,
+            color,
             text: icon,
             class: 'material-icons button__button-icon',
-            events: { click: props.onClick }
+            events: { click: props.onClick },
         });
 
-        if (this.element)
-            this.element.style.color = color;
+        if (this.element) this.element.style.color = color;
     }
 }

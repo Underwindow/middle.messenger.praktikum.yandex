@@ -1,15 +1,14 @@
-import Block from 'core/Block';
-import Messenger from 'pages/messenger';
-import { renderDOM } from 'core';
-import Input from 'components/input';
-import { ValidationType } from 'helpers/validateValue';
-import { SignInPage } from './signInPage';
-
 import './entry.css';
-import ErrorPage from 'pages/error-page';
+import Block from 'core/Block';
+import { renderDOM } from 'core';
+import { Input } from 'components/input';
+import { ValidationType } from 'helpers/validateValue';
+import { ErrorPage } from 'pages/error-page';
+import SignInPage from './signInPage';
 
-export class SignUpPage extends Block {
+export default class SignUpPage extends Block {
     static readonly NAME = 'SignUpPage';
+
     constructor() {
         super({
             error: '',
@@ -26,31 +25,30 @@ export class SignUpPage extends Block {
             },
             onSubmit: (e: Event) => {
                 e.preventDefault();
-                
+
                 const fieldset = this.refs.fieldsetRef as Input[];
                 const password = this.refs.passwordRef as Input;
                 const passwordRepeat = this.refs.passwordRepeatRef as Input;
                 const inputSet = [...fieldset, password, passwordRepeat];
-                
+
                 const success = Input.fieldsetValidate(inputSet);
 
                 if (success && password.value === passwordRepeat.value) {
                     console.log('Validation success');
                     renderDOM(new ErrorPage(ErrorPage.CODES[505]));
-                }
-                else {
+                } else {
                     console.log('Validation failed');
                     passwordRepeat.setErrorMessage('пароли должны совпадать');
                 }
             },
             onClick: () => {
-                console.log('Has Account');                
-                renderDOM(new SignInPage);
-            }
+                console.log('Has Account');
+                renderDOM(new SignInPage());
+            },
         });
     }
 
-    render() {
+    protected render() {
         // language=hbs
         return `
         <div class="entry whole content-center">

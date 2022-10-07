@@ -5,6 +5,6 @@ const PORT = 3000;
 
 app.use(express.static('dist'));
 
-app.listen(PORT, function () {
+app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}!`);
-}); 
+});

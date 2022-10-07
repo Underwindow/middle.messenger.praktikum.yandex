@@ -1,22 +1,22 @@
-import EventBus from './EventBus';
 import { nanoid } from 'nanoid';
 import Handlebars from 'handlebars';
+import EventBus from './EventBus';
 
 type Events = Values<typeof Block.EVENTS>;
 
-export default class Block<
-    P extends Props = {}
+export default abstract class Block<
+    P extends Props = {},
 > {
-    static readonly EVENTS = {
+    public static readonly EVENTS = {
         INIT: 'init',
         FLOW_CDM: 'flow:component-did-mount',
         FLOW_CDU: 'flow:component-did-update',
         FLOW_RENDER: 'flow:render',
     } as const;
 
-    public id = nanoid(6);
+    public readonly id = nanoid(6);
 
-    protected _element: Nullable<HTMLElement> = null;
+    private _element: Nullable<HTMLElement> = null;
 
     protected readonly props: P;
 
@@ -41,101 +41,7 @@ export default class Block<
         eventBus.emit(Block.EVENTS.INIT, this.props);
     }
 
-    _registerEvents(eventBus: EventBus<Events>) {
-        eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
-        eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
-        eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
-        eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
-    }
-
-    _createResources() {
-        this._element = this._createDocumentElement('div');
-    }
-
-    // protected getStateFromProps(props: any): void {
-    //   this.state = {};
-    // }
-
-    init() {
-        this._createResources();
-        this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
-    }
-
-    _componentDidMount(props: P) {
-        this.componentDidMount(props);
-    }
-
-    componentDidMount(props: P) {
-    }
-
-    _componentDidUpdate(oldProps: P, newProps: P) {
-        const response = this.componentDidUpdate(oldProps, newProps);
-        if (!response) {
-            return;
-        }
-        this._render();
-    }
-
-    componentDidUpdate(oldProps: P, newProps: P) {
-        return true;
-    }
-
-    setProps = (nextProps: Partial<P>) => {
-        if (!nextProps) {
-            return;
-        }
-
-        Object.assign(this.props, nextProps);
-    };
-
-    getProps = () => {
-        return this.props;
-    }
-
-    // setState = (nextState: any) => {
-    //   if (!nextState) {
-    //     return;
-    //   }
-
-    //   Object.assign(this.state, nextState);
-    // };
-
-    get element() {
-        return this._element;
-    }
-
-    _render() {
-        const fragment = this._compile();
-
-        this._removeEvents();
-        const newElement = fragment.firstElementChild!;
-
-        this._element!.replaceWith(newElement);
-
-        this._element = newElement as HTMLElement;
-        this._addEvents();
-    }
-
-    protected render(): string {
-        return '';
-    };
-
-    getContent(): HTMLElement {
-        // Хак, чтобы вызвать CDM только после добавления в DOM
-        if (this.element?.parentNode?.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-            setTimeout(() => {
-                if (this.element?.parentNode?.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
-                    this.eventBus().emit(Block.EVENTS.FLOW_CDM);
-                }
-            }, 100)
-        }
-
-        return this.element!;
-    }
-
-    _makePropsProxy(props: any): any {
-        // Можно и так передать this
-        // Такой способ больше не применяется с приходом ES6+
+    private _makePropsProxy(props: any): any {
         const self = this;
 
         return new Proxy(props as unknown as object, {
@@ -144,7 +50,7 @@ export default class Block<
                 return typeof value === 'function' ? value.bind(target) : value;
             },
             set(target: Record<string, unknown>, prop: string, value: unknown) {
-                const oldProps = { ...target };
+                /* eslint-disable-next-line */
                 target[prop] = value;
 
                 // Запускаем обновление компоненты
@@ -158,11 +64,89 @@ export default class Block<
         }) as unknown as P;
     }
 
-    _createDocumentElement(tagName: string) {
+    private _registerEvents(eventBus: EventBus<Events>) {
+        eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
+    }
+
+    init() {
+        this._createResources();
+        this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
+    }
+
+    private _createResources() {
+        this._element = this._createDocumentElement('div');
+    }
+
+    private _createDocumentElement(tagName: string) {
         return document.createElement(tagName);
     }
 
-    _removeEvents() {
+    private _componentDidMount(props: P) {
+        this.componentDidMount(props);
+    }
+
+    protected componentDidMount(props: P): P {
+        return props;
+    }
+
+    private _componentDidUpdate(oldProps: P, newProps: P) {
+        const response = this.componentDidUpdate(oldProps, newProps);
+        if (!response) {
+            return;
+        }
+        this._render();
+    }
+
+    protected componentDidUpdate(oldProps: P, newProps: P): boolean {
+        return oldProps !== newProps;
+    }
+
+    private _render() {
+        const fragment = this._compile();
+
+        this._removeEvents();
+        const newElement = fragment.firstElementChild!;
+
+        this._element!.replaceWith(newElement);
+
+        this._element = newElement as HTMLElement;
+        this._addEvents();
+    }
+
+    private _compile(): DocumentFragment {
+        const fragment = document.createElement('template');
+
+        const template = Handlebars.compile(this.render());
+
+        fragment.innerHTML = template({ ...this.props, children: this.children, refs: this.refs });
+
+        Object.entries(this.children).forEach(([id, component]) => {
+            const stub = fragment.content.querySelector(`[data-id="${id}"]`);
+
+            if (!stub) {
+                return;
+            }
+
+            const stubChilds = stub.childNodes.length ? stub.childNodes : [];
+
+            const content = component.getContent();
+            stub.replaceWith(content);
+
+            const slotContent = content.querySelector('[data-slot="1"]') as HTMLDivElement;
+
+            if (slotContent && stubChilds.length) {
+                slotContent.append(...stubChilds);
+                delete slotContent.dataset.slot;
+            }
+        });
+
+        return fragment.content;
+    }
+
+    private _removeEvents() {
         const events = this.props.events as Record<string, Callback>;
 
         if (!events || !this._element) {
@@ -174,7 +158,7 @@ export default class Block<
         });
     }
 
-    _addEvents() {
+    private _addEvents() {
         const events = this.props.events as Record<string, Callback>;
 
         if (!events) {
@@ -186,64 +170,53 @@ export default class Block<
         });
     }
 
-    _compile(): DocumentFragment {
-        const fragment = document.createElement('template');
-
-        /**
-         * Рендерим шаблон
-         */
-        const template = Handlebars.compile(this.render());
-        
-        fragment.innerHTML = template({ ...this.props, children: this.children, refs: this.refs });
-
-        // console.log(`${fragment.innerHTML}`);
-
-        // debugger;
-
-        /**
-         * Заменяем заглушки на компоненты
-         */
-        Object.entries(this.children).forEach(([id, component]) => {
-            /**
-             * Ищем заглушку по id
-             */
-            const stub = fragment.content.querySelector(`[data-id="${id}"]`);
-
-            if (!stub) {
-                return;
-            }
-
-            const stubChilds = stub.childNodes.length ? stub.childNodes : [];
-
-            /**
-             * Заменяем заглушку на component._element
-             */
-            const content = component.getContent();
-            stub.replaceWith(content);
-
-            /**
-             * Ищем элемент layout-а, куда вставлять детей
-             */
-            const slotContent = content.querySelector('[data-slot="1"]') as HTMLDivElement;
-
-            if (slotContent && stubChilds.length) {
-                slotContent.append(...stubChilds);
-                delete slotContent.dataset.slot;
-            }
-        });
-
-        /**
-         * Возвращаем фрагмент
-         */
-        return fragment.content;
+    protected render(): string {
+        return '';
     }
 
+    public setProps = (nextProps: Partial<P>) => {
+        if (!nextProps) {
+            return;
+        }
 
-    show() {
+        Object.assign(this.props, nextProps);
+    };
+
+    public getProps = () => this.props;
+
+    // protected getStateFromProps(props: any): void {
+    //     this.state = {};
+    // }
+
+    // public setState = (nextState: any) => {
+    //     if (!nextState) {
+    //         return;
+    //     }
+
+    //     Object.assign(this.state, nextState);
+    // };
+
+    get element() {
+        return this._element;
+    }
+
+    public getContent(): HTMLElement {
+        if (this.element?.parentNode?.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+            setTimeout(() => {
+                if (this.element?.parentNode?.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
+                    this.eventBus().emit(Block.EVENTS.FLOW_CDM);
+                }
+            }, 100);
+        }
+
+        return this.element!;
+    }
+
+    public show() {
         this.getContent().style.display = 'block';
     }
 
-    hide() {
+    public hide() {
         this.getContent().style.display = 'none';
     }
 }

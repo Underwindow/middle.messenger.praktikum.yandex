@@ -1,14 +1,13 @@
+import './bubbleGroup.css';
 import Block from 'core/Block';
 import BubbleProps from 'components/bubble/bubble';
 
-import './bubbleGroup.css';
-
-export default interface BubbleGroupProps {
+export interface BubbleGroupProps {
     bubblesDate?: string;
     bubbleProps?: BubbleProps[];
 }
 
-export class BubbleGroup extends Block {
+export default class BubbleGroup extends Block {
     static readonly NAME: string = 'BubbleGroup';
 
     protected render(): string {
@@ -22,6 +21,6 @@ export class BubbleGroup extends Block {
                 {{/each}}
             </div>
         </section>
-        `
+        `;
     }
 }

@@ -1,1 +1,1 @@
-export { InputField as default } from './inputField';
+export { default as InputField } from './inputField';

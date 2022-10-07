@@ -1,23 +1,23 @@
+import './sidebarChats.css';
 import Block from 'core/Block';
 import ChatDialogProps from 'components/sidebar-chats/chat-dialog/chatDialog';
 import ChatDialog from 'components/sidebar-chats/chat-dialog';
 
-import './sidebarChats.css';
-
-export default interface SidebarChatsProps extends Props {
+export interface SidebarChatsProps extends Props {
     chatsProps?: ChatDialogProps[],
 }
 
-export class SidebarChats extends Block<SidebarChatsProps> {
-    static readonly NAME = 'SidebarChats'
+export default class SidebarChats extends Block<SidebarChatsProps> {
+    static readonly NAME = 'SidebarChats';
+
     public chatClicked = new CustomEvent('chatClicked', {
         bubbles: false,
-        detail: { id: () => this._activeChat!.id }
+        detail: { id: () => this._activeChat!.id },
     });
 
     constructor({ chatsProps }: SidebarChatsProps) {
         super({
-            chatsProps
+            chatsProps,
         });
 
         this.subscribeOnChats();
@@ -25,15 +25,14 @@ export class SidebarChats extends Block<SidebarChatsProps> {
 
     subscribeOnChats() {
         const chats = this.refs.chats as ChatDialog[];
-        
-        if (!chats)
-            return;
 
-        chats.forEach(chat => {
+        if (!chats) return;
+
+        chats.forEach((chat) => {
             chat.setProps({
                 events: {
                     click: (e: Event) => { this._onChatClick(e, chat); },
-                }
+                },
             });
         });
     }
@@ -50,7 +49,7 @@ export class SidebarChats extends Block<SidebarChatsProps> {
         this.element?.dispatchEvent(this.chatClicked);
     }
 
-    render() {
+    protected render() {
         console.log('render SidebarChats');
 
         // language=hbs

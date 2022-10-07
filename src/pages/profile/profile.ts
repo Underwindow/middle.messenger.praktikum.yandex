@@ -1,30 +1,28 @@
+import './profile.css';
 import Block from 'core/Block';
-import Input from 'components/input';
-import ButtonIcon from 'components/button/button-icon';
-import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
+import ButtonIcon, { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
+import { Input } from 'components/input';
 import { renderDOM } from 'core';
 import { SignInPage } from 'pages/entry';
-import Messenger from 'pages/messenger';
+import { Messenger } from 'pages/messenger';
 import { ValidationType } from 'helpers/validateValue';
+import { ButtonSecondary } from 'components/button/button-secondary';
 
-import './profile.css';
-import ButtonSecondary from 'components/button/button-secondary';
-
-export class Profile extends Block {
+export default class Profile extends Block {
     constructor() {
         const btnLogoutProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.LOGOUT,
-            onClick: () => renderDOM(new SignInPage)
+            onClick: () => renderDOM(new SignInPage()),
         };
 
         const btnBackProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.BACK,
-            onClick: () => renderDOM(new Messenger)
+            onClick: () => renderDOM(new Messenger()),
         };
 
         super({
-            btnLogoutProps: btnLogoutProps,
-            btnBackProps: btnBackProps,
+            btnLogoutProps,
+            btnBackProps,
             onSubmitFileUpload: (e: Event) => {
                 e.preventDefault();
 
@@ -34,12 +32,11 @@ export class Profile extends Block {
                 e.preventDefault();
                 const fieldset = this.refs.fieldsetRef as Input[];
                 const success = Input.fieldsetValidate(fieldset);
-                
+
                 if (success) {
                     console.log('Validation success');
                     console.log('Saving data');
-                }
-                else {
+                } else {
                     console.log('Validation failed');
                 }
             },
@@ -51,11 +48,10 @@ export class Profile extends Block {
                 if (success) {
                     console.log('Validation success');
                     console.log('Saving new password');
-                }
-                else {
+                } else {
                     console.log('Validation failed');
                 }
-            }
+            },
         });
 
         this._subscribeOnFileUpload();

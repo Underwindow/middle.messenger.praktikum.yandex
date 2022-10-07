@@ -1,1 +1,1 @@
-export { InputError as default } from './inputError';
+export { default as InputError } from './inputError';

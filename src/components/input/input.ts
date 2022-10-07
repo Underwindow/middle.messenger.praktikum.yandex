@@ -1,77 +1,72 @@
+import './input.css';
 import Block from 'core/Block';
 import { validateValue, ValidationType } from 'helpers/validateValue';
-
-import './input.css';
-import InputError from './input-error';
-import { InputFieldProps } from './input-field/inputField';
-import InputField from './input-field';
+import InputField, { InputFieldProps } from './input-field/inputField';
+import { InputError } from './input-error';
 
 export interface InputProps extends InputFieldProps {
     icon?: string;
     validationType?: ValidationType;
 }
 
-export class Input extends Block<InputProps> {
+export default class Input extends Block<InputProps> {
     public static readonly NAME: string = 'Input';
 
     public static fieldsetValidate(fieldset: Input[]): boolean {
-        let success: boolean = true;
+        let success = true;
 
+        /* eslint-disable-next-line */
         for (const input of fieldset) {
             const validationError = input.validate();
-            if (validationError)
-                success = false;
+            if (validationError) success = false;
         }
-    
+
         return success;
     }
-    
+
     constructor({ validationType, ...props }: InputProps) {
         super({
             ...props,
             validationType,
             error: '',
             onInput: () => {
-                this.validate();         
+                this.validate();
             },
             onKeydown: (e: KeyboardEvent) => {
                 if (e.key === 'Enter') {
                     console.log('Enter submit check');
-                    
+
                     const validationError = this.validate();
-                    
+
                     if (validationError) {
                         e.preventDefault();
                     }
                 }
-            }
+            },
         });
     }
-    
+
     public get value() : string {
         const inputEl = (this.refs.inputFieldRef as InputField).element as HTMLInputElement;
         return inputEl.value;
     }
-    
+
     public setErrorMessage(errorMessage?: string) {
         const errorRef = this.refs.errorRef as InputError;
         errorRef.setProps({ text: errorMessage });
     }
 
     public validate(): string {
-        const validationType = this.props.validationType;
+        const { validationType } = this.props;
 
-        if (!validationType)
-            return '';
+        if (!validationType) return '';
 
         const inputEl = (this.refs.inputFieldRef as InputField).element as HTMLInputElement;
         const errorMessage = validateValue(validationType, inputEl.value);
-        const errorRef = this.refs.errorRef as InputError;
 
         if (errorMessage) {
             this.setErrorMessage(errorMessage);
-        }
-        else {
+        } else {
             console.log(validationType, 'success');
             this.setErrorMessage();
         }
@@ -103,6 +98,6 @@ export class Input extends Block<InputProps> {
             }}}
             {{{InputError ref="errorRef" text=text}}}
         </div>
-        `
+        `;
     }
 }

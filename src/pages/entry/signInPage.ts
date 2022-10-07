@@ -1,15 +1,14 @@
-import Block from 'core/Block';
-import Messenger from 'pages/messenger';
-import { renderDOM } from 'core';
-import Input from 'components/input';
-import { ValidationType } from 'helpers/validateValue';
-import { SignUpPage } from './signUpPage';
-import ErrorPage from 'pages/error-page';
-
 import './entry.css';
+import Block from 'core/Block';
+import { renderDOM } from 'core';
+import { Input } from 'components/input';
+import { ValidationType } from 'helpers/validateValue';
+import { ErrorPage } from 'pages/error-page';
+import { SignUpPage } from '.';
 
-export class SignInPage extends Block {
+export default class SignInPage extends Block {
     static readonly NAME = 'SignInPage';
+
     constructor() {
         super({
             error: '',
@@ -26,29 +25,28 @@ export class SignInPage extends Block {
             },
             onSubmit: (e: Event) => {
                 e.preventDefault();
-                
+
                 const login = this.refs.loginRef as Input;
                 const password = this.refs.passwordRef as Input;
                 const inputSet = [login, password];
-                
+
                 const success = Input.fieldsetValidate(inputSet);
 
                 if (success) {
                     console.log('Validation success');
                     renderDOM(new ErrorPage(ErrorPage.CODES[404]));
-                }
-                else {
+                } else {
                     console.log('Validation failed');
                 }
             },
             onClick: () => {
-                console.log('No Account');                
-                renderDOM(new SignUpPage);
-            }
+                console.log('No Account');
+                renderDOM(new SignUpPage());
+            },
         });
     }
 
-    render() {
+    protected render() {
         console.log('render', SignInPage.NAME, this.children);
 
         // language=hbs

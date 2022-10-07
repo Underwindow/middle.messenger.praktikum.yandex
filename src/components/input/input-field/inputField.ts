@@ -1,6 +1,5 @@
-import Block from 'core/Block';
-
 import './inputField.css';
+import Block from 'core/Block';
 
 export interface InputFieldProps extends Props {
     name?: string;
@@ -13,18 +12,20 @@ export interface InputFieldProps extends Props {
     onKeydown?: Callback;
 }
 
-export class InputField extends Block<InputFieldProps> {
+export default class InputField extends Block<InputFieldProps> {
     static readonly NAME: string = 'InputField';
 
-    constructor({onInput, onFocus, onBlur, onKeydown, ...props }: InputFieldProps) {
+    constructor({
+        onInput, onFocus, onBlur, onKeydown, ...props
+    }: InputFieldProps) {
         super({
             ...props,
-            events: { 
+            events: {
                 input: onInput,
                 focus: onFocus,
                 blur: onBlur,
-                keydown: onKeydown
-            }
+                keydown: onKeydown,
+            },
         });
     }
 
@@ -36,6 +37,6 @@ export class InputField extends Block<InputFieldProps> {
                 type="{{type}}"
                 placeholder="{{placeholder}}"
                 {{#if value}}value="{{value}}"{{/if}}>
-        `
+        `;
     }
 }

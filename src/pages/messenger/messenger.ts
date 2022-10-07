@@ -1,28 +1,22 @@
-import Block from 'core/Block';
-import HeaderProps, { Header } from 'components/header/header';
-
 import './messenger.css';
-import Input from 'components/input';
-import BubbleProps from 'components/bubble/bubble';
-import BubbleGroup from 'components/bubble/bubble-group';
-import BubbleGroupProps from 'components/bubble/bubble-group/bubbleGroup';
-import ChatDialogProps from 'components/sidebar-chats/chat-dialog/chatDialog';
-import ChatDialog from 'components/sidebar-chats/chat-dialog';
-import Chat from 'components/chat';
-import SidebarChats from 'components/sidebar-chats';
+import Block from 'core/Block';
+import { SidebarChats } from 'components/sidebar-chats';
 import { nanoid } from 'nanoid';
-import ButtonIcon from 'components/button/button-icon';
-import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { renderDOM } from 'core';
 import { SignInPage } from 'pages/entry';
-import Profile from 'pages/profile';
+import { Profile } from 'pages/profile';
 import { ValidationType } from 'helpers/validateValue';
+import ButtonIcon, { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
+import { Chat } from 'components/chat';
+import { BubbleProps } from 'components/bubble/bubble';
+import { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
+import { ChatDialogProps } from 'components/sidebar-chats/chat-dialog/chatDialog';
 
-export class Messenger extends Block {
+export default class Messenger extends Block {
     constructor() {
         const btnLogoutProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.LOGOUT,
-            onClick: () => renderDOM(new SignInPage)
+            onClick: () => renderDOM(new SignInPage()),
         };
 
         const tempChatProp: ChatDialogProps = {
@@ -33,14 +27,22 @@ export class Messenger extends Block {
             avatarSrc: 'https://www.w3schools.com/tags/img_girl.jpg',
         };
 
-        //Fetch chats data here
-        const chatsProps = [tempChatProp, { ...tempChatProp },{ ...tempChatProp },{ ...tempChatProp },{ ...tempChatProp },{ ...tempChatProp }, { ...tempChatProp }] as ChatDialogProps[];
+        // Fetch chats data here
+        const chatsProps = [
+            tempChatProp,
+            { ...tempChatProp },
+            { ...tempChatProp },
+            { ...tempChatProp },
+            { ...tempChatProp },
+            { ...tempChatProp },
+            { ...tempChatProp },
+        ] as ChatDialogProps[];
 
         super({
-            btnLogoutProps: btnLogoutProps,
-            chatsProps: chatsProps,
-            onProfileClick: (e: Event) => {
-                renderDOM(new Profile);
+            btnLogoutProps,
+            chatsProps,
+            onProfileClick: () => {
+                renderDOM(new Profile());
             },
         });
 
@@ -60,7 +62,7 @@ export class Messenger extends Block {
     private _initChat(activeChatId: string) {
         if (activeChatId) {
             const bubbles = [{
-                bubblesDate: nanoid(4),
+                bubblesDate: new Date().toDateString(),
                 bubbleProps: [{
                     isIn: false,
                     message: 'Привет',
@@ -71,21 +73,21 @@ export class Messenger extends Block {
                     message: 'Прив, что такое? Где пропадал все это время?',
                     time: '4:21',
                     name: 'Эмиль',
-                } as BubbleProps,]
+                } as BubbleProps],
             }] as BubbleGroupProps[];
-            
+
             const chat = this.refs.chatRef as Chat;
-            
+
             // chat.getHeader().setProps({
             // });
             chat.getBubbles().setProps({
-                bubbleGroupProps: bubbles
+                bubbleGroupProps: bubbles,
             });
             chat.getStub().hide();
         }
     }
 
-    render() {
+    protected render() {
         console.log('render Messenger');
         // language=hbs
         return `

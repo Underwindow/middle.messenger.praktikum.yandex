@@ -1,8 +1,7 @@
+import './chatDialog.css';
 import Block from 'core/Block';
 
-import './chatDialog.css';
-
-export default interface ChatDialogProps extends Props {
+export interface ChatDialogProps extends Props {
     chatName?: string
     time?: string
     lastMessage?: string
@@ -12,21 +11,23 @@ export default interface ChatDialogProps extends Props {
     onClick?: Callback
 }
 
-export class ChatDialog extends Block<ChatDialogProps> {
+export default class ChatDialog extends Block<ChatDialogProps> {
     static readonly NAME: string = 'ChatDialog';
+
     static readonly activeClassName: string = 'chat-active__text';
 
     constructor({ onClick, ...props }: ChatDialogProps) {
         super({
-            onClick, ...props, events: {
-                click: onClick
-            }
+            onClick,
+            ...props,
+            events: {
+                click: onClick,
+            },
         });
     }
 
-    public setActive(value: boolean = true) {
-        if (this.props.chatIsOpen && value)
-            return;
+    public setActive(value = true) {
+        if (this.props.chatIsOpen && value) return;
 
         this.props.chatIsOpen = value ? ChatDialog.activeClassName : '';
     }
@@ -54,6 +55,6 @@ export class ChatDialog extends Block<ChatDialogProps> {
                 </p>                                
             </div>
         </button>
-        `
+        `;
     }
 }

@@ -1,1 +1,1 @@
-export { BubbleGroup as default } from './bubbleGroup';
+export { default as BubbleGroup } from './bubbleGroup';

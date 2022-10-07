@@ -1,18 +1,17 @@
+import './avatar.css';
 import Block from 'core/Block';
 
-import './avatar.css';
-
-export default interface AvatarProps {
+export interface AvatarProps {
     src?: string
     stubSrc?: string
     alt?: string
 }
 
-export class Avatar extends Block<AvatarProps> {
+export default class Avatar extends Block<AvatarProps> {
     static readonly NAME: string = 'Avatar';
 
     constructor(props: AvatarProps) {
-        super({...props});
+        super({ ...props });
     }
 
     protected render(): string {
@@ -25,6 +24,6 @@ export class Avatar extends Block<AvatarProps> {
                 width="100%" height="100%" 
                 alt="{{alt}}">
         </div>
-        `
+        `;
     }
 }

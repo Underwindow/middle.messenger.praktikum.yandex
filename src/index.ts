@@ -1,27 +1,24 @@
-require("babel-core/register");
-import { Block, renderDOM, registerComponent } from './core';
-
 import 'styles/app.css';
-import Messenger from 'pages/messenger';
-import Avatar from 'components/avatar';
-import ErrorComponent from 'components/app-error';
-import Bubble from 'components/bubble';
-import BubbleGroup from 'components/bubble/bubble-group';
-import Header from 'components/header';
-import Input from 'components/input';
-import InputField from 'components/input/input-field';
-import ChatDialog from 'components/sidebar-chats/chat-dialog';
-import { ErrorPage } from 'pages/error-page/error';
-import { SignInPage, SignUpPage } from 'pages/entry';
-import InputError from 'components/input/input-error';
-import Chat from 'components/chat';
-import SidebarChats from 'components/sidebar-chats';
-import ButtonPrimary from 'components/button/button-primary';
-import ButtonSecondary from 'components/button/button-secondary';
-import ButtonIcon from 'components/button/button-icon';
-import Profile from 'pages/profile';
-import ChatBubbles from 'components/chat-bubbles';
-import ChatStub from 'components/chat-stub';
+import { Messenger } from 'pages/messenger';
+import { renderDOM, registerComponent } from './core';
+import { Avatar } from 'components/avatar';
+import { Header } from 'components/header';
+import { SidebarChats } from 'components/sidebar-chats';
+import { ChatDialog } from 'components/sidebar-chats/chat-dialog';
+import { Error as ErrorComponent } from 'components/app-error';
+import { Chat } from 'components/chat';
+import { ChatStub } from 'components/chat-stub';
+import { ChatBubbles } from 'components/chat-bubbles';
+import { BubbleGroup } from 'components/bubble/bubble-group';
+import { Bubble } from 'components/bubble';
+import { ButtonPrimary } from 'components/button/button-primary';
+import { ButtonSecondary } from 'components/button/button-secondary';
+import { ButtonIcon } from 'components/button/button-icon';
+import { Input } from 'components/input';
+import { InputField } from 'components/input/input-field';
+import { InputError } from 'components/input/input-error';
+
+require('babel-core/register');
 
 registerComponent(Header);
 registerComponent(Avatar);
@@ -40,6 +37,6 @@ registerComponent(Input);
 registerComponent(InputField);
 registerComponent(InputError);
 
-document.addEventListener("DOMContentLoaded", () => {
-    renderDOM(new Messenger);
+document.addEventListener('DOMContentLoaded', () => {
+    renderDOM(new Messenger());
 });

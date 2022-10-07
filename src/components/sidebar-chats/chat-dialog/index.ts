@@ -1,1 +1,1 @@
-export { ChatDialog as default } from './chatDialog';
+export { default as ChatDialog } from './chatDialog';

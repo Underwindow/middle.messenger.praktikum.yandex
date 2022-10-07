@@ -1,21 +1,21 @@
 .bubbles-group {
-    position: relative;
-    display: block;
+  position: relative;
+  display: block;
 }
 
 .bubbles-group__date {
-    top: 0px;
-    position: sticky;
-    display: block;
-    text-align: center;
-    margin: 8px auto;
-    padding: 8;
-    color: var(--grey);
-    z-index: 4;
-    background-color: var(--bg-alpha);
+  top: 0;
+  position: sticky;
+  display: block;
+  text-align: center;
+  margin: 8px auto;
+  padding: 8;
+  color: var(--grey);
+  z-index: 4;
+  background-color: var(--bg-alpha);
 }
 
 .bubbles-group__bubbles {
-    position: relative;
-    display: block;
+  position: relative;
+  display: block;
 }

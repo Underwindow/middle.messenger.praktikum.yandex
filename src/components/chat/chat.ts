@@ -1,36 +1,35 @@
-import Block from 'core/Block';
-import Input from 'components/input';
-import { ButtonIcon, ButtonIconProps } from 'components/button/button-icon/buttonIcon';
-import { ValidationType } from 'helpers/validateValue';
-import ChatBubbles from 'components/chat-bubbles';
-import ChatStub from 'components/chat-stub';
-import Header from 'components/header';
-
 import './chat.css';
+import Block from 'core/Block';
+import { Input } from 'components/input';
+import { ValidationType } from 'helpers/validateValue';
+import { ChatStub } from 'components/chat-stub';
+import { Header } from 'components/header';
+import { ButtonIcon } from 'components/button/button-icon';
+import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
+import { ChatBubbles } from 'components/chat-bubbles';
 
-export class Chat extends Block<Props> {
+export default class Chat extends Block<Props> {
     public static readonly NAME = 'Chat';
 
     constructor() {
         const moreBtnProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.MORE_VERT,
-            onClick: () => console.log('more clicked')
+            onClick: () => console.log('more clicked'),
         };
 
         super({
-            moreBtnProps: moreBtnProps,
+            moreBtnProps,
             onSubmit: (e: Event) => {
                 e.preventDefault();
 
-                const messageInput = this.refs.messageInputRef as Input
-                
+                const messageInput = this.refs.messageInputRef as Input;
+
                 const success = Input.fieldsetValidate([messageInput]);
-                
+
                 if (success) {
                     console.log('Validation success');
                     console.log('Sending message');
-                }
-                else {
+                } else {
                     console.log('Validation failed');
                 }
             },
@@ -49,9 +48,9 @@ export class Chat extends Block<Props> {
         return this.refs.chatHeader as Header;
     }
 
-    render() {
+    protected render() {
         console.log('render', this.constructor.name);
-        
+
         // language=hbs
         return `
         <div class="chat whole">

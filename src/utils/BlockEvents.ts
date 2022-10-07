@@ -1,1 +1,0 @@
-type BlockEvents = Record<string, Callback>;

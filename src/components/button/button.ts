@@ -1,7 +1,5 @@
-import Block from '../../core/Block';
-// import template from 'bundle-text:./template.hbs';
-
 import './button.css';
+import Block from '../../core/Block';
 
 export default interface ButtonProps extends Props {
     class?: string

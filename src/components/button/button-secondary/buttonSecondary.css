@@ -1,10 +1,10 @@
-@import '../button.css';
+@import "../button.css";
 
-.button__button-secondary {    
-    color: var(--hint);
-    font-size: clamp(14px, 2vw, 2vh);
+.button__button-secondary {
+  color: var(--hint);
+  font-size: clamp(14px, 2vw, 2vh);
 }
 
-.button__button-secondary:disabled {    
-    color: var(--grey);
+.button__button-secondary:disabled {
+  color: var(--grey);
 }

@@ -1,13 +1,12 @@
-import Block from 'core/Block';
-
 import './inputError.css';
+import Block from 'core/Block';
 
 export interface InputErrorProps extends Props {
     text?: string
 }
 
-export class InputError extends Block<InputErrorProps> {
-    static NAME: string = 'InputError';
+export default class InputError extends Block<InputErrorProps> {
+    static NAME = 'InputError';
 
     constructor(props: InputErrorProps) {
         super({ ...props });
