@@ -1,0 +1,9 @@
+.chat__bubbles {
+    width: 35vw;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin: 0 auto;
+    min-height: 100%;
+}

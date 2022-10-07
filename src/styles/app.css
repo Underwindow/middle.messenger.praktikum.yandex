@@ -13,9 +13,13 @@ body, html {
     height: 100%;
     margin: 0;
 }
-
 button {
     cursor:pointer;
+}
+
+button:disabled {
+    cursor: auto;
+    pointer-events: all !important;
 }
 
 /* width */
@@ -103,8 +107,8 @@ button {
 
 .icon-btn.material-icons {
     width: auto;
-    font-size: 42px;
-    line-height: 42px;
+    font-size: 4.53vh;
+    line-height: 4.53vh;
     color: var(--hint);
     background: transparent;
     display: flex;

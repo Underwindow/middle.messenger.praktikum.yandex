@@ -1,0 +1,14 @@
+@import '../button.css';
+
+.button__button-icon.material-icons {    
+    height: 100%;
+    font-size: 4.53vh;
+    line-height: 4.53vh;
+    background: transparent;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}

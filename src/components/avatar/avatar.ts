@@ -8,11 +8,11 @@ export default interface AvatarProps {
     alt?: string
 }
 
-export class Avatar extends Block {
-    static NAME: string = 'Avatar';
+export class Avatar extends Block<AvatarProps> {
+    static readonly NAME: string = 'Avatar';
 
-    constructor({ ...props }: AvatarProps) {
-        super({ ...props });
+    constructor(props: AvatarProps) {
+        super({...props});
     }
 
     protected render(): string {
@@ -22,7 +22,7 @@ export class Avatar extends Block {
             <img 
                 class="avatar-photo" 
                 src="{{#if src}}{{src}}{{else}}{{stubSrc}}{{/if}}" 
-                width="54" height="54" 
+                width="100%" height="100%" 
                 alt="{{alt}}">
         </div>
         `

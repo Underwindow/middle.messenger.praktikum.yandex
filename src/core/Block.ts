@@ -2,13 +2,11 @@ import EventBus from './EventBus';
 import { nanoid } from 'nanoid';
 import Handlebars from 'handlebars';
 
-interface BlockMeta<P = any> {
-    props: P;
-}
-
 type Events = Values<typeof Block.EVENTS>;
 
-export default class Block<P extends {} = any> {
+export default class Block<
+    P extends Props = {}
+> {
     static readonly EVENTS = {
         INIT: 'init',
         FLOW_CDM: 'flow:component-did-mount',
@@ -16,29 +14,25 @@ export default class Block<P extends {} = any> {
         FLOW_RENDER: 'flow:render',
     } as const;
 
-    public readonly id = nanoid(6);
-    private readonly _meta: BlockMeta;
+    public id = nanoid(6);
 
     protected _element: Nullable<HTMLElement> = null;
+
     protected readonly props: P;
-    protected children: { [id: string]: Block } = {};
+
+    protected children: { [id: string]: Block<{}> } = {};
 
     eventBus: () => EventBus<Events>;
 
-    protected state: any = {};
-    public refs: { [key: string]: Block | Block[] } = {};
+    // protected state: any = {};
+
+    protected refs: { [key: string]: Block<Props> | Block<Props>[] } = {};
 
     public constructor(props?: P) {
         const eventBus = new EventBus<Events>();
 
-        this._meta = {
-            props,
-        };
-
-        this.getStateFromProps(props)
-
         this.props = this._makePropsProxy(props || {} as P);
-        this.state = this._makePropsProxy(this.state);
+        // this.state = this._makePropsProxy(this.state);
 
         this.eventBus = () => eventBus;
 
@@ -58,9 +52,9 @@ export default class Block<P extends {} = any> {
         this._element = this._createDocumentElement('div');
     }
 
-    protected getStateFromProps(props: any): void {
-        this.state = { };
-    }
+    // protected getStateFromProps(props: any): void {
+    //   this.state = {};
+    // }
 
     init() {
         this._createResources();
@@ -86,21 +80,25 @@ export default class Block<P extends {} = any> {
         return true;
     }
 
-    setProps = <Props = P>(nextProps: Props): Block => {
-        if (nextProps) {
-            Object.assign(this.props, nextProps);
-        }
-
-        return this;
-    };
-
-    setState = (nextState: any) => {
-        if (!nextState) {
+    setProps = (nextProps: Partial<P>) => {
+        if (!nextProps) {
             return;
         }
 
-        Object.assign(this.state, nextState);
+        Object.assign(this.props, nextProps);
     };
+
+    getProps = () => {
+        return this.props;
+    }
+
+    // setState = (nextState: any) => {
+    //   if (!nextState) {
+    //     return;
+    //   }
+
+    //   Object.assign(this.state, nextState);
+    // };
 
     get element() {
         return this._element;
@@ -147,7 +145,6 @@ export default class Block<P extends {} = any> {
             },
             set(target: Record<string, unknown>, prop: string, value: unknown) {
                 const oldProps = { ...target };
-
                 target[prop] = value;
 
                 // Запускаем обновление компоненты
@@ -166,7 +163,7 @@ export default class Block<P extends {} = any> {
     }
 
     _removeEvents() {
-        const events: Record<string, Callback> = (this.props as any).events;
+        const events = this.props.events as Record<string, Callback>;
 
         if (!events || !this._element) {
             return;
@@ -178,7 +175,7 @@ export default class Block<P extends {} = any> {
     }
 
     _addEvents() {
-        const events: Record<string, Callback> = (this.props as any).events;
+        const events = this.props.events as Record<string, Callback>;
 
         if (!events) {
             return;
@@ -196,7 +193,12 @@ export default class Block<P extends {} = any> {
          * Рендерим шаблон
          */
         const template = Handlebars.compile(this.render());
-        fragment.innerHTML = template({ ...this.state, ...this.props, children: this.children, refs: this.refs });
+        
+        fragment.innerHTML = template({ ...this.props, children: this.children, refs: this.refs });
+
+        // console.log(`${fragment.innerHTML}`);
+
+        // debugger;
 
         /**
          * Заменяем заглушки на компоненты
@@ -205,15 +207,12 @@ export default class Block<P extends {} = any> {
             /**
              * Ищем заглушку по id
              */
-            const stub = fragment.content.querySelector(`[data-id="${component.id}"]`);
+            const stub = fragment.content.querySelector(`[data-id="${id}"]`);
 
             if (!stub) {
                 return;
             }
 
-            if (component.constructor.name === 'Bubble') {
-                // console.log(id, this.refs);
-            }
             const stubChilds = stub.childNodes.length ? stub.childNodes : [];
 
             /**
@@ -225,10 +224,11 @@ export default class Block<P extends {} = any> {
             /**
              * Ищем элемент layout-а, куда вставлять детей
              */
-            const layoutContent = content.querySelector('[data-layout="1"]');
+            const slotContent = content.querySelector('[data-slot="1"]') as HTMLDivElement;
 
-            if (layoutContent && stubChilds.length) {
-                layoutContent.append(...stubChilds);
+            if (slotContent && stubChilds.length) {
+                slotContent.append(...stubChilds);
+                delete slotContent.dataset.slot;
             }
         });
 

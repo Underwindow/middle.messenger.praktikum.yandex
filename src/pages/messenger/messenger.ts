@@ -3,82 +3,64 @@ import HeaderProps, { Header } from 'components/header/header';
 
 import './messenger.css';
 import Input from 'components/input';
-import InputProps from 'components/input/input';
 import BubbleProps from 'components/bubble/bubble';
-import BubbleGroup from 'components/bubble/bubbleGroup';
-import BubbleGroupProps from 'components/bubble/bubbleGroup/bubbleGroup';
-import ChatProps from 'components/chat/chat';
+import BubbleGroup from 'components/bubble/bubble-group';
+import BubbleGroupProps from 'components/bubble/bubble-group/bubbleGroup';
+import ChatDialogProps from 'components/sidebar-chats/chat-dialog/chatDialog';
+import ChatDialog from 'components/sidebar-chats/chat-dialog';
 import Chat from 'components/chat';
+import SidebarChats from 'components/sidebar-chats';
+import { nanoid } from 'nanoid';
+import ButtonIcon from 'components/button/button-icon';
+import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
+import { renderDOM } from 'core';
+import { SignInPage } from 'pages/entry';
+import Profile from 'pages/profile';
+import { ValidationType } from 'helpers/validateValue';
 
 export class Messenger extends Block {
     constructor() {
-        super();
-        const tempChatProp: ChatProps = {
-            username: 'Эмиль',
+        const btnLogoutProps: ButtonIconProps = {
+            icon: ButtonIcon.ICONS.LOGOUT,
+            onClick: () => renderDOM(new SignInPage)
+        };
+
+        const tempChatProp: ChatDialogProps = {
+            chatName: 'Эмиль',
             lastMessage: 'Привет, почему не спишь?',
             time: '4:20',
             badge: '1',
             avatarSrc: 'https://www.w3schools.com/tags/img_girl.jpg',
         };
 
-        const tempChatProp2: ChatProps = {
-            username: 'ЭмилЖЕня',
-            lastMessage: 'Привет, почему не спишь?',
-            time: '4:21',
-            badge: '1',
-            avatarSrc: 'https://www.w3schools.com/tags/img_girl.jpg',
-        };
-
-
         //Fetch chats data here
-        const chatsProps = [tempChatProp, tempChatProp2, { ...tempChatProp }] as ChatProps[];
+        const chatsProps = [tempChatProp, { ...tempChatProp },{ ...tempChatProp },{ ...tempChatProp },{ ...tempChatProp },{ ...tempChatProp }, { ...tempChatProp }] as ChatDialogProps[];
 
-        this.setProps({
-            chatId: '',
-            chatsProps: [],
-            chats: [],
-            bubbleGroupProps: [],
-            onInput: (e: Event) => {
-                const inputEl = e.target as HTMLInputElement; console.log(inputEl.name);
+        super({
+            btnLogoutProps: btnLogoutProps,
+            chatsProps: chatsProps,
+            onProfileClick: (e: Event) => {
+                renderDOM(new Profile);
             },
         });
 
-        this.props.chatsProps = chatsProps;
-        this.subscribeOnChats();
+        this._subscribeOnSidebarChats();
     }
 
-    subscribeOnChats() {
-        const chats = this.refs.chats as Chat[];
-        if (!chats)
-            return;
-        chats.forEach(chat => {
-            chat.setProps({
-                events: {
-                    click: () => { this._onChatClick(chat); }
-                }
-            });
+    private _subscribeOnSidebarChats() {
+        const chats = this.refs.sidebarChatsRef as SidebarChats;
+
+        chats.element?.addEventListener(chats.chatClicked.type, (e: Event) => {
+            const activeChatId = (e as CustomEvent).detail.id();
+            console.log('chat clicked: ', activeChatId);
+            this._initChat(activeChatId);
         });
     }
 
-    private _activeChat?: Chat;
-
-    _onChatClick(chat: Chat) {
-        console.log('click');
-
-        if (this._activeChat) {
-            this._activeChat.setActive(false);
-        }
-
-        this._activeChat = chat;
-        this._activeChat.setActive(true);
-        this._initBubbles(this.props.chatId = chat.id);
-    }
-
-    _initBubbles(chatId: string) {
-        if (chatId) {
-            console.log(this.refs.bubbleGroup);
-            const bubbleGroupProps = [{
-                bubblesDate: 'Today',
+    private _initChat(activeChatId: string) {
+        if (activeChatId) {
+            const bubbles = [{
+                bubblesDate: nanoid(4),
                 bubbleProps: [{
                     isIn: false,
                     message: 'Привет',
@@ -90,10 +72,16 @@ export class Messenger extends Block {
                     time: '4:21',
                     name: 'Эмиль',
                 } as BubbleProps,]
-            }];
-
-            this.props.bubbleGroupProps = bubbleGroupProps;
-            this.subscribeOnChats();
+            }] as BubbleGroupProps[];
+            
+            const chat = this.refs.chatRef as Chat;
+            
+            // chat.getHeader().setProps({
+            // });
+            chat.getBubbles().setProps({
+                bubbleGroupProps: bubbles
+            });
+            chat.getStub().hide();
         }
     }
 
@@ -103,96 +91,35 @@ export class Messenger extends Block {
         return `
         <div class="whole">
             <div class="main-layout">
-                <div class="chat whole">
-                    {{{Header 
-                        ref="chatHeader"
-                        avatarSrc="https://www.w3schools.com/tags/img_girl.jpg"
-                        title="Эмиль"
-                        rightButton="more_vert"
-                    }}}
-
-                    <div class="chat-selected">
-                        <div class="scrollable-y">
-                            <div class="chat-inner">
-                                {{#each bubbleGroupProps}}
-                                {{{BubbleGroup 
-                                    ref="bubbleGroup"
-                                    bubblesDate=bubblesDate
-                                    bubbleProps=bubbleProps
-                                }}}
-                                {{/each}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-input">
-                        <div class="chat-input-container">
-                            <div class="rows-wrapper">
-                                <div class="chat-input-wrapper">
-                                    <div class="new-message-wrapper">
-                                        <div class="input-message-container">
-                                            {{{Input 
-                                                ref="chatInput"
-                                                onInput=onInput
-                                                name="message"
-                                                type="text"
-                                                placeholder="Введите сообщние"
-                                            }}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="btn-send-container">
-                                <button class="btn-send material-icons clear-btn">send</button>
-                            </div>
-                        </div>
-                    </div>
-                    {{#if chatId}}
-                    
-                    {{else}}
-                    <div class="chat-not-selected back-panel">
-                        <div class="content-center whole">
-                            <p>Выберите чат, чтобы отправить сообщение</p>
-                        </div>
-                    </div>
-                    {{/if}}
-                </div>
                 <div class="sidebar panel">
-                    {{{Header 
-                        ref="sidebarHeader"
-                        avatarSrc="https://www.w3schools.com/tags/img_girl.jpg"
-                        title="Евгений"
-                        rightButton="logout"
-                        rightLink="login"
-                    }}}
-                    <div class="sidebar-container">
-                        <div class="sidebar__actions">
+                    <div class="sidebar__header">
+                        {{{Header 
+                            ref="sidebarHeader"
+                            title="Евгений"
+                            avatarSrc="https://www.w3schools.com/tags/img_girl.jpg"
+                            rightBtnProps=btnLogoutProps
+                            onClick=onProfileClick
+                        }}}
+                    </div>
+                    <div class="sidebar__content">
+                        <form class="sidebar__actions">
                             {{{Input 
+                                validationType="${ValidationType.INPUT_MESSAGE}"
                                 ref="searchInput"
-                                onInput=onInput
                                 name="message"
                                 type="text"
                                 placeholder="Поиск"
                                 icon="search"
                             }}}
-                            <button class="material-icons icon-btn add-btn">add</button>
-                        </div>
-                        <div class="sidebar__chats">
-                            <div class="scrollable-y">
-                                {{#each chatsProps}}
-                                {{{Chat 
-                                    ref="chats"
-                                    onClick=onClick
-                                    avatarSrc=avatarSrc 
-                                    username=username 
-                                    time=time 
-                                    lastMessage=lastMessage 
-                                    badge=badge
-                                }}}
-                                {{/each}}
-                            </div>
-                        </div>
+                            {{{ButtonIcon onClick=onClick type="button" icon="${ButtonIcon.ICONS.ADD}"}}}
+                        </form>
+                        {{{SidebarChats 
+                            ref="sidebarChatsRef"
+                            chatsProps=chatsProps
+                        }}}
                     </div>
                 </div>
+                {{{Chat ref="chatRef"}}}
             </div>
         </div>
     `;

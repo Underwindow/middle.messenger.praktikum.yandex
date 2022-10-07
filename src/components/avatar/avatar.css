@@ -1,8 +1,8 @@
 .user-avatar {
     display: flex;
     position: relative;
-    min-width: 54px;
-    min-height: 54px;
+    min-width: 5.83vh;
+    min-height: 5.83vh;
 }
 
 .avatar-photo {

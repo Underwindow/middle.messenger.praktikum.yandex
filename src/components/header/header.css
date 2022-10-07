@@ -1,7 +1,7 @@
 .header {
-    min-height: 100px;
+    max-height: 10.79vh;
     width: 100%;
-    padding: 0 16px;
+    padding: 0 1.73vh;
     display: flex;
     align-items: center;
     flex: 0 1 auto;
@@ -10,8 +10,8 @@
 }
 
 .header__btn-container {
-    height: 64px;
-    width: 64px;
+    height: 6.9vh;
+    width: 6.9vh;
     align-items: center;
     display: flex;
     flex: 0 0 auto;
@@ -19,7 +19,7 @@
 }
 
 .header__title-wrapper {
-    padding: 0 16px;
+    padding: 0 1.73vh;
     text-decoration: none; 
     position: relative;
     height: 100%;
@@ -27,7 +27,7 @@
     align-items: center;
     flex: 0 0 auto;
     box-sizing: border-box;
-    line-height: 54px;
+    line-height: 5.83vh;
 }
 
 .header__title-container {
@@ -41,14 +41,15 @@ a.header__title-container:hover .header__title {
 
 .header__title {
     color: var(--white);
-    font-size: 30px;
+    font-size: 3.24vh;
+    font-size: clamp(18.71px, 2vw, 3.24vh);
     text-overflow: ellipsis;
     white-space: nowrap;
     width: auto;
     max-width: 12ch;
     display: flex;
     justify-content: center;
-    padding: 1 12 1 12;
+    padding: 0.11vh 1.29vh;
     flex: 1;
     overflow: hidden;
 }

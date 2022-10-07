@@ -1,0 +1,1 @@
+export { SidebarChats as default } from './sidebarChats';

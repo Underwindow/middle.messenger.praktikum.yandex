@@ -1,0 +1,5 @@
+.error-container {
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+}

@@ -1,61 +1,103 @@
 import Block from 'core/Block';
+import Input from 'components/input';
+import { ButtonIcon, ButtonIconProps } from 'components/button/button-icon/buttonIcon';
+import { ValidationType } from 'helpers/validateValue';
+import ChatBubbles from 'components/chat-bubbles';
+import ChatStub from 'components/chat-stub';
+import Header from 'components/header';
 
 import './chat.css';
 
-export default interface ChatProps {
-    username?: string
-    time?: string
-    lastMessage?: string
-    badge?: string
-    avatarSrc?: string
-    chatIsOpen?: string
-    onClick?: Callback
-}
+export class Chat extends Block<Props> {
+    public static readonly NAME = 'Chat';
 
-export class Chat extends Block {
-    static readonly NAME: string = 'Chat';
-    static readonly activeClassName: string = 'chat-active__text';
+    constructor() {
+        const moreBtnProps: ButtonIconProps = {
+            icon: ButtonIcon.ICONS.MORE_VERT,
+            onClick: () => console.log('more clicked')
+        };
 
-    constructor({onClick, ...props }: ChatProps) {
-        super({onClick, ...props});
+        super({
+            moreBtnProps: moreBtnProps,
+            onSubmit: (e: Event) => {
+                e.preventDefault();
 
-        this.setProps({
-            events: {
-                click: onClick
-            }
+                const messageInput = this.refs.messageInputRef as Input
+                
+                const success = Input.fieldsetValidate([messageInput]);
+                
+                if (success) {
+                    console.log('Validation success');
+                    console.log('Sending message');
+                }
+                else {
+                    console.log('Validation failed');
+                }
+            },
         });
     }
 
-    public setActive(value: boolean = true) {
-        if (this.props.chatIsOpen && value)
-            return;
-
-        this.props.chatIsOpen = value? Chat.activeClassName : '';
+    public getBubbles(): ChatBubbles {
+        return this.refs.chatBubblesRef as ChatBubbles;
     }
 
-    protected render(): string {
+    public getStub(): ChatStub {
+        return this.refs.stubRef as ChatStub;
+    }
+
+    public getHeader(): Header {
+        return this.refs.chatHeader as Header;
+    }
+
+    render() {
+        console.log('render', this.constructor.name);
+        
         // language=hbs
         return `
-        <button type="button" class="clear-btn chat-dialog {{chatIsOpen}}">
-            {{#if chatIsOpen}}
-            <div class="chat-dialog__active-hint"></div>
-            {{/if}}
-            {{{Avatar src=avatarSrc }}}
-            <div class="chat-dialog__caption">
-                <p class="chat-dialog__title">
-                    <span class="chat-dialog__username">{{username}}</span>
-                    <span class="chat-dialog__details">
-                        <span class="chat-dialog__time {{chatIsOpen}}">{{time}}</span>
-                    </span>                                    
-                </p>
-                <p class="chat-dialog__subtitle">
-                    <span class="chat-dialog__message {{chatIsOpen}}">{{lastMessage}}</span>
-                    {{#if badge}}
-                    <span class="chat-dialog__badge">{{badge}}</span>
-                    {{/if}}
-                </p>                                
+        <div class="chat whole">
+            {{{Header 
+                ref="chatHeader"
+                avatarSrc="https://www.w3schools.com/tags/img_girl.jpg"
+                title="Эмиль"
+                rightBtnProps=moreBtnProps
+            }}}
+
+            <div class="chat__bubbles-container">
+                <div class="scrollable-y">
+                    {{{ChatBubbles ref="chatBubblesRef"}}}
+                </div>
             </div>
-        </button>
-        `
+            <div class="chat__message-container">
+                <form class="chat__message-wrapper">
+                    <div class="chat__message-rows-wrapper">
+                        <div class="chat__message-input-container">
+                            <div class="chat__message-input-wrapper">
+                                <div class="chat__input-container">
+                                    {{{Input 
+                                        ref="messageInputRef"
+                                        validationType="${ValidationType.INPUT_MESSAGE}"
+                                        name="message"
+                                        type="text"
+                                        placeholder="Введите сообщние"
+                                        onBlur=onBlur
+                                    }}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat__button">
+                    {{{ButtonIcon 
+                        ref="sendButtonRef" 
+                        onClick=onSubmit 
+                        type="submit" 
+                        icon="${ButtonIcon.ICONS.SEND}"
+                        color="${ButtonIcon.COLORS.WHITE}"
+                    }}}
+                    </div>
+                </form>
+            </div>
+            {{{ChatStub ref="stubRef"}}}
+        </div>
+    `;
     }
 }

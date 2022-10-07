@@ -2,17 +2,17 @@ import Block from 'core/Block';
 
 import './bubble.css';
 
-export default interface BubbleProps {
-    isIn: boolean
-    message: string
-    time: string
-    name: string
+export default interface BubbleProps extends Props {
+    isIn?: boolean
+    message?: string
+    time?: string
+    name?: string
 }
 
-export class Bubble extends Block {
-    static NAME: string = 'Bubble';
+export class Bubble extends Block<BubbleProps> {
+    static readonly NAME: string = 'Bubble';
 
-    constructor({ ...props }: BubbleProps) {
+    constructor(props: BubbleProps) {
         super({ ...props });
     }
 
