@@ -17,11 +17,16 @@ export default class Input extends Block<InputProps> {
 
         fieldset.forEach((input) => {
             const validationError = input.validate();
+
             if (validationError) success = false;
         });
 
+        console.log(`Validation ${success ? 'success' : 'failed'}`);
+
         return success;
     }
+
+    private readonly _inputEl: HTMLInputElement;
 
     constructor({ validationType, ...props }: InputProps) {
         super({
@@ -49,11 +54,16 @@ export default class Input extends Block<InputProps> {
                 }
             },
         });
+
+        this._inputEl = (this.refs.inputFieldRef as InputField).element as HTMLInputElement;
     }
 
-    get value() : string {
-        const inputEl = (this.refs.inputFieldRef as InputField).element as HTMLInputElement;
-        return inputEl.value;
+    get value(): string {
+        return this._inputEl.value;
+    }
+
+    get name(): string {
+        return this._inputEl.name;
     }
 
     setErrorMessage(errorMessage?: string) {
@@ -66,15 +76,19 @@ export default class Input extends Block<InputProps> {
 
         if (!validationType) return '';
 
-        const inputEl = (this.refs.inputFieldRef as InputField).element as HTMLInputElement;
-        const errorMessage = validateValue(validationType, inputEl.value);
+        const errorMessage = validateValue(validationType, this._inputEl.value);
 
         if (errorMessage) {
             this.setErrorMessage(errorMessage);
         } else {
-            console.log(validationType, 'success');
             this.setErrorMessage();
         }
+
+        console.log(
+            `name: ${this._inputEl.name}`,
+            `value: ${this._inputEl.value}`,
+            errorMessage ? `error: ${errorMessage}` : 'success',
+        );
 
         return errorMessage;
     }

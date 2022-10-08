@@ -66,7 +66,7 @@ export function validateValue(type: ValidationType, value: string): string {
         const regex = new RegExp(rule, 'u');
 
         if (!regex.test(value)) {
-            console.log(type, errorMsg = error);
+            errorMsg = error;
             break;
         }
     }

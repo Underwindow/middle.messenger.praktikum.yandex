@@ -32,12 +32,7 @@ export default class SignInPage extends Block {
 
                 const success = Input.fieldsetValidate(inputSet);
 
-                if (success) {
-                    console.log('Validation success');
-                    renderDOM(new ErrorPage(ErrorPage.CODES[404]));
-                } else {
-                    console.log('Validation failed');
-                }
+                if (success) renderDOM(new ErrorPage(ErrorPage.CODES[404]));
             },
             onClick: () => {
                 console.log('No Account');

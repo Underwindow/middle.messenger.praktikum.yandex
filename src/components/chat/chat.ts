@@ -26,12 +26,7 @@ export default class Chat extends Block<Props> {
 
                 const success = Input.fieldsetValidate([messageInput]);
 
-                if (success) {
-                    console.log('Validation success');
-                    console.log('Sending message');
-                } else {
-                    console.log('Validation failed');
-                }
+                if (success) console.log('Sending message');
             },
         });
     }

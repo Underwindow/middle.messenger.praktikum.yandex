@@ -34,10 +34,8 @@ export default class SignUpPage extends Block {
                 const success = Input.fieldsetValidate(inputSet);
 
                 if (success && password.value === passwordRepeat.value) {
-                    console.log('Validation success');
                     renderDOM(new ErrorPage(ErrorPage.CODES[505]));
                 } else {
-                    console.log('Validation failed');
                     passwordRepeat.setErrorMessage('пароли должны совпадать');
                 }
             },

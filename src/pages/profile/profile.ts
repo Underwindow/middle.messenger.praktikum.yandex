@@ -35,24 +35,14 @@ export default class Profile extends Block {
                 const fieldset = this.refs.fieldsetRef as Input[];
                 const success = Input.fieldsetValidate(fieldset);
 
-                if (success) {
-                    console.log('Validation success');
-                    console.log('Saving data');
-                } else {
-                    console.log('Validation failed');
-                }
+                if (success) console.log('Saving data');
             },
             onSubmitPasswords: (e: Event) => {
                 e.preventDefault();
                 const passwords = this.refs.passwordsRef as Input[];
                 const success = Input.fieldsetValidate(passwords);
 
-                if (success) {
-                    console.log('Validation success');
-                    console.log('Saving new password');
-                } else {
-                    console.log('Validation failed');
-                }
+                if (success) console.log('Saving new password');
             },
         });
 
