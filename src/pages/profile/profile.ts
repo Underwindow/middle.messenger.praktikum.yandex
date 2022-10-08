@@ -9,6 +9,8 @@ import { ValidationType } from 'helpers/validateValue';
 import { ButtonSecondary } from 'components/button/button-secondary';
 
 export default class Profile extends Block {
+    static readonly NAME = 'Profile';
+
     constructor() {
         const btnLogoutProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.LOGOUT,
@@ -66,8 +68,7 @@ export default class Profile extends Block {
         });
     }
 
-    render() {
-        console.log('render Messenger');
+    protected render() {
         // language=hbs
         return `
         <div class="whole">
@@ -101,27 +102,27 @@ export default class Profile extends Block {
                         <form class="sidebar__fieldset" action="">
                             <div class="sidebar__input-container">
                                 <label class="input__label">Почта</label>
-                                {{{Input ref="fieldsetRef" name="email" value="example@mail.ru" validationType="${ValidationType.INPUT_EMAIL}"}}}
+                                {{{Input ref="fieldsetRef" name="email" type="text" value="example@mail.ru" placeholder="|" validationType="${ValidationType.INPUT_EMAIL}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Логин</label>
-                                {{{Input ref="fieldsetRef" name="login" value="Underwindow" validationType="${ValidationType.INPUT_LOGIN}"}}}
+                                {{{Input ref="fieldsetRef" name="login" type="text" value="Underwindow" placeholder="|" validationType="${ValidationType.INPUT_LOGIN}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Имя</label>
-                                {{{Input ref="fieldsetRef" name="first_name" value="Евгений" validationType="${ValidationType.INPUT_FIRST_NAME}"}}}
+                                {{{Input ref="fieldsetRef" name="first_name" type="text" value="Евгений" placeholder="|" validationType="${ValidationType.INPUT_FIRST_NAME}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Фамилия</label>
-                                {{{Input ref="fieldsetRef" name="second_name" value="Поздняков" validationType="${ValidationType.INPUT_SECOND_NAME}"}}}
+                                {{{Input ref="fieldsetRef" name="second_name" type="text" value="Поздняков" placeholder="|" validationType="${ValidationType.INPUT_SECOND_NAME}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Имя в чате</label>
-                                {{{Input ref="fieldsetRef" name="display_name" value="Underwindow" validationType="${ValidationType.INPUT_LOGIN}"}}}
+                                {{{Input ref="fieldsetRef" name="display_name" type="text" value="Underwindow" placeholder="|" validationType="${ValidationType.INPUT_LOGIN}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Телефон</label>
-                                {{{Input ref="fieldsetRef" name="phone" value="88005553535" validationType="${ValidationType.INPUT_PHONE}"}}}
+                                {{{Input ref="fieldsetRef" name="phone" type="text" value="88005553535" placeholder="+X(XXX) XXX-XXXX" validationType="${ValidationType.INPUT_PHONE}"}}}
                             </div>
                             <div class="sidebar__button-secondary">
                                 {{{ButtonSecondary type="submit" text="Сохранить изменения" onClick=onSubmitFieldset}}}

@@ -9,7 +9,7 @@ import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { ChatBubbles } from 'components/chat-bubbles';
 
 export default class Chat extends Block<Props> {
-    public static readonly NAME = 'Chat';
+    static readonly NAME = 'Chat';
 
     constructor() {
         const moreBtnProps: ButtonIconProps = {
@@ -36,15 +36,15 @@ export default class Chat extends Block<Props> {
         });
     }
 
-    public getBubbles(): ChatBubbles {
+    getBubbles(): ChatBubbles {
         return this.refs.chatBubblesRef as ChatBubbles;
     }
 
-    public getStub(): ChatStub {
+    getStub(): ChatStub {
         return this.refs.stubRef as ChatStub;
     }
 
-    public getHeader(): Header {
+    getHeader(): Header {
         return this.refs.chatHeader as Header;
     }
 

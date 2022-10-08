@@ -1,7 +1,6 @@
 import './sidebarChats.css';
 import Block from 'core/Block';
-import ChatDialogProps from 'components/sidebar-chats/chat-dialog/chatDialog';
-import ChatDialog from 'components/sidebar-chats/chat-dialog';
+import ChatDialog, { ChatDialogProps } from './chat-dialog/chatDialog';
 
 export interface SidebarChatsProps extends Props {
     chatsProps?: ChatDialogProps[],
@@ -10,7 +9,7 @@ export interface SidebarChatsProps extends Props {
 export default class SidebarChats extends Block<SidebarChatsProps> {
     static readonly NAME = 'SidebarChats';
 
-    public chatClicked = new CustomEvent('chatClicked', {
+    chatClicked = new CustomEvent('chatClicked', {
         bubbles: false,
         detail: { id: () => this._activeChat!.id },
     });
@@ -39,7 +38,7 @@ export default class SidebarChats extends Block<SidebarChatsProps> {
 
     private _activeChat?: ChatDialog;
 
-    _onChatClick(e: Event, chat: ChatDialog) {
+    private _onChatClick(e: Event, chat: ChatDialog) {
         if (this._activeChat) {
             this._activeChat.setActive(false);
         }

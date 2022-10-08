@@ -1,4 +1,4 @@
-import './error.css';
+import './errorPage.css';
 import Block from 'core/Block';
 import { Messenger } from 'pages/messenger';
 import { renderDOM } from 'core';
@@ -10,6 +10,8 @@ export interface ErrorPageProps extends ErrorProps {
 }
 
 export default class ErrorPage extends Block<ErrorPageProps> {
+    static readonly NAME = 'ErrorPage';
+
     static readonly CODES = {
         404: {
             code: '404',
@@ -29,7 +31,7 @@ export default class ErrorPage extends Block<ErrorPageProps> {
         super(props);
     }
 
-    render() {
+    protected render() {
         // language=hbs
         return `
         <div class="screen content-center back-panel">

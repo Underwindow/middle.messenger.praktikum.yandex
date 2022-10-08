@@ -10,16 +10,15 @@ export interface InputProps extends InputFieldProps {
 }
 
 export default class Input extends Block<InputProps> {
-    public static readonly NAME: string = 'Input';
+    static readonly NAME: string = 'Input';
 
-    public static fieldsetValidate(fieldset: Input[]): boolean {
+    static fieldsetValidate(fieldset: Input[]): boolean {
         let success = true;
 
-        /* eslint-disable-next-line */
-        for (const input of fieldset) {
+        fieldset.forEach((input) => {
             const validationError = input.validate();
             if (validationError) success = false;
-        }
+        });
 
         return success;
     }
@@ -31,6 +30,12 @@ export default class Input extends Block<InputProps> {
             error: '',
             onInput: () => {
                 this.validate();
+            },
+            onFocus: () => {
+                this.validate();
+            },
+            onBlur: () => {
+                this.setErrorMessage('');
             },
             onKeydown: (e: KeyboardEvent) => {
                 if (e.key === 'Enter') {
@@ -46,17 +51,17 @@ export default class Input extends Block<InputProps> {
         });
     }
 
-    public get value() : string {
+    get value() : string {
         const inputEl = (this.refs.inputFieldRef as InputField).element as HTMLInputElement;
         return inputEl.value;
     }
 
-    public setErrorMessage(errorMessage?: string) {
+    setErrorMessage(errorMessage?: string) {
         const errorRef = this.refs.errorRef as InputError;
         errorRef.setProps({ text: errorMessage });
     }
 
-    public validate(): string {
+    validate(): string {
         const { validationType } = this.props;
 
         if (!validationType) return '';

@@ -1,7 +1,6 @@
 import './messenger.css';
 import Block from 'core/Block';
 import { SidebarChats } from 'components/sidebar-chats';
-import { nanoid } from 'nanoid';
 import { renderDOM } from 'core';
 import { SignInPage } from 'pages/entry';
 import { Profile } from 'pages/profile';
@@ -13,6 +12,8 @@ import { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
 import { ChatDialogProps } from 'components/sidebar-chats/chat-dialog/chatDialog';
 
 export default class Messenger extends Block {
+    static readonly NAME = 'Messenger';
+
     constructor() {
         const btnLogoutProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.LOGOUT,

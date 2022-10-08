@@ -7,7 +7,7 @@ export interface ChatBubblesProps extends Props {
 }
 
 export default class ChatBubbles extends Block<ChatBubblesProps> {
-    public static readonly NAME = 'ChatBubbles';
+    static readonly NAME = 'ChatBubbles';
 
     constructor({ ...props }: ChatBubblesProps) {
         super(props);

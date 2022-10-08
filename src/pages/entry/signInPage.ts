@@ -47,8 +47,6 @@ export default class SignInPage extends Block {
     }
 
     protected render() {
-        console.log('render', SignInPage.NAME, this.children);
-
         // language=hbs
         return `
         <div class="entry whole content-center">

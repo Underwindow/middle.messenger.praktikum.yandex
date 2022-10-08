@@ -7,14 +7,14 @@ type Events = Values<typeof Block.EVENTS>;
 export default abstract class Block<
     P extends Props = {},
 > {
-    public static readonly EVENTS = {
+    static readonly EVENTS = {
         INIT: 'init',
         FLOW_CDM: 'flow:component-did-mount',
         FLOW_CDU: 'flow:component-did-update',
         FLOW_RENDER: 'flow:render',
     } as const;
 
-    public readonly id = nanoid(6);
+    readonly id = nanoid(6);
 
     private _element: Nullable<HTMLElement> = null;
 
@@ -28,7 +28,7 @@ export default abstract class Block<
 
     protected refs: { [key: string]: Block<Props> | Block<Props>[] } = {};
 
-    public constructor(props?: P) {
+    constructor(props?: P) {
         const eventBus = new EventBus<Events>();
 
         this.props = this._makePropsProxy(props || {} as P);
@@ -174,7 +174,7 @@ export default abstract class Block<
         return '';
     }
 
-    public setProps = (nextProps: Partial<P>) => {
+    setProps = (nextProps: Partial<P>) => {
         if (!nextProps) {
             return;
         }
@@ -182,7 +182,7 @@ export default abstract class Block<
         Object.assign(this.props, nextProps);
     };
 
-    public getProps = () => this.props;
+    getProps = () => this.props;
 
     // protected getStateFromProps(props: any): void {
     //     this.state = {};
@@ -200,7 +200,7 @@ export default abstract class Block<
         return this._element;
     }
 
-    public getContent(): HTMLElement {
+    getContent(): HTMLElement {
         if (this.element?.parentNode?.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
             setTimeout(() => {
                 if (this.element?.parentNode?.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
@@ -212,11 +212,11 @@ export default abstract class Block<
         return this.element!;
     }
 
-    public show() {
+    show() {
         this.getContent().style.display = 'block';
     }
 
-    public hide() {
+    hide() {
         this.getContent().style.display = 'none';
     }
 }

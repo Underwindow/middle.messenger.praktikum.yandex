@@ -13,7 +13,7 @@ export interface HeaderProps extends Props {
 export default class Header extends Block<HeaderProps> {
     static readonly NAME: string = 'Header';
 
-    public readonly titleClicked = new CustomEvent('titleClicked', {
+    readonly titleClicked = new CustomEvent('titleClicked', {
         bubbles: false,
     });
 

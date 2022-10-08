@@ -26,7 +26,7 @@ export default class ChatDialog extends Block<ChatDialogProps> {
         });
     }
 
-    public setActive(value = true) {
+    setActive(value = true) {
         if (this.props.chatIsOpen && value) return;
 
         this.props.chatIsOpen = value ? ChatDialog.activeClassName : '';
