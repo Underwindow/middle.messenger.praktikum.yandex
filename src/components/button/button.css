@@ -1,0 +1,23 @@
+.button {
+  width: 100%;
+  height: clamp(26px, 2vw, 4.5vh);
+  line-height: clamp(26px, 2vw, 4.5vh);
+  margin: clamp(8.67px, 2vw, 1.5vh) 0 0 0;
+  font-size: clamp(11.5px, 2vw, 2vh);
+}
+
+.button:hover {
+  opacity: 0.8;
+}
+
+.button[disabled]:hover {
+  opacity: 1;
+}
+
+.button:disabled {
+  pointer-events: none;
+}
+
+.button:active {
+  opacity: 1;
+}

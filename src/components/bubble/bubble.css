@@ -1,0 +1,95 @@
+.bubble {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto 8px;
+  position: relative;
+  user-select: none;
+}
+
+.bubble__bubble-out,
+.bubble__content {
+  flex-direction: row-reverse;
+  margin-left: auto;
+}
+
+.bubble__wrapper {
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bubble__bubble-out > .bubble__wrapper {
+  background-color: var(--hint);
+  border-radius: 15 15 0;
+}
+
+.bubble__bubble-in > .bubble__wrapper {
+  background-color: var(--fg);
+  border-radius: 15 15 15 0;
+}
+
+.bubble__content {
+  flex-direction: column-reverse;
+  display: flex;
+  user-select: text;
+  max-width: 100%;
+  min-width: 56px;
+  position: relative;
+  z-index: 2;
+}
+
+.bubble__message {
+  color: var(--white);
+  font-size: 16px;
+  line-height: 1.3;
+  padding: 5 7 5 10;
+  position: relative;
+}
+
+.bubble__details {
+  margin-left: 4px;
+  padding-right: 5px;
+  cursor: pointer;
+  direction: ltr;
+  display: inline-flex;
+  float: right;
+  font-size: 12px;
+  height: 12px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  vertical-align: middle;
+  visibility: hidden;
+  z-index: 1;
+  width: auto;
+}
+
+.bubble__details > div {
+  align-items: center;
+  bottom: 6;
+  position: absolute;
+  right: 8px;
+  visibility: visible;
+  white-space: nowrap;
+}
+
+.bubble__bubble-in .bubble__details > div {
+  color: var(--grey);
+}
+
+.bubble__bubble-out .bubble__details > div {
+  color: var(--white-alpha);
+}
+
+.bubble__name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0.3125rem 0.625rem 0;
+  text-overflow: ellipsis;
+}
+
+.bubble__time::after {
+  content: "";
+}

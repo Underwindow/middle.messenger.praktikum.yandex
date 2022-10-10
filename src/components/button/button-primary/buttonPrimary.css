@@ -1,0 +1,11 @@
+@import "../button.css";
+
+.button__button-primary {
+  font-size: clamp(14px, 2vw, 2vh);
+  border-radius: clamp(8.67px, 2vw, 1.5vh);
+  background-color: var(--hint);
+  color: var(--white);
+  width: 100%;
+  padding: 1vh;
+  box-sizing: border-box;
+}

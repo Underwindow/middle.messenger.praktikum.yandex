@@ -1,0 +1,10 @@
+.error__code {
+  font-size: 64px;
+  margin: 0;
+}
+
+.error__code,
+.error__description {
+  color: var(--grey);
+  font-weight: 100;
+}

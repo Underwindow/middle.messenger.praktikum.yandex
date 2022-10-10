@@ -1,0 +1,13 @@
+.user-avatar {
+  display: flex;
+  position: relative;
+  min-width: 5.83vh;
+  min-height: 5.83vh;
+}
+
+.avatar-photo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  object-fit: cover;
+}

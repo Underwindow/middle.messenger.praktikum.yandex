@@ -1,0 +1,14 @@
+:root {
+  --bg: #0d0c0c;
+  --bg-alpha: #0d0c0ccc;
+  --white: #fff;
+  --white-alpha: #fffc;
+  --fg: #191717;
+  --hint: #3988ff;
+  --error: #ff3939;
+  --green: #16dc42;
+  --grey: #969696;
+  --lightgrey: #707070;
+  --hover: #282626;
+  --placeholder: #a9a9ac;
+}

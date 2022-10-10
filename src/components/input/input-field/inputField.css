@@ -1,0 +1,9 @@
+.input__input {
+  background: transparent;
+  border: none;
+  outline: none;
+  height: 100%;
+  color: var(--white);
+  font-size: clamp(13px, 2vw, 2.25vh);
+  position: relative;
+}
