@@ -21,8 +21,12 @@ export default function registerComponent<P extends Props = {}, IncomingProps ex
                 root.refs = {};
             }
 
-            const { children, refs } = root;
-            const hashTemp = hash;
+            const { children, refs }: {
+                children: { [id: string]: Block<P> },
+                refs: { [key: string]: Block<P> | Block<P>[] }
+            } = root;
+
+            const hashTemp = { ...hash };
 
             (Object.keys(hashTemp) as any).forEach((key: keyof Props) => {
                 if (this[key] && typeof this[key] === 'string') {
@@ -36,9 +40,9 @@ export default function registerComponent<P extends Props = {}, IncomingProps ex
 
             if (ref) {
                 if (refs[ref]) {
-                    const oldRefs: Block[] = [...(Array.isArray(refs[ref])
+                    const oldRefs = [...(Array.isArray(refs[ref])
                         ? refs[ref]
-                        : [refs[ref]]) as Block[]];
+                        : [refs[ref]]) as Block<P>[]];
 
                     refs[ref] = [...oldRefs, component];
                 } else {
