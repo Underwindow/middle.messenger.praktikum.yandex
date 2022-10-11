@@ -10,6 +10,7 @@ import { Chat } from 'components/chat';
 import { BubbleProps } from 'components/bubble/bubble';
 import { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
 import { ChatDialogProps } from 'components/sidebar-chats/chat-dialog/chatDialog';
+import { nanoid } from 'nanoid';
 
 export default class Messenger extends Block {
     static readonly NAME = 'Messenger';
@@ -55,15 +56,16 @@ export default class Messenger extends Block {
 
         chats.element?.addEventListener(chats.chatClicked.type, (e: Event) => {
             const activeChatId = (e as CustomEvent).detail.id();
-            console.log('chat clicked: ', activeChatId);
             this._initChat(activeChatId);
         });
     }
 
     private _initChat(activeChatId: string) {
+        console.log(`_initChat()`);
+        
         if (activeChatId) {
-            const bubbles = [{
-                bubblesDate: new Date().toDateString(),
+            const tmpBubbles = [{ //GET data by chatId
+                bubblesDate: new Date().toDateString() + nanoid(4), //Просто чтобы показать, что данные в ChatBubbles меняются
                 bubbleProps: [{
                     isIn: false,
                     message: 'Привет',
@@ -81,9 +83,33 @@ export default class Messenger extends Block {
 
             // chat.getHeader().setProps({
             // });
-            chat.getBubbles().setProps({
-                bubbleGroupProps: bubbles,
+
+            /*
+            Вот отсюда начинается утечка памяти
+            */
+            const chatBubbles = chat.getBubbles().setProps({
+                bubbleGroupProps: tmpBubbles,
             });
+            /*
+            Вызов getBubbles() возвращает компонент ChatBubbles по ref из компонента Chat, setProps() триггерит
+            componentDidUpdate, который по дефолту всегда перерендеривает компонент.
+            Исходя из логики, при переключении чата в любом случае данный компонент нужно перерендерить.
+
+            Далее метод render вызовет _compile(), который вызовет registerComponent(),
+            если в шаблоне этого компонента есть компоненты зареганные в ./src/index.ts.
+            
+            Далее в строке 37 файла core/registerComponent.ts утечку памяти произведёт следущее:
+
+            const component = new Component(hash);
+
+            children[component.id] = component;
+            */ 
+            console.log(chatBubbles.id); 
+            /*
+            Id компонента ChatBubbles, в котором изменяются пропсы остается тем же, 
+            но в children создаются его лишние копии под другим id, если переключаться по чатам более 1-го раза
+            */
+            
             chat.getStub().hide();
         }
     }

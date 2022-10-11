@@ -14,7 +14,7 @@ export default class ChatBubbles extends Block<ChatBubblesProps> {
     }
 
     protected render() {
-        console.log('render', this.constructor.name);
+        console.log('render', this.constructor.name, `id = ${this.id}`, `children = ${this.children}`);
 
         // language=hbs
         return `

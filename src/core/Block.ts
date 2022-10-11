@@ -174,12 +174,12 @@ export default abstract class Block<
         return '';
     }
 
-    setProps = (nextProps: Partial<P>) => {
-        if (!nextProps) {
-            return;
+    setProps = (nextProps: Partial<P>): Block<P> => {
+        if (nextProps) {
+            Object.assign(this.props, nextProps);
         }
 
-        Object.assign(this.props, nextProps);
+        return this;
     };
 
     getProps = () => this.props;
