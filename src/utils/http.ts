@@ -1,3 +1,5 @@
+import { queryStringify } from "./queryStringify";
+
 export enum METHOD {
     GET = 'GET',
     POST = 'POST',
@@ -33,7 +35,7 @@ export class HTTP {
     }
 
     static get(url: string, options: MethodOptions = {}): Promise<XMLHttpRequest | Response> {
-        const queryString = options.body ? this.queryStringify(options.body) : '';
+        const queryString = options.body ? queryStringify(options.body) : '';
 
         return this.fetch(url + queryString, { ...options, method: METHOD.GET });
     }
@@ -85,16 +87,5 @@ export class HTTP {
                 xhr.send(JSON.stringify(body));
             }
         });
-    }
-
-    static queryStringify(data: any): string {
-        if (typeof data !== 'object') {
-            throw new Error('Data must be object');
-        }
-
-        return `?${Object
-            .entries(data)
-            .map(([key, val]) => `${key}=${val}`)
-            .join('&')}`;
     }
 }

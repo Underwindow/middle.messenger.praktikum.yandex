@@ -18,8 +18,12 @@ export default class SidebarChats extends Block<SidebarChatsProps> {
         super({
             chatsProps,
         });
+    }
 
+    protected componentDidMount(props: SidebarChatsProps): SidebarChatsProps {
         this.subscribeOnChats();
+        
+        return props;
     }
 
     subscribeOnChats() {

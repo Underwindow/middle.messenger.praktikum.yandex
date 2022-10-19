@@ -8,68 +8,79 @@ export enum ValidationType {
     INPUT_MESSAGE = 'message',
 }
 
-export type ValidateRule = {
-    type: ValidationType,
-    value: string
+export type ValidationRule = { 
+    pattern: string, 
+    message: string 
 };
 
-const validationRules: { [key: string]: { [rule: string]: string } } = {
+const EMPTY: ValidationRule = { 
+    pattern: '^.+$',
+    message: 'обязательно заполнить',
+};
+const NO_DIGITS: ValidationRule = { 
+    pattern: '^[^0-9]*$',
+    message: 'без цифр',
+};
+const NO_SPACES: ValidationRule = { 
+    pattern: '^[^ ]*$',
+    message: 'без пробелов',
+};
+
+const validationRules: { [type: string]: { [pattern: string]: string } } = {
     [ValidationType.INPUT_LOGIN]: {
-        '^.+$': 'поле не может быть пустым',
+        [EMPTY.pattern]: EMPTY.message,
         '^.{3,20}$': 'от 3 до 20 символов',
         '^[-_a-zA-Z0-9]+$': 'латиница, цифры, дефис и нижнее подчеркивание',
         '^(?=.*[-_a-zA-Z])[-_a-zA-Z0-9]+$': 'не может состоять полностью из цифр',
     },
     [ValidationType.INPUT_PASSWORD]: {
-        '^.+$': 'поле не может быть пустым',
+        [EMPTY.pattern]: EMPTY.message,
         '^.{8,40}$': 'от 8 до 40 символов',
         '^(?=.*\\p{Lu}).*$': 'обязательно хотя бы одна заглавная буква',
         '^(?=.*[0-9]).*$': 'обязательно хотя бы одна цифра',
     },
     [ValidationType.INPUT_EMAIL]: {
-        '^.+$': 'поле не может быть пустым',
+        [EMPTY.pattern]: EMPTY.message,
         '^\\w*@[a-zA-Z]+\\.[0-9a-zA-Z-]+$': 'некорректный email',
     },
     [ValidationType.INPUT_FIRST_NAME]: {
-        '^.+$': 'поле не может быть пустым',
+        [EMPTY.pattern]: EMPTY.message,
         '^[A-ZА-Я]': 'имя должно начинаться с заглавной буквы',
         '^(?![^a-zA-Z])[a-zA-Z\\d -]+$|^(?![^Ёёа-яА-Я])[а-яА-Я\\d -]*$': 'допустима латиница или кириллица',
-        '^[^ ]*$': 'без пробелов',
-        '^[^0-9]*$': 'без цифр',
+        [NO_SPACES.pattern]: NO_SPACES.message,
+        [NO_DIGITS.pattern]: NO_DIGITS.message,
         '^[a-zA-Z-]*$|^[Ёёа-яА-Я-]*$': 'без спецсимволов, можно только дефис',
     },
     [ValidationType.INPUT_SECOND_NAME]: {
-        '^.+$': 'поле не может быть пустым',
+        [EMPTY.pattern]: EMPTY.message,
         '^[A-ZА-Я]': 'фамилия должна начинаться с заглавной буквы',
         '^(?![^a-zA-Z])[a-zA-Z\\d -]+$|^(?![^Ёёа-яА-Я])[а-яА-Я\\d -]*$': 'допустима латиница или кириллица',
-        '^[^ ]*$': 'без пробелов',
-        '^[^0-9]*$': 'без цифр',
+        [NO_SPACES.pattern]: NO_SPACES.message,
+        [NO_DIGITS.pattern]: NO_DIGITS.message,
         '^[a-zA-Z-]*$|^[Ёёа-яА-Я-]*$': 'без спецсимволов, можно только дефис',
     },
     [ValidationType.INPUT_PHONE]: {
-        '^.+$': 'поле не может быть пустым',
+        [EMPTY.pattern]: EMPTY.message,
         '^.{10,15}$': 'от 10 до 15 символов',
         '^\\+?[0-9]*$': 'только цифры, может начинаться с плюса',
     },
     [ValidationType.INPUT_MESSAGE]: {
-        '^.+$': 'обязательно заполнить',
+        [EMPTY.pattern]: EMPTY.message,
     },
 };
 
-export function validateValue(type: ValidationType, value: string): string {
-    const rules: { [rule: string]: string } = validationRules[type];
+export function validateValue(type: ValidationType, value: string): string | null {
+    const rules = validationRules[type];
 
-    let errorMsg = '';
+    const failedRule = Object
+        .keys(rules)
+        .find(pattern => !patternExists(value, pattern, 'u'));
 
-    /* eslint-disable-next-line */
-    for (const [rule, error] of Object.entries(rules)) {
-        const regex = new RegExp(rule, 'u');
-
-        if (!regex.test(value)) {
-            errorMsg = error;
-            break;
-        }
-    }
-
+    const errorMsg = failedRule ? rules[failedRule] : null;
     return errorMsg;
+
+    function patternExists(value: string, pattern: string, flags?: string): boolean {
+        const regex = new RegExp(pattern, flags);
+        return regex.test(value);
+    }
 }

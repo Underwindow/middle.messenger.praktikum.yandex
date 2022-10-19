@@ -101,7 +101,17 @@ export default abstract class Block<
     }
 
     protected componentDidUpdate(oldProps: P, newProps: P): boolean {
-        return oldProps !== newProps;
+        if (oldProps !== newProps) {
+            Object.keys(this.children).forEach(id => {
+                this.children[id]._removeEvents();
+                delete this.children[id];
+            });
+            Object.keys(this.refs).forEach(key => delete this.refs[key]);
+            
+            return true;
+        }
+
+        return false;
     }
 
     private _render() {

@@ -1,7 +1,7 @@
 import './chat.css';
 import Block from 'core/Block';
 import { Input } from 'components/input';
-import { ValidationType } from 'helpers/validateValue';
+import { ValidationType } from 'utils/validateValue';
 import { ChatStub } from 'components/chat-stub';
 import { Header } from 'components/header';
 import { ButtonIcon } from 'components/button/button-icon';
@@ -24,9 +24,12 @@ export default class Chat extends Block<Props> {
 
                 const messageInput = this.refs.messageInputRef as Input;
 
-                const success = Input.fieldsetValidate([messageInput]);
+                const isValid = Input.fieldsetValidate([messageInput]);
 
-                if (success) console.log('Sending message');
+                if (isValid) {
+                    console.log('Sending message');
+                    //ChatApiCall
+                }
             },
         });
     }

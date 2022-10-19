@@ -5,7 +5,7 @@ import { Input } from 'components/input';
 import { renderDOM } from 'core';
 import { SignInPage } from 'pages/entry';
 import { Messenger } from 'pages/messenger';
-import { ValidationType } from 'helpers/validateValue';
+import { ValidationType } from 'utils/validateValue';
 import { ButtonSecondary } from 'components/button/button-secondary';
 
 export default class Profile extends Block {
@@ -33,16 +33,18 @@ export default class Profile extends Block {
             onSubmitFieldset: (e: Event) => {
                 e.preventDefault();
                 const fieldset = this.refs.fieldsetRef as Input[];
-                const success = Input.fieldsetValidate(fieldset);
+                const isValid = Input.fieldsetValidate(fieldset);
 
-                if (success) console.log('Saving data');
+                if (isValid) console.log('Saving data');
             },
             onSubmitPasswords: (e: Event) => {
                 e.preventDefault();
                 const passwords = this.refs.passwordsRef as Input[];
-                const success = Input.fieldsetValidate(passwords);
+                const isValid = Input.fieldsetValidate(passwords);
 
-                if (success) console.log('Saving new password');
+                if (isValid) {
+                    console.log('Saving new password');
+                }
             },
         });
 
@@ -83,7 +85,7 @@ export default class Profile extends Block {
                                         </div>
                                     </div>
                                 </label>
-                                <input id="file-input" type="file" name="avatar" required/>
+                                <input id="file-input" name="avatar" type="file" accept="image/*" required/>
                             </div>
                             <div class="sidebar__button-secondary">
                                 {{{ButtonSecondary onClick=onSubmitFileUpload ref="fileSubmitRef" type="submit" text="Сохранить изменения" disabled="true"}}}

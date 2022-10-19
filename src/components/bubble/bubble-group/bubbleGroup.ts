@@ -10,7 +10,7 @@ export interface BubbleGroupProps {
 export default class BubbleGroup extends Block {
     static readonly NAME: string = 'BubbleGroup';
 
-    protected render(): string {
+    protected render(): string {        
         // language=hbs
         return `
         <section class="bubbles-group">

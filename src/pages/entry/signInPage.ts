@@ -2,7 +2,7 @@ import './entry.css';
 import Block from 'core/Block';
 import { renderDOM } from 'core';
 import { Input } from 'components/input';
-import { ValidationType } from 'helpers/validateValue';
+import { ValidationType } from 'utils/validateValue';
 import { ErrorPage } from 'pages/error-page';
 import { SignUpPage } from '.';
 
@@ -30,9 +30,11 @@ export default class SignInPage extends Block {
                 const password = this.refs.passwordRef as Input;
                 const inputSet = [login, password];
 
-                const success = Input.fieldsetValidate(inputSet);
+                const isValid = Input.fieldsetValidate(inputSet);
 
-                if (success) renderDOM(new ErrorPage(ErrorPage.CODES[404]));
+                if (isValid) {
+                    renderDOM(new ErrorPage(ErrorPage.CODES[404]));
+                }
             },
             onClick: () => {
                 console.log('No Account');

@@ -4,7 +4,7 @@ import { SidebarChats } from 'components/sidebar-chats';
 import { renderDOM } from 'core';
 import { SignInPage } from 'pages/entry';
 import { Profile } from 'pages/profile';
-import { ValidationType } from 'helpers/validateValue';
+import { ValidationType } from 'utils/validateValue';
 import ButtonIcon, { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { Chat } from 'components/chat';
 import { BubbleProps } from 'components/bubble/bubble';
@@ -29,7 +29,6 @@ export default class Messenger extends Block {
             avatarSrc: 'https://www.w3schools.com/tags/img_girl.jpg',
         };
 
-        // Fetch chats data here
         const chatsProps = [
             tempChatProp,
             { ...tempChatProp },
@@ -47,8 +46,12 @@ export default class Messenger extends Block {
                 renderDOM(new Profile());
             },
         });
+    }
 
+    protected componentDidMount(props: Props): Props {
         this._subscribeOnSidebarChats();
+        
+        return props;
     }
 
     private _subscribeOnSidebarChats() {
@@ -64,7 +67,7 @@ export default class Messenger extends Block {
         console.log(`_initChat()`);
         
         if (activeChatId) {
-            const tmpBubbles = [{ //GET data by chatId
+            const tmpBubbleGroup = { //GET data by chatId
                 bubblesDate: new Date().toDateString() + nanoid(4), //Просто чтобы показать, что данные в ChatBubbles меняются
                 bubbleProps: [{
                     isIn: false,
@@ -77,38 +80,15 @@ export default class Messenger extends Block {
                     time: '4:21',
                     name: 'Эмиль',
                 } as BubbleProps],
-            }] as BubbleGroupProps[];
+            } as BubbleGroupProps;
 
             const chat = this.refs.chatRef as Chat;
 
             // chat.getHeader().setProps({
             // });
-
-            /*
-            Вот отсюда начинается утечка памяти
-            */
-            const chatBubbles = chat.getBubbles().setProps({
-                bubbleGroupProps: tmpBubbles,
+            chat.getBubbles().setProps({
+                bubbleGroupProps: [tmpBubbleGroup, tmpBubbleGroup, tmpBubbleGroup],
             });
-            /*
-            Вызов getBubbles() возвращает компонент ChatBubbles по ref из компонента Chat, setProps() триггерит
-            componentDidUpdate, который по дефолту всегда перерендеривает компонент.
-            Исходя из логики, при переключении чата в любом случае данный компонент нужно перерендерить.
-
-            Далее метод render вызовет _compile(), который вызовет registerComponent(),
-            если в шаблоне этого компонента есть компоненты зареганные в ./src/index.ts.
-            
-            Далее в строке 37 файла core/registerComponent.ts утечку памяти произведёт следущее:
-
-            const component = new Component(hash);
-
-            children[component.id] = component;
-            */ 
-            console.log(chatBubbles.id); 
-            /*
-            Id компонента ChatBubbles, в котором изменяются пропсы остается тем же, 
-            но в children создаются его лишние копии под другим id, если переключаться по чатам более 1-го раза
-            */
             
             chat.getStub().hide();
         }

@@ -1,6 +1,6 @@
 import './input.css';
 import Block from 'core/Block';
-import { validateValue, ValidationType } from 'helpers/validateValue';
+import { validateValue, ValidationType } from 'utils/validateValue';
 import InputField, { InputFieldProps } from './input-field/inputField';
 import { InputError } from './input-error';
 
@@ -13,17 +13,17 @@ export default class Input extends Block<InputProps> {
     static readonly NAME: string = 'Input';
 
     static fieldsetValidate(fieldset: Input[]): boolean {
-        let success = true;
+        let isValid = true;
 
         fieldset.forEach((input) => {
             const validationError = input.validate();
 
-            if (validationError) success = false;
+            if (validationError) isValid = false;
         });
 
-        console.log(`Validation ${success ? 'success' : 'failed'}`);
+        console.log(`Validation ${isValid ? 'success' : 'failed'}`);
 
-        return success;
+        return isValid;
     }
 
     private readonly _inputEl: HTMLInputElement;
@@ -71,7 +71,7 @@ export default class Input extends Block<InputProps> {
         errorRef.setProps({ text: errorMessage });
     }
 
-    validate(): string {
+    validate(): string | null {
         const { validationType } = this.props;
 
         if (!validationType) return '';

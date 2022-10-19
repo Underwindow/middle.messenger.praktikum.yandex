@@ -5,13 +5,13 @@
     "scripts": {
         "dev": "parcel src/index.html --no-cache",
         "build": "parcel build src/index.html --no-cache",
-        "start": "parcel build src/index.html --public-url ./ && node server.js",
+        "start": "npm run build --public-url && node server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "alias": {
         "core": "./src/core",
         "components": "./src/components",
-        "helpers": "./src/helpers",
+        "utils": "./src/utils",
         "pages": "./src/pages",
         "styles": "./src/styles"
     },

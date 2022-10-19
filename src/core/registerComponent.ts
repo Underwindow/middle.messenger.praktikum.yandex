@@ -40,12 +40,15 @@ export default function registerComponent<P extends Props = {}, IncomingProps ex
 
             if (ref) {
                 if (refs[ref]) {
-                    const oldRefs = [...(Array.isArray(refs[ref])
-                        ? refs[ref]
-                        : [refs[ref]]) as Block<P>[]];
+                    const oldRefs = (
+                        Array.isArray(refs[ref])
+                            ? refs[ref]
+                            : [refs[ref]]
+                    ) as Block<P>[];
 
                     refs[ref] = [...oldRefs, component];
-                } else {
+                }
+                else {
                     refs[ref] = component;
                 }
             }

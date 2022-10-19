@@ -2,7 +2,7 @@ import './entry.css';
 import Block from 'core/Block';
 import { renderDOM } from 'core';
 import { Input } from 'components/input';
-import { ValidationType } from 'helpers/validateValue';
+import { ValidationType } from 'utils/validateValue';
 import { ErrorPage } from 'pages/error-page';
 import SignInPage from './signInPage';
 
@@ -31,9 +31,9 @@ export default class SignUpPage extends Block {
                 const passwordRepeat = this.refs.passwordRepeatRef as Input;
                 const inputSet = [...fieldset, password, passwordRepeat];
 
-                const success = Input.fieldsetValidate(inputSet);
+                const isValid = Input.fieldsetValidate(inputSet);
 
-                if (success && password.value === passwordRepeat.value) {
+                if (isValid && password.value === passwordRepeat.value) {
                     renderDOM(new ErrorPage(ErrorPage.CODES[505]));
                 } else {
                     passwordRepeat.setErrorMessage('пароли должны совпадать');
