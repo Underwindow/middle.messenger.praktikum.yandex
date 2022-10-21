@@ -6,7 +6,7 @@ export interface InputErrorProps extends Props {
 }
 
 export default class InputError extends Block<InputErrorProps> {
-    static NAME = 'InputError';
+    static readonly componentName = 'InputError';
 
     constructor(props: InputErrorProps) {
         super({ ...props });

@@ -1,8 +1,7 @@
 import './messenger.css';
 import Block from 'core/Block';
 import { SidebarChats } from 'components/sidebar-chats';
-import { renderDOM } from 'core';
-import { SignInPage } from 'pages/entry';
+import { CoreRouter, renderDOM, Store } from 'core';
 import { Profile } from 'pages/profile';
 import { ValidationType } from 'utils/validateValue';
 import ButtonIcon, { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
@@ -11,14 +10,28 @@ import { BubbleProps } from 'components/bubble/bubble';
 import { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
 import { ChatDialogProps } from 'components/sidebar-chats/chat-dialog/chatDialog';
 import { nanoid } from 'nanoid';
+import { Screens, withRouter, withStore } from 'utils';
+import { logout } from 'services';
 
-export default class Messenger extends Block {
-    static readonly NAME = 'Messenger';
+type MessengerProps = {
+    router: CoreRouter,
+    store: Store<AppState>;
+    btnLogoutProps: ButtonIconProps,
+    chatsProps: ChatDialogProps[],
+    onProfileClick: Callback,
+};
 
-    constructor() {
+export class Messenger extends Block<MessengerProps> {
+    static readonly componentName = 'Messenger';
+
+    constructor(props: MessengerProps) {
+        super(props);
+
         const btnLogoutProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.LOGOUT,
-            onClick: () => renderDOM(new SignInPage()),
+            onClick: () => {
+                this.props.store.dispatch(logout);
+            },
         };
 
         const tempChatProp: ChatDialogProps = {
@@ -39,16 +52,17 @@ export default class Messenger extends Block {
             { ...tempChatProp },
         ] as ChatDialogProps[];
 
-        super({
+        this.setProps({
             btnLogoutProps,
             chatsProps,
             onProfileClick: () => {
-                renderDOM(new Profile());
+                this.props.router.go(Screens.Profile);
+                // renderDOM(new Profile());
             },
         });
     }
 
-    protected componentDidMount(props: Props): Props {
+    protected componentDidMount(props: MessengerProps): MessengerProps {
         this._subscribeOnSidebarChats();
         
         return props;
@@ -64,8 +78,6 @@ export default class Messenger extends Block {
     }
 
     private _initChat(activeChatId: string) {
-        console.log(`_initChat()`);
-        
         if (activeChatId) {
             const tmpBubbleGroup = { //GET data by chatId
                 bubblesDate: new Date().toDateString() + nanoid(4), //Просто чтобы показать, что данные в ChatBubbles меняются
@@ -89,13 +101,14 @@ export default class Messenger extends Block {
             chat.getBubbles().setProps({
                 bubbleGroupProps: [tmpBubbleGroup, tmpBubbleGroup, tmpBubbleGroup],
             });
-            
+
             chat.getStub().hide();
         }
     }
 
     protected render() {
         console.log('render Messenger');
+
         // language=hbs
         return `
         <div class="whole">
@@ -134,3 +147,5 @@ export default class Messenger extends Block {
     `;
     }
 }
+
+export default withRouter(withStore(Messenger));

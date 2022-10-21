@@ -2,7 +2,7 @@ import './chatStub.css';
 import Block from 'core/Block';
 
 export default class ChatStub extends Block<Props> {
-    static readonly NAME = 'ChatStub';
+    static readonly componentName = 'ChatStub';
 
     protected render() {
         console.log('render', this.constructor.name);

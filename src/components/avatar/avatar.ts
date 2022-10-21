@@ -8,7 +8,7 @@ export interface AvatarProps {
 }
 
 export default class Avatar extends Block<AvatarProps> {
-    static readonly NAME: string = 'Avatar';
+    static readonly componentName: string = 'Avatar';
 
     constructor(props: AvatarProps) {
         super({ ...props });

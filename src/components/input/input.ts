@@ -10,7 +10,7 @@ export interface InputProps extends InputFieldProps {
 }
 
 export default class Input extends Block<InputProps> {
-    static readonly NAME: string = 'Input';
+    static readonly componentName: string = 'Input';
 
     static fieldsetValidate(fieldset: Input[]): boolean {
         let isValid = true;
@@ -37,10 +37,14 @@ export default class Input extends Block<InputProps> {
                 this.validate();
             },
             onFocus: () => {
-                this.validate();
+                if (!this._inputEl.value)
+                    this.setErrorMessage('');
+                else
+                    this.validate();
             },
             onBlur: () => {
-                this.setErrorMessage('');
+                if (!this._inputEl.value)
+                    this.setErrorMessage('');
             },
             onKeydown: (e: KeyboardEvent) => {
                 if (e.key === 'Enter') {
@@ -60,6 +64,10 @@ export default class Input extends Block<InputProps> {
 
     get value(): string {
         return this._inputEl.value;
+    }
+
+    set value(value: string) {
+        this._inputEl.value = value;
     }
 
     get name(): string {

@@ -1,4 +1,4 @@
-import { queryStringify } from "./queryStringify";
+import queryStringify from "./queryStringify";
 
 export enum METHOD {
     GET = 'GET',
@@ -10,6 +10,7 @@ export enum METHOD {
 
 export type Options = {
     method: METHOD,
+    credentials?: 'include' | null,
     headers?: Record<string, string>,
     body?: object,
     timeout?: number,
@@ -18,8 +19,8 @@ export type Options = {
 
 type MethodOptions = Omit<Options, 'method'>;
 
-export class HTTP {
-    static fetch(url: string, options: Options): Promise<XMLHttpRequest | Response> {
+export class HTTPTransport {
+    static fetchWithTries(url: string, options: Options): Promise<XMLHttpRequest> {
         const { tries = 1 } = options;
         const self = this;
         function onError(err: Error) {
@@ -28,40 +29,52 @@ export class HTTP {
                 throw err;
             }
 
-            return self.fetch(url, { ...options, tries: triesLeft });
+            return self.fetchWithTries(url, { ...options, tries: triesLeft });
         }
 
-        return this.request(url, options).catch(onError);
+        return this.fetch(url, options).catch(onError);
     }
 
     static get(url: string, options: MethodOptions = {}): Promise<XMLHttpRequest | Response> {
         const queryString = options.body ? queryStringify(options.body) : '';
 
-        return this.fetch(url + queryString, { ...options, method: METHOD.GET });
+        return this.fetchWithTries(url + queryString, { ...options, method: METHOD.GET });
     }
 
     static post(url: string, options: MethodOptions = {}): Promise<XMLHttpRequest | Response> {
-        return this.fetch(url, { ...options, method: METHOD.POST });
+        return this.fetchWithTries(url, { ...options, method: METHOD.POST });
     }
 
     static put(url: string, options: MethodOptions = {}): Promise<XMLHttpRequest | Response> {
-        return this.fetch(url, { ...options, method: METHOD.PUT });
+        return this.fetchWithTries(url, { ...options, method: METHOD.PUT });
     }
 
     static delete(url: string, options: MethodOptions = {}): Promise<XMLHttpRequest | Response> {
-        return this.fetch(url, { ...options, method: METHOD.DELETE });
+        return this.fetchWithTries(url, { ...options, method: METHOD.DELETE });
     }
 
-    static request(url: string, options: Options): Promise<XMLHttpRequest> {
+    static fetch(url: string, options: Options): Promise<XMLHttpRequest> {
         const {
-            method, headers, body, timeout = 5000,
+            method, credentials, headers, body, timeout = 5000,
         } = options;
+
+        if (body instanceof FormData) {
+            console.log(body);
+            const formData = body as FormData;
+    
+            for (const pair of formData.entries()) {
+                console.log(pair);
+            }
+        }
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             const isGet = method === METHOD.GET;
 
-            xhr.open(method, url);
+            xhr.open(method, url, true);
+
+            if (credentials === 'include')
+                xhr.withCredentials = true;
 
             function onLoad(): void {
                 resolve(xhr);
@@ -84,7 +97,7 @@ export class HTTP {
             if (isGet || !body) {
                 xhr.send();
             } else {
-                xhr.send(JSON.stringify(body));
+                xhr.send(body instanceof FormData ? body : JSON.stringify(body));
             }
         });
     }

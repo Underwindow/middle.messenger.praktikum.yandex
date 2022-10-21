@@ -12,7 +12,7 @@ export interface ChatDialogProps extends Props {
 }
 
 export default class ChatDialog extends Block<ChatDialogProps> {
-    static readonly NAME: string = 'ChatDialog';
+    static readonly componentName: string = 'ChatDialog';
 
     static readonly activeClassName: string = 'chat-active__text';
 

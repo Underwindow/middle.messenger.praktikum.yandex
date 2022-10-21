@@ -11,7 +11,7 @@ export interface HeaderProps extends Props {
 }
 
 export default class Header extends Block<HeaderProps> {
-    static readonly NAME: string = 'Header';
+    static readonly componentName: string = 'Header';
 
     readonly titleClicked = new CustomEvent('titleClicked', {
         bubbles: false,

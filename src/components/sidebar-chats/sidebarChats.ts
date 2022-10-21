@@ -7,7 +7,7 @@ export interface SidebarChatsProps extends Props {
 }
 
 export default class SidebarChats extends Block<SidebarChatsProps> {
-    static readonly NAME = 'SidebarChats';
+    static readonly componentName = 'SidebarChats';
 
     chatClicked = new CustomEvent('chatClicked', {
         bubbles: false,

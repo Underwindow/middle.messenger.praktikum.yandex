@@ -10,7 +10,7 @@ type Icons = Values<typeof ButtonIcon.ICONS>;
 type Colors = Values<typeof ButtonIcon.COLORS>;
 
 export default class ButtonIcon extends Button {
-    public static readonly NAME = 'ButtonIcon';
+    public static readonly componentName = 'ButtonIcon';
 
     public static readonly ICONS = {
         LOGOUT: 'logout',

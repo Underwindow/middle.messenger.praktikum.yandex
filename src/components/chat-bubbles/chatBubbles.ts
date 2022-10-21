@@ -7,15 +7,13 @@ export interface ChatBubblesProps extends Props {
 }
 
 export default class ChatBubbles extends Block<ChatBubblesProps> {
-    static readonly NAME = 'ChatBubbles';
+    static readonly componentName = 'ChatBubbles';
 
     constructor({ ...props }: ChatBubblesProps) {
         super(props);
     }
 
     protected render() {
-        console.log(this.children, this.refs);
-        
         // language=hbs
         return `
         <div class="chat__bubbles">

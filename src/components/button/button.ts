@@ -1,5 +1,5 @@
+import { Block } from 'core';
 import './button.css';
-import Block from '../../core/Block';
 
 export default interface ButtonProps extends Props {
     class?: string

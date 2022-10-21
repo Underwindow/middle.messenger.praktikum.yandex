@@ -8,7 +8,7 @@ export interface BubbleGroupProps {
 }
 
 export default class BubbleGroup extends Block {
-    static readonly NAME: string = 'BubbleGroup';
+    static readonly componentName: string = 'BubbleGroup';
 
     protected render(): string {        
         // language=hbs

@@ -2,48 +2,82 @@ import './profile.css';
 import Block from 'core/Block';
 import ButtonIcon, { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { Input } from 'components/input';
-import { renderDOM } from 'core';
-import { SignInPage } from 'pages/entry';
-import { Messenger } from 'pages/messenger';
+import { CoreRouter, Store } from 'core';
 import { ValidationType } from 'utils/validateValue';
 import { ButtonSecondary } from 'components/button/button-secondary';
+import { changeAvatar, changePassword, logout } from 'services';
+import { baseURL, withRouter, withStore, withUser } from 'utils';
+import { ChangePasswordRequestData } from 'api';
+import { resources } from 'utils/request';
 
-export default class Profile extends Block {
-    static readonly NAME = 'Profile';
+type ProfilePageProps = {
+    router: CoreRouter;
+    store: Store<AppState>;
+    user: User | null;
+    btnLogoutProps: ButtonIconProps,
+    btnBackProps: ButtonIconProps,
+    onLogout?: () => void;
+    onSaveAvatar: Callback,
+    onSaveProfile: Callback,
+    onSavePassword: Callback,
+};
 
-    constructor() {
+export class Profile extends Block<ProfilePageProps> {
+    static readonly componentName = 'Profile';
+
+    constructor(props: ProfilePageProps) {
+        super(props);
+
         const btnLogoutProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.LOGOUT,
-            onClick: () => renderDOM(new SignInPage()),
+            onClick: () => this.props.store.dispatch(logout),
         };
 
         const btnBackProps: ButtonIconProps = {
             icon: ButtonIcon.ICONS.BACK,
-            onClick: () => renderDOM(new Messenger()),
+            onClick: () => this.props.router.back(),
         };
 
-        super({
+        this.setProps({
+            user: this.props.store.getState().user,
             btnLogoutProps,
             btnBackProps,
-            onSubmitFileUpload: (e: Event) => {
+            onSaveAvatar: (e: Event) => {
                 e.preventDefault();
-
-                console.log('Saving avatar');
+                
+                var avatarInput = document.getElementById("file-input") as HTMLInputElement;
+                console.log(avatarInput.name);
+                
+                if (avatarInput) {
+                    console.log(avatarInput.files![0]);
+                    const formData = new FormData();
+                    formData.append(avatarInput.name, avatarInput.files![0]);
+                    this.props.store.dispatch(changeAvatar, formData);
+                }
             },
-            onSubmitFieldset: (e: Event) => {
+            onSaveProfile: (e: Event) => {
                 e.preventDefault();
                 const fieldset = this.refs.fieldsetRef as Input[];
                 const isValid = Input.fieldsetValidate(fieldset);
 
-                if (isValid) console.log('Saving data');
+                if (isValid) {
+                    console.log('Saving data');
+                }
             },
-            onSubmitPasswords: (e: Event) => {
+            onSavePassword: (e: Event) => {
                 e.preventDefault();
                 const passwords = this.refs.passwordsRef as Input[];
                 const isValid = Input.fieldsetValidate(passwords);
 
                 if (isValid) {
-                    console.log('Saving new password');
+                    const requestData = passwords.reduce(
+                        (data, pwdInput) => {
+                            data[pwdInput.name] = pwdInput.value;
+                            return data;
+                        }, {} as Indexed
+                    ) as ChangePasswordRequestData;
+
+                    this.props.store.dispatch(changePassword, requestData);
                 }
             },
         });
@@ -75,10 +109,10 @@ export default class Profile extends Block {
                         }}}
                     </div>
                     <div class="sidebar__content panel">
-                        <form class="sidebar__image-upload" action="" >
+                        <form enctype="multipart/form-data" class="sidebar__image-upload">
                             <div class="image-upload">
                                 <label class="image-upload__label" for="file-input">
-                                    <img class="image-upload__image" src="https://via.placeholder.com/150x150" />
+                                    <img class="image-upload__image" src="${resources}${this.props.user?.avatar}" />
                                     <div class="image-upload__icon-wrapper content-center">
                                         <div class="image-upload__icon material-icons color-hint">
                                             upload
@@ -88,36 +122,36 @@ export default class Profile extends Block {
                                 <input id="file-input" name="avatar" type="file" accept="image/*" required/>
                             </div>
                             <div class="sidebar__button-secondary">
-                                {{{ButtonSecondary onClick=onSubmitFileUpload ref="fileSubmitRef" type="submit" text="Сохранить изменения" disabled="true"}}}
+                                {{{ButtonSecondary onClick=onSaveAvatar ref="fileSubmitRef" type="submit" text="Сохранить изменения" disabled="true"}}}
                             </div>
                         </form>
                         <form class="sidebar__fieldset" action="">
                             <div class="sidebar__input-container">
                                 <label class="input__label">Почта</label>
-                                {{{Input ref="fieldsetRef" name="email" type="text" value="example@mail.ru" placeholder="|" validationType="${ValidationType.INPUT_EMAIL}"}}}
+                                {{{Input ref="fieldsetRef" name="email" type="text" value=user.email placeholder="Введите текст" validationType="${ValidationType.INPUT_EMAIL}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Логин</label>
-                                {{{Input ref="fieldsetRef" name="login" type="text" value="Underwindow" placeholder="|" validationType="${ValidationType.INPUT_LOGIN}"}}}
+                                {{{Input ref="fieldsetRef" name="login" type="text" value=user.login placeholder="Введите текст" validationType="${ValidationType.INPUT_LOGIN}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Имя</label>
-                                {{{Input ref="fieldsetRef" name="first_name" type="text" value="Евгений" placeholder="|" validationType="${ValidationType.INPUT_FIRST_NAME}"}}}
+                                {{{Input ref="fieldsetRef" name="first_name" type="text" value=user.firstName placeholder="Введите текст" validationType="${ValidationType.INPUT_FIRST_NAME}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Фамилия</label>
-                                {{{Input ref="fieldsetRef" name="second_name" type="text" value="Поздняков" placeholder="|" validationType="${ValidationType.INPUT_SECOND_NAME}"}}}
+                                {{{Input ref="fieldsetRef" name="second_name" type="text" value=user.secondName placeholder="Введите текст" validationType="${ValidationType.INPUT_SECOND_NAME}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Имя в чате</label>
-                                {{{Input ref="fieldsetRef" name="display_name" type="text" value="Underwindow" placeholder="|" validationType="${ValidationType.INPUT_LOGIN}"}}}
+                                {{{Input ref="fieldsetRef" name="display_name" type="text" value=user.displayName placeholder="Введите текст" validationType="${ValidationType.INPUT_LOGIN}"}}}
                             </div>
                             <div class="sidebar__input-container">
                                 <label class="input__label">Телефон</label>
-                                {{{Input ref="fieldsetRef" name="phone" type="text" value="88005553535" placeholder="+X(XXX) XXX-XXXX" validationType="${ValidationType.INPUT_PHONE}"}}}
+                                {{{Input ref="fieldsetRef" name="phone" type="text" value=user.phone placeholder="Введите текст" validationType="${ValidationType.INPUT_PHONE}"}}}
                             </div>
                             <div class="sidebar__button-secondary">
-                                {{{ButtonSecondary type="submit" text="Сохранить изменения" onClick=onSubmitFieldset}}}
+                                {{{ButtonSecondary type="submit" text="Сохранить изменения" onClick=onSaveProfile}}}
                             </div>
                         </form>
                         <form class="sidebar__footer panel" action="">
@@ -128,7 +162,7 @@ export default class Profile extends Block {
                                 {{{Input ref="passwordsRef" name="newPassword" type="password" placeholder="Новый пароль" validationType="${ValidationType.INPUT_PASSWORD}"}}}
                             </div>
                             <div class="sidebar__button-secondary">
-                                {{{ButtonSecondary type="submit" text="Сменить пароль" onClick=onSubmitPasswords}}}
+                                {{{ButtonSecondary type="submit" text="Сменить пароль" onClick=onSavePassword}}}
                             </div>
                         </form>
                     </div>
@@ -138,3 +172,5 @@ export default class Profile extends Block {
     `;
     }
 }
+
+export default withRouter(withStore(withUser(Profile)));

@@ -9,7 +9,7 @@ import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { ChatBubbles } from 'components/chat-bubbles';
 
 export default class Chat extends Block<Props> {
-    static readonly NAME = 'Chat';
+    static readonly componentName = 'Chat';
 
     constructor() {
         const moreBtnProps: ButtonIconProps = {

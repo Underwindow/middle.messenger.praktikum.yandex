@@ -7,7 +7,7 @@ export interface ErrorProps extends Props {
 }
 
 export default class Error extends Block<ErrorProps> {
-    static readonly NAME: string = 'Error';
+    static readonly componentName: string = 'Error';
 
     constructor({ ...props }: ErrorProps) {
         super(props);

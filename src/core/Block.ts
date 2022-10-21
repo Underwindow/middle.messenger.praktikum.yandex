@@ -4,41 +4,50 @@ import EventBus from './EventBus';
 
 type Events = Values<typeof Block.EVENTS>;
 
-export default abstract class Block<
-    P extends Props = {},
-> {
+export interface BlockClass<P extends Props = {}> extends Function {
+    new(props: P): Block<P>;
+    componentName?: string;
+}
+
+export default abstract class Block<P extends Props = {}> {
     static readonly EVENTS = {
         INIT: 'init',
         FLOW_CDM: 'flow:component-did-mount',
         FLOW_CDU: 'flow:component-did-update',
+        FLOW_CWU: 'flow:component-will-unmount',
         FLOW_RENDER: 'flow:render',
     } as const;
+
+    static componentName?: string;
 
     readonly id = nanoid(6);
 
     private _element: Nullable<HTMLElement> = null;
 
     protected readonly props: P;
-
-    protected children: { [id: string]: Block<{}> } = {};
+    protected state: Record<string, unknown> = {};
+    protected children: { [id: string]: Block } = {};
+    protected refs: { [key: string]: Block<Props> | Block<Props>[] } = {};
 
     eventBus: () => EventBus<Events>;
-
-    // protected state: any = {};
-
-    protected refs: { [key: string]: Block<Props> | Block<Props>[] } = {};
 
     constructor(props?: P) {
         const eventBus = new EventBus<Events>();
 
+        this.getStateFromProps(props);
+
         this.props = this._makePropsProxy(props || {} as P);
-        // this.state = this._makePropsProxy(this.state);
+        this.state = this._makePropsProxy(this.state);
 
         this.eventBus = () => eventBus;
 
         this._registerEvents(eventBus);
 
         eventBus.emit(Block.EVENTS.INIT, this.props);
+    }
+
+    protected getStateFromProps(props?: P): void {
+        this.state = {};
     }
 
     private _makePropsProxy(props: any): any {
@@ -67,6 +76,7 @@ export default abstract class Block<
     private _registerEvents(eventBus: EventBus<Events>) {
         eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CWU, this._componentWillUnmount.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
         eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     }
@@ -85,12 +95,32 @@ export default abstract class Block<
     }
 
     private _componentDidMount(props: P) {
+        this._checkInDom();
+
         this.componentDidMount(props);
+    }
+
+    private _checkInDom() {
+        const elementInDOM = document.body.contains(this._element);
+
+        if (elementInDOM) {
+            setTimeout(() => this._checkInDom(), 1000);
+            return;
+        }
+
+        this.eventBus().emit(Block.EVENTS.FLOW_CWU, this.props);
     }
 
     protected componentDidMount(props: P): P {
         return props;
     }
+
+    private _componentWillUnmount() {
+        this.eventBus().destroy();
+        this.componentWillUnmount();
+    }
+
+    protected componentWillUnmount() { }
 
     private _componentDidUpdate(oldProps: P, newProps: P) {
         const response = this.componentDidUpdate(oldProps, newProps);
@@ -107,7 +137,7 @@ export default abstract class Block<
                 delete this.children[id];
             });
             Object.keys(this.refs).forEach(key => delete this.refs[key]);
-            
+
             return true;
         }
 
@@ -131,7 +161,12 @@ export default abstract class Block<
 
         const template = Handlebars.compile(this.render());
 
-        fragment.innerHTML = template({ ...this.props, children: this.children, refs: this.refs });
+        fragment.innerHTML = template({
+            ...this.state,
+            ...this.props,
+            children: this.children,
+            refs: this.refs
+        });
 
         Object.entries(this.children).forEach(([id, component]) => {
             const stub = fragment.content.querySelector(`[data-id="${id}"]`);
@@ -141,15 +176,14 @@ export default abstract class Block<
             }
 
             const stubChilds = stub.childNodes.length ? stub.childNodes : [];
-
             const content = component.getContent();
+
             stub.replaceWith(content);
 
-            const slotContent = content.querySelector('[data-slot="1"]') as HTMLDivElement;
+            const layoutContent = content.querySelector('[data-layout="1"]');
 
-            if (slotContent && stubChilds.length) {
-                slotContent.append(...stubChilds);
-                delete slotContent.dataset.slot;
+            if (layoutContent && stubChilds.length) {
+                layoutContent.append(...stubChilds);
             }
         });
 
@@ -184,31 +218,23 @@ export default abstract class Block<
         return '';
     }
 
-    setProps = (nextProps: Partial<P>): Block<P> => {
+    setProps = (nextProps: Partial<P>) => {
         if (nextProps) {
             Object.assign(this.props, nextProps);
         }
-
-        return this;
     };
-
-    getProps = () => this.props;
 
     // protected getStateFromProps(props: any): void {
     //     this.state = {};
     // }
 
-    // public setState = (nextState: any) => {
-    //     if (!nextState) {
-    //         return;
-    //     }
+    setState = (nextState: any) => {
+        if (!nextState) {
+            return;
+        }
 
-    //     Object.assign(this.state, nextState);
-    // };
-
-    get element() {
-        return this._element;
-    }
+        Object.assign(this.state, nextState);
+    };
 
     getContent(): HTMLElement {
         if (this.element?.parentNode?.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
@@ -220,6 +246,10 @@ export default abstract class Block<
         }
 
         return this.element!;
+    }
+
+    get element() {
+        return this._element;
     }
 
     show() {

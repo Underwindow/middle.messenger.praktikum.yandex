@@ -9,7 +9,7 @@ export interface BubbleProps extends Props {
 }
 
 export default class Bubble extends Block<BubbleProps> {
-    static readonly NAME: string = 'Bubble';
+    static readonly componentName: string = 'Bubble';
 
     constructor(props: BubbleProps) {
         super({ ...props });

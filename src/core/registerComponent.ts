@@ -1,15 +1,15 @@
-import Handlebars, { HelperOptions } from 'handlebars';
 import Block from './Block';
+import Handlebars, { HelperOptions } from 'handlebars';
 
 interface BlockConstructable<P extends Props = {}, IncomingProps = Props> {
     new(props: IncomingProps): Block<P>;
-    readonly NAME: string;
+    componentName: string;
 }
 
 /* eslint-disable-next-line */
 export default function registerComponent<P extends Props = {}, IncomingProps extends Props = {}>(Component: BlockConstructable<P, IncomingProps>) {
     Handlebars.registerHelper(
-        Component.NAME,
+        Component.componentName,
         function parseComponents(this: Props, { hash: { ref, ...hash }, data, fn }: HelperOptions) {
             const root = { ...data.root };
 

@@ -2,7 +2,7 @@ import './buttonPrimary.css';
 import ButtonProps, { Button } from '../button';
 
 export default class ButtonPrimary extends Button {
-    static readonly NAME = 'ButtonPrimary';
+    static readonly componentName = 'ButtonPrimary';
 
     constructor({ ...props }: ButtonProps) {
         super({

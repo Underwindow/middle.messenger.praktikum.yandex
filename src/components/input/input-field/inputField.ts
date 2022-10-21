@@ -13,7 +13,7 @@ export interface InputFieldProps extends Props {
 }
 
 export default class InputField extends Block<InputFieldProps> {
-    static readonly NAME: string = 'InputField';
+    static readonly componentName: string = 'InputField';
 
     constructor({
         onInput, onFocus, onBlur, onKeydown, ...props
