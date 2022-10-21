@@ -30,8 +30,7 @@ export class SignInPage extends Block<SignInPageProps> {
 
                 const loginInput = this.refs.loginRef as Input;
                 const passwordInput = this.refs.passwordRef as Input;
-                const isValid = Input.fieldsetValidate([loginInput, passwordInput]);
-
+                const isValid = Input.validateFieldset([loginInput, passwordInput]);
 
                 if (isValid) {
                     this.props.store.dispatch(login, this.state.loginData);

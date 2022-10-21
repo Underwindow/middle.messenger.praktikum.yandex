@@ -12,7 +12,16 @@ export interface InputProps extends InputFieldProps {
 export default class Input extends Block<InputProps> {
     static readonly componentName: string = 'Input';
 
-    static fieldsetValidate(fieldset: Input[]): boolean {
+    static trasformFieldset<TData = Indexed>(fieldset: Input[]): TData {
+        return fieldset.reduce(
+            (data, input) => {
+                data[input.name] = input.value;
+                return data;
+            }, {} as Indexed
+        ) as TData;
+    }
+
+    static validateFieldset(fieldset: Input[]): boolean {
         let isValid = true;
 
         fieldset.forEach((input) => {

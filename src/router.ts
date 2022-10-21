@@ -3,9 +3,9 @@ import { getScreenComponent, Screens } from 'utils';
 
 const routes = [
     {
-        path: `/${Screens.Onboarding}`,
-        block: Screens.Onboarding,
-        shouldAuthorized: false,
+        path: `/`,
+        block: Screens.Messenger,
+        shouldAuthorized: true,
     },
     {
         path: `/${Screens.SignIn}`,
@@ -28,9 +28,9 @@ const routes = [
         shouldAuthorized: true,
     },
     {
-        path: '*',
-        block: Screens.Onboarding,
-        shouldAuthorized: false,
+        path: `*`,
+        block: Screens.Messenger,
+        shouldAuthorized: true,
     },
 ];
 

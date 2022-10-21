@@ -1,5 +1,6 @@
 import { apiHasError, auth, transformUser, UserDTO } from 'api';
 import type { Dispatch } from 'core';
+import { Screens } from 'utils';
 
 export async function initApp(dispatch: Dispatch<AppState>) {
 
@@ -10,10 +11,12 @@ export async function initApp(dispatch: Dispatch<AppState>) {
         const response = await auth.user();
 
         if (apiHasError(response)) {
+            // window.router.go(Screens.SignIn);
             return;
         }
 
         dispatch({ user: transformUser(response as UserDTO) });
+        // window.router.go(Screens.Messenger);
     } catch (err) {
         console.error(err);
     } finally {

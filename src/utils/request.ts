@@ -46,7 +46,6 @@ http.upload = <T>(path: string, data?: FormData): Promise<T> => {
         `${baseURL}/${path}`, {
         method: METHOD.PUT,
         credentials: 'include',
-        headers: { 'Content-Type': 'multipart/form-data' },
         body: data,
     })
         .then((xhr) => {

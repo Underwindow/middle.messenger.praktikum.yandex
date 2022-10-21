@@ -24,7 +24,7 @@ export default class Chat extends Block<Props> {
 
                 const messageInput = this.refs.messageInputRef as Input;
 
-                const isValid = Input.fieldsetValidate([messageInput]);
+                const isValid = Input.validateFieldset([messageInput]);
 
                 if (isValid) {
                     console.log('Sending message');

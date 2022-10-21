@@ -29,7 +29,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
                 const fieldset = this.refs.fieldsetRef as Input[];
                 const password = this.refs.passwordRef as Input;
                 const passwordRepeat = this.refs.passwordRepeatRef as Input;
-                const isValid = Input.fieldsetValidate([...fieldset, password, passwordRepeat]);
+                const isValid = Input.validateFieldset([...fieldset, password, passwordRepeat]);
 
                 if (isValid) {
                     password.value === passwordRepeat.value
@@ -60,11 +60,8 @@ export class SignUpPage extends Block<SignUpPageProps> {
         if ((this.refs.passwordRef as Input)) {
             const signUpFieldset = [...this.refs.fieldsetRef as Input[], this.refs.passwordRef as Input];
             const pwdRepeatInput = this.refs.passwordRepeatRef as Input;
-
-            const signUpData = signUpFieldset.reduce((res, input) => {
-                res[input.name] = input.value;
-                return res
-            }, {} as Indexed) as SignUpRequestData;
+            
+            const signUpData = Input.trasformFieldset<SignUpRequestData>(signUpFieldset);
 
             nextState.signUpData = signUpData;
             nextState.repeatPassword = pwdRepeatInput.value;

@@ -59,6 +59,10 @@
   position: relative;
 }
 
+.image-upload__input {
+  display: none;
+}
+
 .image-upload__image {
   height: 16.18vh;
   width: 16.18vh;
@@ -119,8 +123,4 @@
 .input__label {
   color: var(--hint);
   font-size: clamp(13px, 2vw, 2.25vh);
-}
-
-#file-input {
-  display: none;
 }

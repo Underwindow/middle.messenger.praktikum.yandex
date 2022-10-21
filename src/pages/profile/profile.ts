@@ -5,9 +5,9 @@ import { Input } from 'components/input';
 import { CoreRouter, Store } from 'core';
 import { ValidationType } from 'utils/validateValue';
 import { ButtonSecondary } from 'components/button/button-secondary';
-import { changeAvatar, changePassword, logout } from 'services';
+import { changeAvatar, changePassword, changeProfile, logout } from 'services';
 import { baseURL, withRouter, withStore, withUser } from 'utils';
-import { ChangePasswordRequestData } from 'api';
+import { ChangePasswordRequestData, ChangeProfileRequestData } from 'api';
 import { resources } from 'utils/request';
 
 type ProfilePageProps = {
@@ -45,7 +45,7 @@ export class Profile extends Block<ProfilePageProps> {
             onSaveAvatar: (e: Event) => {
                 e.preventDefault();
                 
-                var avatarInput = document.getElementById("file-input") as HTMLInputElement;
+                var avatarInput = this.element?.querySelector("input[name=avatar]") as HTMLInputElement;
                 console.log(avatarInput.name);
                 
                 if (avatarInput) {
@@ -58,24 +58,20 @@ export class Profile extends Block<ProfilePageProps> {
             onSaveProfile: (e: Event) => {
                 e.preventDefault();
                 const fieldset = this.refs.fieldsetRef as Input[];
-                const isValid = Input.fieldsetValidate(fieldset);
-
+                const isValid = Input.validateFieldset(fieldset);
+                const profileData = Input.trasformFieldset<ChangeProfileRequestData>(fieldset);
+                
                 if (isValid) {
-                    console.log('Saving data');
+                    this.props.store.dispatch(changeProfile, profileData);
                 }
             },
             onSavePassword: (e: Event) => {
                 e.preventDefault();
                 const passwords = this.refs.passwordsRef as Input[];
-                const isValid = Input.fieldsetValidate(passwords);
+                const isValid = Input.validateFieldset(passwords);
 
                 if (isValid) {
-                    const requestData = passwords.reduce(
-                        (data, pwdInput) => {
-                            data[pwdInput.name] = pwdInput.value;
-                            return data;
-                        }, {} as Indexed
-                    ) as ChangePasswordRequestData;
+                    const requestData = Input.trasformFieldset<ChangePasswordRequestData>(passwords);
 
                     this.props.store.dispatch(changePassword, requestData);
                 }
@@ -86,7 +82,7 @@ export class Profile extends Block<ProfilePageProps> {
     }
 
     private _subscribeOnFileUpload() {
-        const fileInput = this.element?.querySelector('#file-input') as HTMLInputElement;
+        const fileInput = this.element?.querySelector('input[name=avatar]') as HTMLInputElement;
         const submitBtnSecondary = this.refs.fileSubmitRef as ButtonSecondary;
 
         fileInput.addEventListener('input', () => {
@@ -112,14 +108,14 @@ export class Profile extends Block<ProfilePageProps> {
                         <form enctype="multipart/form-data" class="sidebar__image-upload">
                             <div class="image-upload">
                                 <label class="image-upload__label" for="file-input">
-                                    <img class="image-upload__image" src="${resources}${this.props.user?.avatar}" />
+                                    <img class="image-upload__image" src="${resources}${this.props.user?.avatar ?? ''}" />
                                     <div class="image-upload__icon-wrapper content-center">
                                         <div class="image-upload__icon material-icons color-hint">
                                             upload
                                         </div>
                                     </div>
                                 </label>
-                                <input id="file-input" name="avatar" type="file" accept="image/*" required/>
+                                <input class="image-upload__input" name="avatar" type="file" accept="image/*" required/>
                             </div>
                             <div class="sidebar__button-secondary">
                                 {{{ButtonSecondary onClick=onSaveAvatar ref="fileSubmitRef" type="submit" text="Сохранить изменения" disabled="true"}}}
