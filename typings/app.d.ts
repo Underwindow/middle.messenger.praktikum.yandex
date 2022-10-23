@@ -12,6 +12,7 @@ declare global {
         isLoading: boolean;
         loginFormError: string | null;
         user: User | null;
+        userChats: UserChat[] | null;
     };
 
     export type User = {
@@ -23,6 +24,46 @@ declare global {
         avatar: string;
         phone: string;
         email: string;
+    };
+
+    export type UserChat = {
+        id: number;
+        title: string;
+        avatar: string;
+        createdBy: number;
+        unreadCount: number;
+        lastMessage: SidebarChatMessage | null;
+    };
+
+    export type SidebarChatMessage = {
+        sender: MessageSender | null;
+        time: string;
+        content: string;
+    };
+    
+    export type MessageSender = {
+        firstName: string;
+        secondName: string;
+        avatar: string;
+        email: string;
+        login: string;
+        phone: string;
+    };
+
+    export type ChatUser = User & {
+        displayName: string,
+        role: 'admin' | 'regular',
+    };
+
+    export type ChatMessage = {
+        chatId: number;
+        content: string;
+        file: File;
+        id: number;
+        isRead: boolean;
+        time: string;
+        type: string;
+        userId: number;
     };
 }
 

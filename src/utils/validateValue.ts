@@ -1,5 +1,6 @@
 export enum ValidationType {
     INPUT_LOGIN = 'login',
+    INPUT_LOGIN_SEARCH = 'login_search',
     INPUT_PASSWORD = 'password',
     INPUT_EMAIL = 'email',
     INPUT_FIRST_NAME = 'first_name',
@@ -30,6 +31,10 @@ const validationRules: { [type: string]: { [pattern: string]: string } } = {
     [ValidationType.INPUT_LOGIN]: {
         [EMPTY.pattern]: EMPTY.message,
         '^.{3,20}$': 'от 3 до 20 символов',
+        '^[-_a-zA-Z0-9]+$': 'латиница, цифры, дефис и нижнее подчеркивание',
+        '^(?=.*[-_a-zA-Z])[-_a-zA-Z0-9]+$': 'не может состоять полностью из цифр',
+    },
+    [ValidationType.INPUT_LOGIN_SEARCH]: {
         '^[-_a-zA-Z0-9]+$': 'латиница, цифры, дефис и нижнее подчеркивание',
         '^(?=.*[-_a-zA-Z])[-_a-zA-Z0-9]+$': 'не может состоять полностью из цифр',
     },

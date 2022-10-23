@@ -6,17 +6,17 @@ import { CoreRouter, Store } from 'core';
 import { ValidationType } from 'utils/validateValue';
 import { ButtonSecondary } from 'components/button/button-secondary';
 import { changeAvatar, changePassword, changeProfile, logout } from 'services';
-import { baseURL, withRouter, withStore, withUser } from 'utils';
+import { withRouter, withStore, withUser } from 'utils';
 import { ChangePasswordRequestData, ChangeProfileRequestData } from 'api';
-import { resources } from 'utils/request';
+import { ImageUpload } from 'components/image-upload';
 
 type ProfilePageProps = {
-    router: CoreRouter;
-    store: Store<AppState>;
-    user: User | null;
+    router: CoreRouter,
+    store: Store<AppState>,
+    user: User | null,
     btnLogoutProps: ButtonIconProps,
     btnBackProps: ButtonIconProps,
-    onLogout?: () => void;
+    onChooseAvatar: Callback,
     onSaveAvatar: Callback,
     onSaveProfile: Callback,
     onSavePassword: Callback,
@@ -42,16 +42,21 @@ export class Profile extends Block<ProfilePageProps> {
             user: this.props.store.getState().user,
             btnLogoutProps,
             btnBackProps,
+            onChooseAvatar: () => {
+                const saveAvatarBtn = this.refs.avatarSubmitRef as ButtonSecondary;
+                const avatarInput = this.refs.avatarInputRef as ImageUpload;
+                saveAvatarBtn.setProps({ disabled: !avatarInput.fileList });
+            },
             onSaveAvatar: (e: Event) => {
                 e.preventDefault();
                 
-                var avatarInput = this.element?.querySelector("input[name=avatar]") as HTMLInputElement;
-                console.log(avatarInput.name);
-                
+                const avatarInput = this.refs.avatarInputRef as ImageUpload;
+
                 if (avatarInput) {
-                    console.log(avatarInput.files![0]);
+                    const file = avatarInput.fileList![0]; 
+                    console.log(file);
                     const formData = new FormData();
-                    formData.append(avatarInput.name, avatarInput.files![0]);
+                    formData.append(avatarInput.name, file);
                     this.props.store.dispatch(changeAvatar, formData);
                 }
             },
@@ -77,17 +82,6 @@ export class Profile extends Block<ProfilePageProps> {
                 }
             },
         });
-
-        this._subscribeOnFileUpload();
-    }
-
-    private _subscribeOnFileUpload() {
-        const fileInput = this.element?.querySelector('input[name=avatar]') as HTMLInputElement;
-        const submitBtnSecondary = this.refs.fileSubmitRef as ButtonSecondary;
-
-        fileInput.addEventListener('input', () => {
-            submitBtnSecondary.setProps({ disabled: !fileInput.value });
-        });
     }
 
     protected render() {
@@ -106,19 +100,14 @@ export class Profile extends Block<ProfilePageProps> {
                     </div>
                     <div class="sidebar__content panel">
                         <form enctype="multipart/form-data" class="sidebar__image-upload">
-                            <div class="image-upload">
-                                <label class="image-upload__label" for="file-input">
-                                    <img class="image-upload__image" src="${resources}${this.props.user?.avatar ?? ''}" />
-                                    <div class="image-upload__icon-wrapper content-center">
-                                        <div class="image-upload__icon material-icons color-hint">
-                                            upload
-                                        </div>
-                                    </div>
-                                </label>
-                                <input class="image-upload__input" name="avatar" type="file" accept="image/*" required/>
-                            </div>
+                            {{{ImageUpload 
+                                ref="avatarInputRef" 
+                                name="avatar"
+                                onInput=onChooseAvatar 
+                                src=user.avatar
+                            }}}
                             <div class="sidebar__button-secondary">
-                                {{{ButtonSecondary onClick=onSaveAvatar ref="fileSubmitRef" type="submit" text="Сохранить изменения" disabled="true"}}}
+                                {{{ButtonSecondary onClick=onSaveAvatar ref="avatarSubmitRef" type="submit" text="Сохранить изменения" disabled="true"}}}
                             </div>
                         </form>
                         <form class="sidebar__fieldset" action="">

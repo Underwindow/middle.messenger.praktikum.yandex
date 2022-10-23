@@ -18,6 +18,8 @@ export default class ButtonIcon extends Button {
         ADD: 'add',
         BACK: 'arrow_back_ios_new',
         SEND: 'send',
+        PERSON_ADD: 'group_add',
+        PERSON_REMOVE: 'group_remove',
     } as const;
 
     public static readonly COLORS = {
@@ -36,9 +38,17 @@ export default class ButtonIcon extends Button {
             color,
             text: icon,
             class: 'material-icons button__button-icon',
-            events: { click: props.onClick },
+            events: {
+                click: props.onClick,
+            },
         });
 
         if (this.element) this.element.style.color = color;
     }
+
+    setProps = (nextProps: Partial<ButtonIconProps>) => {
+        if (nextProps) {
+            Object.assign(this.props, nextProps);
+        }
+    };
 }

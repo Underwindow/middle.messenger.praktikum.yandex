@@ -8,7 +8,9 @@ export default class ButtonSecondary extends Button {
         super({
             ...props,
             class: 'clear-btn button button__button-secondary',
-            events: { click: props.onClick },
+            events: {
+                click: props.onClick,
+            },
         });
     }
 }

@@ -13,8 +13,6 @@ export default class InputError extends Block<InputErrorProps> {
     }
 
     protected render(): string {
-        console.log('render', this.constructor.name, this.id);
-
         // language=hbs
         return `
         <div class="input__error">

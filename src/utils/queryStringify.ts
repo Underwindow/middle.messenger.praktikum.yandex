@@ -3,9 +3,9 @@ function queryStringify(data: any): string | never {
         throw new Error('data must be object type');
     }
 
-    return Object.entries(data).map(([key, value]) => {
+    return `?${Object.entries(data).map(([key, value]) => {
         return getParameter(key, value);
-    }).join('&');
+    }).join('&')}`;
 }
 
 type PlainObject<T = unknown> = {

@@ -1,0 +1,38 @@
+.image-upload {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.image-upload__label {
+  height: auto;
+  cursor: pointer;
+  position: relative;
+}
+
+.image-upload__input {
+  display: none;
+}
+
+.image-upload__image {
+  height: 16.18vh;
+  width: 16.18vh;
+}
+
+.image-upload__icon-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-flow: column;
+  flex: 0 0 auto;
+  background-color: #00000080;
+}
+
+.image-upload__icon.material-icons {
+  font-size: 6.9vh;
+}

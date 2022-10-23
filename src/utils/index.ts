@@ -7,3 +7,4 @@ export { withStore } from './withStore';
 export { withUser } from './withUser';
 export { withIsLoading } from './withIsLoading';
 export { Screens, getScreenComponent } from './screenList';
+export { timeFormat } from './timeFormat';

@@ -31,6 +31,9 @@ export default class Header extends Block<HeaderProps> {
     subscribeOnTitle() {
         const titleBtn = this.element?.querySelector('.header__title-container') as HTMLButtonElement;
 
+        if (!titleBtn)
+            return;
+            
         if (!this.props.onClick) {
             titleBtn.disabled = true;
         } else {

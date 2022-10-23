@@ -1,7 +1,6 @@
-import { ChangePasswordRequestData, ChangeProfileRequestData, transformUser, user, UserDTO } from 'api';
+import { APIError, ChangePasswordRequestData, ChangeProfileRequestData, transformUser, user, UserDTO } from 'api';
 import { hasError as apiHasError } from 'api/apiHasError';
 import type { Dispatch } from 'core';
-
 
 export const changeProfile = async (
     dispatch: Dispatch<AppState>,
@@ -50,11 +49,9 @@ export const changePassword = async (
 };
 
 export const getUser = async (
-    dispatch: Dispatch<AppState>,
-    state: AppState,
-    action: { id: number },
+    id: number,
 ) => {
-    const responseUser = await user.getUser(action);
+    const responseUser = await user.getUser({ id });
 
     if (apiHasError(responseUser)) {
         console.log('---ERROR getUser', responseUser.reason);
@@ -64,11 +61,9 @@ export const getUser = async (
     return transformUser(responseUser as UserDTO);
 };
 
-export const search = async (
-    dispatch: Dispatch<AppState>,
-    state: AppState,
+export const searchUsers = async (
     action: { login: string },
-) => {
+): Promise<User[] | null> => {
     const responseUsers = await user.search(action);
 
     if (apiHasError(responseUsers)) {

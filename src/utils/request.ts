@@ -23,7 +23,7 @@ export function http<T extends any>({
             const isJson = xhr
                 .getResponseHeader('content-type')
                 ?.includes('application/json');
-            
+
             return isJson ? JSON.parse(xhr.response) : null;
         })
         .then((data) => {
@@ -41,6 +41,9 @@ http.get = <T>(path: string) =>
 http.put = <T>(path: string, data?: any) =>
     http<T>({ method: METHOD.PUT, path, data });
 
+http.delete = <T>(path: string, data?: any) =>
+    http<T>({ method: METHOD.DELETE, path, data });
+
 http.upload = <T>(path: string, data?: FormData): Promise<T> => {
     return sleep().then(() => HTTPTransport.fetchWithTries(
         `${baseURL}/${path}`, {
@@ -54,7 +57,7 @@ http.upload = <T>(path: string, data?: FormData): Promise<T> => {
             const isJson = xhr
                 .getResponseHeader('content-type')
                 ?.includes('application/json');
-            
+
             return isJson ? JSON.parse(xhr.response) : null;
         })
         .then((data) => {

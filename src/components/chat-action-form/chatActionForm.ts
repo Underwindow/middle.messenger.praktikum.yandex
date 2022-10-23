@@ -1,0 +1,162 @@
+import './chatActionForm.css';
+import Block from 'core/Block';
+import { ValidationType } from 'utils/validateValue';
+import { Input } from 'components/input';
+import { UserListItemProps } from 'components/user-list-item/userListItem';
+import { Button } from 'components/button/button';
+import { UserList } from 'components/user-list';
+
+export interface ChatActionFormProps extends Props {
+    title: string,
+    submitText: string,
+    usersList: UserListItemProps[],
+    getUsers: Callback<Promise<User[] | null>>,
+    onSubmit: Callback,
+}
+
+export default class ChatActionForm extends Block<ChatActionFormProps> {
+    static readonly componentName: string = 'ChatActionForm';
+
+    constructor(props: ChatActionFormProps) {
+        super({
+            ...props,
+            onInput: () => {
+                const searchInput = this.refs.searchInputRef as Input;
+
+                // if (!searchInput.value) {
+                //     this._updateUsersList();
+                //     return;
+                // }
+
+                const errorMessage = searchInput.validate();
+
+                if (!errorMessage) {
+                    this.loadUsersList();
+                }
+            },
+            onClose: () => {
+                this._selectedItems = [];
+                this._updateUsersList();
+                this.hide();
+            },
+        });
+    }
+
+    private _selectedItems: number[] = [];
+
+    private _updateUsersList(users: User[] = []) {
+        const usersList = users.map(user => {
+            const userListItem: UserListItemProps = {
+                userId: user.id,
+                login: user.login,
+                avatar: user.avatar,
+                onClick: () => {
+                    this._selectUser(user);
+                    this._updateButton();
+                }
+            }
+            return userListItem;
+        })
+
+        const userListRef = this.refs.userListRef as UserList;
+
+        userListRef.setProps({ usersList: usersList });
+    }
+
+    private _updateButton() {
+        const submitBtn = this.refs.submitButtonRef as Button;
+        submitBtn.setProps({
+            text: `${this.props.submitText}${this._selectionCount()}`
+        });
+    }
+
+    private _selectUser(user: User) {
+        const userListRef = this.refs.userListRef as UserList;
+        const usersList = userListRef.getUsersList();
+        const index = this._selectedItems.indexOf(user.id);
+        const userSelected = index > -1;
+
+        userSelected
+            ? this._selectedItems.splice(index, 1)
+            : this._selectedItems.push(user.id);
+
+        usersList.find(userItem => userItem.getId() === user.id)
+            ?.setActive(!userSelected);
+
+        console.log(this._selectedItems);
+    }
+
+    loadUsersList() {
+        this.props.getUsers().then((users) => {
+            if (users) {
+                this._updateUsersList(users);
+            }
+        });
+    }
+
+    getSelected = () => this._selectedItems;
+
+    getInput(): Input {
+        return this.refs.searchInputRef as Input;
+    }
+
+    submit() {
+        console.log('====================================');
+        console.log('submit');
+        console.log('====================================');
+        this._selectedItems = [];
+        this._updateButton();
+        this._updateUsersList();
+    }
+
+    private _selectionCount() {
+        return (this._selectedItems?.length ?? 0) === 0
+            ? ''
+            : ` ${this._selectedItems.length}`;
+    }
+    protected render(): string {
+        // language=hbs
+        return `
+            <div class="absolute disabled">
+                <div class="chat-action-form whole content-center">
+                    <form class="content-center chat-action-form__form">
+                        <div class="chat-action-form__header">
+                            {{title}}
+                        </div>
+                        <div class="chat-action-form__input">
+                            {{{Input 
+                                ref="searchInputRef" 
+                                type="text"
+                                placeholder="Поиск по логину"
+                                onInput=onInput
+                                validationType="${ValidationType.INPUT_LOGIN_SEARCH}"
+                            }}}
+                        </div>
+                        <div class="chat-action-form__users-list">
+                            {{{UserList 
+                                ref="userListRef"
+                            }}}
+                        </div>
+                        <div class="chat-action-form__footer">
+                            <div class="chat-action-form__button">
+                                {{{ButtonPrimary 
+                                    ref="submitButtonRef"
+                                    onClick=onSubmit
+                                    type="button" 
+                                    text=submitText
+                                }}}
+                            </div>
+                            <div class="chat-action-form__button">
+                                {{{ButtonSecondary 
+                                    onClick=onClose 
+                                    type="button" 
+                                    text="Закрыть"
+                                }}}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+    }
+}

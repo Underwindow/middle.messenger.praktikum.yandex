@@ -1,5 +1,13 @@
 export { hasError as apiHasError } from './apiHasError';
-export { transformUser } from './apiTransformers';
+export { 
+    transformUser, 
+    transformChat, 
+    transformSidebarMessage, 
+    transformMessageSender, 
+    transformChatUser,
+    transformChatMessage 
+} from './apiTransformers';
 export { auth } from './auth';
 export { user } from './user';
-export * from './types'
+export { chats } from './chats';
+export * from './types';

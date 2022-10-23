@@ -1,6 +1,6 @@
 import './bubbleGroup.css';
 import Block from 'core/Block';
-import BubbleProps from 'components/bubble/bubble';
+import { BubbleProps } from '../bubble';
 
 export interface BubbleGroupProps {
     bubblesDate?: string;
@@ -17,7 +17,14 @@ export default class BubbleGroup extends Block {
             <div class="bubbles-group__date">{{bubblesDate}}</div>
             <div class="bubbles-group__bubbles">
                 {{#each bubbleProps}}
-                {{{Bubble ref="bubbles" isIn=isIn message=message time=time name=name}}}
+                {{{Bubble 
+                    ref="bubbles" 
+                    userId=userId 
+                    isIn=isIn 
+                    message=message 
+                    time=time 
+                    name=name
+                }}}
                 {{/each}}
             </div>
         </section>
