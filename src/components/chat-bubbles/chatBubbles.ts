@@ -1,6 +1,6 @@
 import './chatBubbles.css';
 import Block from 'core/Block';
-import { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
+import BubbleGroup, { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
 
 export interface ChatBubblesProps extends Props {
     bubbleGroupProps?: BubbleGroupProps[],
@@ -13,37 +13,35 @@ export default class ChatBubbles extends Block<ChatBubblesProps> {
         super(props);
     }
 
+    private chatUsersCache: { [key: number]: string } = {};
+
     concatBubbleGroups(bubbleGroupProps: BubbleGroupProps[]) {
+        const bubbleGroups = this.getRefs<BubbleGroup>(this.refs.bubbleGroupsRef);
+
+        if (bubbleGroups) {
+            bubbleGroups.forEach(group => {
+                group?.getBubbles()?.forEach((bubble) => {
+                    if (bubble.name)
+                        this.chatUsersCache[bubble.userId] = bubble.name;
+                })
+            })
+        }
+
         const current = this.props.bubbleGroupProps;
-        if (current) {
-            this.setProps({
-                bubbleGroupProps: current.concat(bubbleGroupProps)
-            });
-        }
-        else {
-            this.setProps({
-                bubbleGroupProps: bubbleGroupProps
-            });
-        }
-    }
 
-    protected getStateFromProps(props?: ChatBubblesProps | undefined): void {
-        console.log(props);
-        
-        // const users: Record<string, number> = {};
-        
-        // const nextState = {
-        //     users: users,
-        // }
+        const result = current? current.concat(bubbleGroupProps) : bubbleGroupProps;
 
-        // props?.bubbleGroupProps?.forEach((bubbleGroup) => {
-        //     Object.entries(nextState.users).forEach(([username, userId]) => {
-        //         bubbleGroup.bubbleProps?.forEach((bubble) => {
-        //             if (bubble.userId === userId)
-        //                 bubble.name = username;
-        //         });
-        //     })
-        // });
+        result.forEach((groups) => {
+            groups.bubbleProps?.forEach((bubbleProps) => {
+                bubbleProps.name = this.chatUsersCache[bubbleProps.userId];
+            })
+        });
+
+        console.log(result);
+
+        this.setProps({
+            bubbleGroupProps: result
+        });
     }
 
     protected render() {

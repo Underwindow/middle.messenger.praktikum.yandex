@@ -22,8 +22,8 @@ import { InputError } from 'components/input/input-error';
 import { defaultState } from 'store';
 import { initRouter } from './router';
 import { initApp } from 'services';
-import SplashScreen from 'pages/splash';
-import Logo from 'components/logo';
+import { SplashScreen } from 'pages/splash';
+import { Logo } from 'components/logo';
 import { NewChatForm } from 'components/new-chat';
 import { ChatActions } from 'components/chat-actions';
 import { ChatActionForm } from 'components/chat-action-form';
@@ -74,19 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderDOM(new SplashScreen({}));
 
-    store.on('changed', (prevState, nextState) => {
-        if (process.env.DEBUG) {
-            console.log(
-                '%cstore updated',
-                'background: #222; color: #bada55',
-                nextState,
-            );
-        }
-    });
-
     initRouter(router, store);
 
     store.dispatch(initApp);
-
-    // renderDOM(new Messenger());
 });

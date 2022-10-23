@@ -7,6 +7,7 @@ import { InputError } from './input-error';
 export interface InputProps extends InputFieldProps {
     icon?: string;
     validationType?: ValidationType;
+    onEnter?: Callback;
 }
 
 export default class Input extends Block<InputProps> {
@@ -37,7 +38,7 @@ export default class Input extends Block<InputProps> {
 
     private readonly _inputEl: HTMLInputElement;
 
-    constructor({ onInput, onFocus, validationType, ...props }: InputProps) {
+    constructor({ onInput, onFocus, onKeydown, onEnter, validationType, ...props }: InputProps) {
         super({
             ...props,
             validationType,
@@ -57,17 +58,19 @@ export default class Input extends Block<InputProps> {
                 if (!this._inputEl.value)
                     this.setErrorMessage('');
             },
+            onEnter: onEnter,
             onKeydown: (e: KeyboardEvent) => {
                 if (e.key === 'Enter') {
-                    console.log('Enter submit check');
                     e.preventDefault();
-                    this.validate();
 
-                    // const validationError = this.validate();
+                    console.log('Enter submit check');
 
-                    // if (validationError) {
-                    // e.preventDefault();
-                    // }
+                    if (onEnter) {
+                        onEnter(e);
+                    }
+                    else {
+                        this.validate();
+                    }
                 }
             },
         });

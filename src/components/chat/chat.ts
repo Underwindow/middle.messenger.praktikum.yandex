@@ -27,7 +27,6 @@ export default class Chat extends Block<ChatProps> {
 
     private _currentUserId: number | undefined;
     private _actionsVisible: boolean = false;
-    private _messageDelay: number = 700;
 
     constructor(props: ChatProps) {
         super(props);
@@ -63,23 +62,32 @@ export default class Chat extends Block<ChatProps> {
             },
             onSendMessage: (e: Event) => {
                 e.preventDefault();
-
-                const sendButton = this.refs.sendButtonRef as ButtonIcon;
-                sendButton.setProps({ disabled: true });
-                
+                const messageBtn = this.refs.sendButtonRef as ButtonIcon;
                 const messageInput = this.refs.messageInputRef as Input;
 
-                const isValid = Input.validateFieldset([messageInput]);
-
-                if (isValid) {
-                    sendMessage(messageInput.value, this.props.socket);
-                    messageInput.value = '';
-                }
-                setTimeout(() => {
-                    sendButton.setProps({ disabled: false });
-                }, this._messageDelay);
+                this._sendMessage(messageInput, messageBtn);
             },
         });
+    }
+
+    private _messageTimeout?: NodeJS.Timeout;
+    private _messageDelay: number = 700;
+
+    private _sendMessage(messageInput: Input, messageBtn: ButtonIcon) {
+        const isValid = Input.validateFieldset([messageInput]);
+
+        if (isValid && !messageBtn.disabled) {
+            sendMessage(messageInput.value, this.props.socket);
+            messageInput.value = '';
+        }
+
+        clearTimeout(this._messageTimeout!);
+
+        messageBtn.setProps({ disabled: true });
+
+        this._messageTimeout = setTimeout(() => {
+            messageBtn.setProps({ disabled: false });
+        }, this._messageDelay);
     }
 
     private _toggleActions() {
@@ -190,6 +198,7 @@ export default class Chat extends Block<ChatProps> {
                                         validationType="${ValidationType.INPUT_MESSAGE}"
                                         name="message"
                                         type="text"
+                                        onEnter=onSendMessage
                                         placeholder="Введите сообщние"
                                         onBlur=onBlur
                                     }}}

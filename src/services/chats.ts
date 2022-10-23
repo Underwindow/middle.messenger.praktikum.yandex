@@ -101,17 +101,15 @@ const socketPingInterval: number = 5000;
 export const connectUserToChat = (
     userId: number, chatId: number, token: string, 
     onMessage?: (messages: ChatMessage[]) => void,
-    onClose?: (socket: WebSocket) => void,
 ): WebSocket => {
     const socket = chats.initSocket(userId, chatId, token);
 
     socket.onmessage = (event) => {
-        console.log('onmessage');
 
         const data = JSON.parse(event.data);
-        console.log(data);
+        console.log('Получено сообщение', data);
         
-        if (data.type === 'error')
+        if (data.type === 'error' || data.type === 'user connected')
             return;
 
         const chatMessagesDTO = Array.isArray(data)
@@ -122,8 +120,6 @@ export const connectUserToChat = (
             .map((chatMessageDTO) => transformChatMessage(chatMessageDTO))
             .filter(message => message.content)
             .reverse();
-
-        console.log(messages);
 
         if (onMessage && messages.length > 0)
             onMessage(messages);

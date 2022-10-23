@@ -7,7 +7,7 @@ interface LogoProps {
     onClick?: string;
 }
 
-export class Logo extends Block {
+export default class Logo extends Block {
     static componentName = 'Logo';
 
     constructor(props: LogoProps) {

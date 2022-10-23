@@ -14,7 +14,11 @@ export function http<T extends any>({
         `${baseURL}/${path}`, {
         method,
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Security-Policy': `default-src ${baseURL}; script-src ${baseURL}; media-src ${baseURL}`,
+            'X-XSS-Protection': '1; mode=block',
+        },
         body: data,
     })
         .then((xhr) => {

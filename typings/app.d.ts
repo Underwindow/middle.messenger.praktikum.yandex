@@ -5,7 +5,7 @@ declare global {
     export type Values<T extends Record<string, unknown>> = T[Keys<T>];
     export type Indexed = { [key: string]: any };
     export type Props = Record<string, any>;
-    
+
     export type AppState = {
         appIsInited: boolean;
         screen: Screens | null;
@@ -13,6 +13,7 @@ declare global {
         loginFormError: string | null;
         user: User | null;
         userChats: UserChat[] | null;
+        chatUsers: { [id: number]: string };
     };
 
     export type User = {
@@ -40,7 +41,7 @@ declare global {
         time: string;
         content: string;
     };
-    
+
     export type MessageSender = {
         firstName: string;
         secondName: string;

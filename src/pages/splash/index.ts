@@ -1,1 +1,1 @@
-export { default } from './splash';
+export { default as SplashScreen } from './splash';

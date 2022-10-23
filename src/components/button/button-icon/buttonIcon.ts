@@ -42,13 +42,5 @@ export default class ButtonIcon extends Button {
                 click: props.onClick,
             },
         });
-
-        if (this.element) this.element.style.color = color;
     }
-
-    setProps = (nextProps: Partial<ButtonIconProps>) => {
-        if (nextProps) {
-            Object.assign(this.props, nextProps);
-        }
-    };
 }

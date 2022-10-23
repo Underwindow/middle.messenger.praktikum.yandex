@@ -134,16 +134,7 @@ export class Messenger extends Block<MessengerProps> {
                     this._onMessage(chat, messages);
                 }
             );
-            // this._chatSocket.onclose = (event) => {
-            //     if (event.wasClean) {
-            //         console.log('Соединение закрыто чисто');
-            //     } else {
-            //         console.log('Обрыв соединения');
-            //     }
-
-            //     console.log(`Код: ${event.code} | Причина: ${event.reason}`);
-            // };
-
+            
             chat.setProps({
                 socket: this._chatSocket,
                 chatId: chatData?.id,
@@ -154,24 +145,6 @@ export class Messenger extends Block<MessengerProps> {
             chat.getStub().hide();
         });
     }
-
-    // private _connectToChat(chatId: number, token: string): WebSocket {
-    //     const socket = connectUserToChat(this.props.user!.id, chatId, token,
-    //         (messages) => {
-    //             this._onMessage(chat, messages);
-    //         }
-    //     );
-    //     socket.onclose = (event) => {
-    //         if (event.wasClean) {
-    //             console.log('Соединение закрыто чисто');
-    //         } else {
-    //             console.log('Обрыв соединения');
-    //         }
-
-    //         console.log(`Код: ${event.code} | Причина: ${event.reason}`);
-    //     };
-
-    // }
 
     private _onMessage(chat: Chat, messages: ChatMessage[]) {
         const bubbles = messages.map((message) => {
@@ -194,50 +167,8 @@ export class Messenger extends Block<MessengerProps> {
 
         console.log('here', bubbleGroup);
 
-        // concatBubbleGroups
         chat.getBubbles().concatBubbleGroups([bubbleGroup]);
-        // chat.getBubbles().setProps({
-        // bubbleGroupProps: [bubbleGroup],
-        // });
     }
-    // private _initChat(chatId: number) {
-
-    //     const token = getChatToken(chatId);
-    //     if (chatId) {
-    //         const tmpBubbleGroup = { //GET data by chatId
-    //             bubblesDate: new Date().toDateString() + nanoid(4), //Просто чтобы показать, что данные в ChatBubbles меняются
-    //             bubbleProps: [{
-    //                 isIn: false,
-    //                 message: 'Привет',
-    //                 time: '4:20',
-    //                 name: 'Евгений',
-    //             } as BubbleProps, {
-    //                 isIn: true,
-    //                 message: 'Прив, что такое? Где пропадал все это время?',
-    //                 time: '4:21',
-    //                 name: 'Эмиль',
-    //             } as BubbleProps],
-    //         } as BubbleGroupProps;
-
-    //         const chat = this.refs.chatRef as Chat;
-    //         const chatData = this.props.store.getState().userChats
-    //             ?.find(userChat => userChat.id === chatId);
-
-    //         console.log('====================================');
-    //         console.log(chat);
-    //         console.log('====================================');
-
-    //         chat.setProps({
-    //             chatId: chatData?.id,
-    //             token: getChatToken(chatData?.id),
-    //             title: chatData?.title,
-    //         })
-    //         chat.getBubbles().setProps({
-    //             bubbleGroupProps: [tmpBubbleGroup, tmpBubbleGroup, tmpBubbleGroup],
-    //         });
-    //         chat.getStub().hide();
-    //     }
-    // }
 
     protected render() {
         console.log('render Messenger');

@@ -23,16 +23,15 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
             onInput: () => {
                 const searchInput = this.refs.searchInputRef as Input;
 
-                // if (!searchInput.value) {
-                //     this._updateUsersList();
-                //     return;
-                // }
+                clearTimeout(this._inputTimeout!);
 
-                const errorMessage = searchInput.validate();
+                this._inputTimeout = setTimeout(() => {
+                    const errorMessage = searchInput.validate();
 
-                if (!errorMessage) {
-                    this.loadUsersList();
-                }
+                    if (!errorMessage) {
+                        this.loadUsersList();
+                    }
+                }, this._inputDelay);
             },
             onClose: () => {
                 this._selectedItems = [];
@@ -41,6 +40,9 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
             },
         });
     }
+
+    private _inputTimeout?: NodeJS.Timeout;
+    private _inputDelay: number = 700;
 
     private _selectedItems: number[] = [];
 
@@ -101,9 +103,6 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
     }
 
     submit() {
-        console.log('====================================');
-        console.log('submit');
-        console.log('====================================');
         this._selectedItems = [];
         this._updateButton();
         this._updateUsersList();

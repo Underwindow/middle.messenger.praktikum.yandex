@@ -1,14 +1,18 @@
 import './bubbleGroup.css';
 import Block from 'core/Block';
-import { BubbleProps } from '../bubble';
+import Bubble, { BubbleProps } from '../bubble';
 
 export interface BubbleGroupProps {
     bubblesDate?: string;
     bubbleProps?: BubbleProps[];
 }
 
-export default class BubbleGroup extends Block {
+export default class BubbleGroup extends Block<BubbleGroupProps> {
     static readonly componentName: string = 'BubbleGroup';
+
+    getBubbles(): Bubble[] | undefined {
+        return this.getRefs<Bubble>(this.refs.bubblesRef);
+    }
 
     protected render(): string {        
         // language=hbs
@@ -18,7 +22,7 @@ export default class BubbleGroup extends Block {
             <div class="bubbles-group__bubbles">
                 {{#each bubbleProps}}
                 {{{Bubble 
-                    ref="bubbles" 
+                    ref="bubblesRef" 
                     userId=userId 
                     isIn=isIn 
                     message=message 

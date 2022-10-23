@@ -1,14 +1,15 @@
 import { Store, renderDOM, CoreRouter } from 'core';
 import { getScreenComponent, Screens } from 'utils';
 
-const routes = [
+type Route = {
+    path: string,
+    block: Screens,
+    shouldAuthorized: boolean,
+}
+
+const routes: Route[] = [
     {
         path: `/`,
-        block: Screens.Messenger,
-        shouldAuthorized: true,
-    },
-    {
-        path: `/${Screens.SignIn}`,
         block: Screens.SignIn,
         shouldAuthorized: false,
     },
@@ -40,13 +41,33 @@ export function initRouter(router: CoreRouter, store: Store<AppState>) {
             const isAuthorized = Boolean(store.getState().user);
             const currentScreen = Boolean(store.getState().screen);
 
-            if (isAuthorized || !route.shouldAuthorized) {
+            console.log('isAuthorized && !route.shouldAuthorized');
+
+            if (isAuthorized && route.shouldAuthorized) {
                 store.dispatch({ screen: route.block });
                 return;
             }
 
+            if (!isAuthorized && !route.shouldAuthorized) {
+                store.dispatch({ screen: route.block });
+                return;
+            }
+
+            if (isAuthorized && !route.shouldAuthorized) {
+                router.go(Screens.Messenger);
+                // store.dispatch({ screen: Screens.Messenger });
+                return;
+            }
+
+            if (!isAuthorized && route.shouldAuthorized) {
+                router.go(Screens.SignIn);
+                // store.dispatch({ screen: Screens.SignIn });
+                return;
+            }
+
             if (!currentScreen) {
-                store.dispatch({ screen: Screens.SignIn });
+                router.go(Screens.SignIn);
+                // store.dispatch({ screen: Screens.SignIn });
             }
         });
     });
@@ -67,36 +88,3 @@ export function initRouter(router: CoreRouter, store: Store<AppState>) {
         }
     });
 }
-
-// const routes = [
-//     {
-//         path: '/sign-in',
-//         block: Pages.SignIn,
-//         shouldAuthorized: false,
-//     },
-//     {
-//         path: '/sign-up',
-//         block: Pages.SignUp,
-//         shouldAuthorized: false,
-//     },
-//     {
-//         path: '/messenger',
-//         block: Pages.Messenger,
-//         shouldAuthorized: true,
-//     },
-//     {
-//         path: '/profile',
-//         block: Pages.Profile,
-//         shouldAuthorized: true,
-//     },
-//     {
-//         path: '*',
-//         block: Pages.SignIn,
-//         shouldAuthorized: false,
-//     },
-//     {
-//         path: '/error',
-//         block: Pages.Error,
-//         shouldAuthorized: false,
-//     },
-// ];

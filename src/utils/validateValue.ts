@@ -35,8 +35,7 @@ const validationRules: { [type: string]: { [pattern: string]: string } } = {
         '^(?=.*[-_a-zA-Z])[-_a-zA-Z0-9]+$': 'не может состоять полностью из цифр',
     },
     [ValidationType.INPUT_LOGIN_SEARCH]: {
-        '^[-_a-zA-Z0-9]+$': 'латиница, цифры, дефис и нижнее подчеркивание',
-        '^(?=.*[-_a-zA-Z])[-_a-zA-Z0-9]+$': 'не может состоять полностью из цифр',
+        '^[-_a-zA-Z0-9]*$': 'латиница, цифры, дефис и нижнее подчеркивание',
     },
     [ValidationType.INPUT_PASSWORD]: {
         [EMPTY.pattern]: EMPTY.message,

@@ -11,8 +11,12 @@ export const changeProfile = async (
 
     if (apiHasError(responseUser)) {
         console.log('---ERROR changeProfile', responseUser.reason);
+        alert('Ошибка');
+
         return;
     }
+
+    alert('Данные сохранены');
 
     dispatch({ user: transformUser(responseUser as UserDTO) });
 };
@@ -26,6 +30,8 @@ export const changeAvatar = async (
 
     if (apiHasError(responseUser)) {
         console.log('---ERROR changeAvatar', responseUser.reason);
+        alert('Ошибка');
+
         return;
     }
 

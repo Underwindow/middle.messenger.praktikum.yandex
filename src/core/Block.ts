@@ -228,6 +228,12 @@ export default abstract class Block<P extends Props = {}> {
     //     this.state = {};
     // }
 
+    getRefs<Ref = Block>(ref: Block | Block[]): Ref[] | undefined {
+        const refs = (Array.isArray(ref) ? ref : [ref]) as Ref[];
+
+        return refs;
+    }
+
     setState = (nextState: any) => {
         if (!nextState) {
             return;

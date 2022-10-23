@@ -1,4 +1,3 @@
-import OnboardingPage from 'pages/onboarding';
 import { SignInPage } from 'pages/login';
 import { SignUpPage } from 'pages/login';
 import { Messenger } from 'pages/messenger';
@@ -7,15 +6,13 @@ import { Profile } from 'pages/profile';
 
 
 export enum Screens {
-    Onboarding = 'onboadring',
-    SignIn = 'sign-in',
+    SignIn = '',
     SignUp = 'sign-up',
     Messenger = 'messenger',
-    Profile = "profile"
+    Profile = "settings"
 }
 
 const map: Record<Screens, BlockClass<any>> = {
-    [Screens.Onboarding]: OnboardingPage,
     [Screens.SignIn]: SignInPage,
     [Screens.SignUp]: SignUpPage,
     [Screens.Messenger]: Messenger,
