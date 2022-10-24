@@ -11,7 +11,7 @@ export interface HeaderProps extends Props {
 }
 
 export default class Header extends Block<HeaderProps> {
-    static readonly NAME: string = 'Header';
+    static readonly componentName: string = 'Header';
 
     readonly titleClicked = new CustomEvent('titleClicked', {
         bubbles: false,
@@ -30,6 +30,8 @@ export default class Header extends Block<HeaderProps> {
 
     subscribeOnTitle() {
         const titleBtn = this.element?.querySelector('.header__title-container') as HTMLButtonElement;
+
+        if (!titleBtn) return;
 
         if (!this.props.onClick) {
             titleBtn.disabled = true;

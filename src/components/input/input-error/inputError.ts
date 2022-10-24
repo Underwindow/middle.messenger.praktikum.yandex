@@ -6,15 +6,13 @@ export interface InputErrorProps extends Props {
 }
 
 export default class InputError extends Block<InputErrorProps> {
-    static NAME = 'InputError';
+    static readonly componentName = 'InputError';
 
     constructor(props: InputErrorProps) {
         super({ ...props });
     }
 
     protected render(): string {
-        console.log('render', this.constructor.name, this.id);
-
         // language=hbs
         return `
         <div class="input__error">

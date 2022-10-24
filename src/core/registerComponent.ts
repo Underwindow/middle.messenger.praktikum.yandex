@@ -3,13 +3,13 @@ import Block from './Block';
 
 interface BlockConstructable<P extends Props = {}, IncomingProps = Props> {
     new(props: IncomingProps): Block<P>;
-    readonly NAME: string;
+    componentName: string;
 }
 
 /* eslint-disable-next-line */
 export default function registerComponent<P extends Props = {}, IncomingProps extends Props = {}>(Component: BlockConstructable<P, IncomingProps>) {
     Handlebars.registerHelper(
-        Component.NAME,
+        Component.componentName,
         function parseComponents(this: Props, { hash: { ref, ...hash }, data, fn }: HelperOptions) {
             const root = { ...data.root };
 
@@ -21,8 +21,12 @@ export default function registerComponent<P extends Props = {}, IncomingProps ex
                 root.refs = {};
             }
 
-            const { children, refs } = root;
-            const hashTemp = hash;
+            const { children, refs }: {
+                children: { [id: string]: Block<P> },
+                refs: { [key: string]: Block<P> | Block<P>[] }
+            } = root;
+
+            const hashTemp = { ...hash };
 
             (Object.keys(hashTemp) as any).forEach((key: keyof Props) => {
                 if (this[key] && typeof this[key] === 'string') {
@@ -36,9 +40,11 @@ export default function registerComponent<P extends Props = {}, IncomingProps ex
 
             if (ref) {
                 if (refs[ref]) {
-                    const oldRefs: Block[] = [...(Array.isArray(refs[ref])
-                        ? refs[ref]
-                        : [refs[ref]]) as Block[]];
+                    const oldRefs = (
+                        Array.isArray(refs[ref])
+                            ? refs[ref]
+                            : [refs[ref]]
+                    ) as Block<P>[];
 
                     refs[ref] = [...oldRefs, component];
                 } else {

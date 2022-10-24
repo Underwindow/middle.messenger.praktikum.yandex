@@ -1,55 +1,68 @@
 import './input.css';
 import Block from 'core/Block';
-import { validateValue, ValidationType } from 'helpers/validateValue';
+import { validateValue, ValidationType } from 'utils/validateValue';
 import InputField, { InputFieldProps } from './input-field/inputField';
 import { InputError } from './input-error';
 
 export interface InputProps extends InputFieldProps {
     icon?: string;
     validationType?: ValidationType;
+    onEnter?: Callback;
 }
 
 export default class Input extends Block<InputProps> {
-    static readonly NAME: string = 'Input';
+    static readonly componentName: string = 'Input';
 
-    static fieldsetValidate(fieldset: Input[]): boolean {
-        let success = true;
+    static trasformFieldset<TData = Indexed>(fieldset: Input[]): TData {
+        return fieldset.reduce((data, input) => {
+            /* eslint-disable-next-line */
+            data[input.name] = input.value;
+            return data;
+        }, {} as Indexed) as TData;
+    }
+
+    static validateFieldset(fieldset: Input[]): boolean {
+        let isValid = true;
 
         fieldset.forEach((input) => {
             const validationError = input.validate();
 
-            if (validationError) success = false;
+            if (validationError) isValid = false;
         });
 
-        console.log(`Validation ${success ? 'success' : 'failed'}`);
+        console.log(`Validation ${isValid ? 'success' : 'failed'}`);
 
-        return success;
+        return isValid;
     }
 
     private readonly _inputEl: HTMLInputElement;
 
-    constructor({ validationType, ...props }: InputProps) {
+    constructor({
+        onInput, onFocus, onKeydown, onEnter, validationType, ...props
+    }: InputProps) {
         super({
             ...props,
             validationType,
             error: '',
-            onInput: () => {
-                this.validate();
-            },
-            onFocus: () => {
-                this.validate();
-            },
+            onInput: onInput || (() => this.validate()),
+            onFocus: onFocus || (() => {
+                if (!this._inputEl.value) this.setErrorMessage('');
+                else this.validate();
+            }),
             onBlur: () => {
-                this.setErrorMessage('');
+                if (!this._inputEl.value) this.setErrorMessage('');
             },
+            onEnter,
             onKeydown: (e: KeyboardEvent) => {
                 if (e.key === 'Enter') {
+                    e.preventDefault();
+
                     console.log('Enter submit check');
 
-                    const validationError = this.validate();
-
-                    if (validationError) {
-                        e.preventDefault();
+                    if (onEnter) {
+                        onEnter(e);
+                    } else {
+                        this.validate();
                     }
                 }
             },
@@ -62,6 +75,10 @@ export default class Input extends Block<InputProps> {
         return this._inputEl.value;
     }
 
+    set value(value: string) {
+        this._inputEl.value = value;
+    }
+
     get name(): string {
         return this._inputEl.name;
     }
@@ -71,7 +88,7 @@ export default class Input extends Block<InputProps> {
         errorRef.setProps({ text: errorMessage });
     }
 
-    validate(): string {
+    validate(): string | null {
         const { validationType } = this.props;
 
         if (!validationType) return '';
@@ -84,18 +101,16 @@ export default class Input extends Block<InputProps> {
             this.setErrorMessage();
         }
 
-        console.log(
-            `name: ${this._inputEl.name}`,
-            `value: ${this._inputEl.value}`,
-            errorMessage ? `error: ${errorMessage}` : 'success',
-        );
+        // console.log(
+        //     `name: ${this._inputEl.name}`,
+        //     `value: ${this._inputEl.value}`,
+        //     errorMessage ? `error: ${errorMessage}` : 'success',
+        // );
 
         return errorMessage;
     }
 
     protected render(): string {
-        console.log('render', this.constructor.name, this.id);
-
         // language=hbs
         return `
         <div class="input back-panel">

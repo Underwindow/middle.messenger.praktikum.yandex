@@ -12,3 +12,7 @@
   border: none;
   text-decoration: none;
 }
+
+.button__button-icon[disabled] {
+  opacity: 0.75;
+}

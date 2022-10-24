@@ -1,0 +1,51 @@
+.newchat {
+  position: absolute;
+  background: var(--bg-alpha);
+  flex-flow: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 100000000000000000;
+}
+
+.newchat__header {
+  flex: 0 1 9.26vh;
+  font-size: clamp(23px, 2vw, 4vh);
+  color: var(--white);
+}
+
+.newchat__form {
+  flex: 1 1 auto;
+  flex-flow: column;
+  position: relative;
+  width: calc(25vw);
+  background: var(--fg);
+  min-width: 250px;
+  padding: 4vh;
+}
+
+.newchat__input {
+  width: 100%;
+  margin: 1vh 0;
+}
+
+.newchat__footer {
+  flex: 0 1 auto;
+  flex-flow: column;
+  padding: 4 0 0;
+  margin: 2vh 0;
+  width: 100%;
+}
+
+.newchat__button {
+  width: 100%;
+  height: auto;
+}
+
+.newchat__cancel {
+  position: relative;
+  cursor: pointer;
+  float: right;
+  text-align: center;
+  z-index: 100000000000000000;
+}

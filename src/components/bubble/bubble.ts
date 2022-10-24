@@ -1,18 +1,38 @@
 import './bubble.css';
 import Block from 'core/Block';
+import { getUser } from 'services';
 
 export interface BubbleProps extends Props {
-    isIn?: boolean
-    message?: string
-    time?: string
-    name?: string
+    userId: number,
+    isIn: boolean,
+    message: string,
+    time: string,
+    name?: string,
 }
 
 export default class Bubble extends Block<BubbleProps> {
-    static readonly NAME: string = 'Bubble';
+    static readonly componentName: string = 'Bubble';
 
     constructor(props: BubbleProps) {
-        super({ ...props });
+        super(props);
+
+        if (!props.name) {
+            getUser(props.userId).then((user) => {
+                if (user) {
+                    this.setProps({
+                        name: user.displayName ? user.displayName : user.login,
+                    });
+                }
+            });
+        }
+    }
+
+    get userId(): number {
+        return this.props.userId;
+    }
+
+    get name(): string | undefined {
+        return this.props.name;
     }
 
     protected render(): string {

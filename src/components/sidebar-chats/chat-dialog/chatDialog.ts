@@ -2,17 +2,18 @@ import './chatDialog.css';
 import Block from 'core/Block';
 
 export interface ChatDialogProps extends Props {
-    chatName?: string
-    time?: string
-    lastMessage?: string
-    badge?: string
-    avatarSrc?: string
-    chatIsOpen?: string
-    onClick?: Callback
+    chatId?: number,
+    chatName?: string,
+    time?: string,
+    lastMessage?: string,
+    badge?: number,
+    avatarSrc?: string,
+    chatIsOpen?: string,
+    onClick?: Callback,
 }
 
 export default class ChatDialog extends Block<ChatDialogProps> {
-    static readonly NAME: string = 'ChatDialog';
+    static readonly componentName: string = 'ChatDialog';
 
     static readonly activeClassName: string = 'chat-active__text';
 
@@ -24,6 +25,10 @@ export default class ChatDialog extends Block<ChatDialogProps> {
                 click: onClick,
             },
         });
+    }
+
+    getId(): number | undefined {
+        return this.props.chatId;
     }
 
     setActive(value = true) {

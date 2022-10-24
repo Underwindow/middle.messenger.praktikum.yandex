@@ -1,0 +1,12 @@
+.chat-actions-container {
+  position: relative;
+  flex-flow: column;
+  background-color: var(--fg);
+  justify-content: space-between;
+  padding: 0 0 2vh;
+}
+
+.chat-actions__buton {
+  width: auto;
+  padding: 2vh 0 0;
+}

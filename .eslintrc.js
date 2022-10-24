@@ -9,6 +9,7 @@ module.exports = {
     rules: {
         'linebreak-style': ['error', process.env.NODE_ENV === 'prod' ? 'unix' : 'windows'],
         'no-console': 'off',
+        'no-alert': 'off',
         'no-underscore-dangle': 0,
         'class-methods-use-this': ['error', {
             exceptMethods: [
@@ -19,7 +20,13 @@ module.exports = {
                 '_componentDidMount',
                 'componentDidUpdate',
                 '_componentDidUpdate',
+                'componentWillUnmount',
+                'getRefs',
                 '_compile',
+                '_fixPath',
+                'back',
+                'forward',
+                '_searchUsers',
             ],
         }],
         'no-restricted-exports': ['error', { restrictedNamedExports: [] }],

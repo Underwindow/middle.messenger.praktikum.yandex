@@ -6,3 +6,7 @@
   flex: 1 1 auto;
   position: relative;
 }
+
+.sidebar__chats-stub {
+  margin: 4vh 0;
+}

@@ -7,45 +7,31 @@ export interface SidebarChatsProps extends Props {
 }
 
 export default class SidebarChats extends Block<SidebarChatsProps> {
-    static readonly NAME = 'SidebarChats';
-
-    chatClicked = new CustomEvent('chatClicked', {
-        bubbles: false,
-        detail: { id: () => this._activeChat!.id },
-    });
+    static readonly componentName = 'SidebarChats';
 
     constructor({ chatsProps }: SidebarChatsProps) {
         super({
             chatsProps,
         });
-
-        this.subscribeOnChats();
     }
 
-    subscribeOnChats() {
+    selectChat(id: number) {
         const chats = this.refs.chats as ChatDialog[];
 
-        if (!chats) return;
+        const selectedChat = chats.find((chat) => chat.getId() === id);
 
-        chats.forEach((chat) => {
-            chat.setProps({
-                events: {
-                    click: (e: Event) => { this._onChatClick(e, chat); },
-                },
-            });
-        });
+        this._onChatClick(selectedChat!);
     }
 
     private _activeChat?: ChatDialog;
 
-    private _onChatClick(e: Event, chat: ChatDialog) {
+    private _onChatClick(chat: ChatDialog) {
         if (this._activeChat) {
             this._activeChat.setActive(false);
         }
 
         this._activeChat = chat;
         this._activeChat.setActive(true);
-        this.element?.dispatchEvent(this.chatClicked);
     }
 
     protected render() {
@@ -55,9 +41,11 @@ export default class SidebarChats extends Block<SidebarChatsProps> {
         return `
         <div class="sidebar__chats">
             <div class="scrollable-y">
+            {{#if chatsProps}}
                 {{#each chatsProps}}
                     {{#with this}}
                         {{{ChatDialog
+                            chatId=chatId
                             ref="chats"
                             onClick=onClick
                             avatarSrc=avatarSrc 
@@ -68,6 +56,11 @@ export default class SidebarChats extends Block<SidebarChatsProps> {
                         }}}
                     {{/with}}                
                 {{/each}}
+            {{else}}
+            <div class="sidebar__chats-stub grey content-center">
+                У вас нет чатов :(
+            </div>
+            {{/if}}
             </div>
         </div>
     `;

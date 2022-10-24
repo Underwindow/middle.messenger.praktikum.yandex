@@ -1,0 +1,60 @@
+.chat-action-form {
+  position: absolute;
+  background: var(--bg-alpha);
+  flex-flow: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 100000000000000000;
+}
+
+.chat-action-form__header {
+  flex: 0 1 9.26vh;
+  font-size: clamp(23px, 2vw, 4vh);
+  color: var(--white);
+}
+
+.chat-action-form__form {
+  flex: 1 1 auto;
+  flex-flow: column;
+  position: relative;
+  width: calc(25vw);
+  background: var(--fg);
+  min-width: 250px;
+  padding: 4vh;
+}
+
+.chat-action-form__users-list {
+  width: 100%;
+  max-height: 765px;
+  align-items: center;
+  box-sizing: inherit;
+  flex: 1 1 auto;
+  position: relative;
+}
+
+.chat-action-form__input {
+  width: 100%;
+  margin: 1vh 0;
+}
+
+.chat-action-form__footer {
+  flex: 0 1 auto;
+  flex-flow: column;
+  padding: 4 0 0;
+  margin: 2vh 0;
+  width: 100%;
+}
+
+.chat-action-form__button {
+  width: 100%;
+  height: auto;
+}
+
+.chat-action-form__cancel {
+  position: relative;
+  cursor: pointer;
+  float: right;
+  text-align: center;
+  z-index: 100000000000000000;
+}

@@ -42,7 +42,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   width: auto;
-  max-width: 12ch;
   display: flex;
   justify-content: center;
   padding: 0.11vh 1.29vh;

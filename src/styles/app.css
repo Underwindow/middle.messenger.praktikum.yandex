@@ -71,13 +71,29 @@ button:disabled {
   color: var(--white);
 }
 
+.grey {
+  color: var(--grey);
+}
+
 .color-hint {
   color: var(--hint);
+}
+
+.color-error {
+  color: var(--error);
 }
 
 .screen {
   width: 100vw;
   height: 100vh;
+}
+
+.absolute {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
 }
 
 .whole {
