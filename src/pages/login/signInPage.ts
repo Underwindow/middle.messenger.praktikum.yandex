@@ -4,8 +4,8 @@ import { CoreRouter, Store } from 'core';
 import { Input } from 'components/input';
 import { ValidationType } from 'utils/validateValue';
 import { login } from 'services';
-import { Screens, withRouter, withStore } from 'utils';
 import { LoginRequestData } from 'api';
+import { Screens, withRouter, withStore } from 'utils';
 
 type SignInPageProps = {
     router: CoreRouter;

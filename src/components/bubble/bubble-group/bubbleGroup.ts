@@ -14,7 +14,7 @@ export default class BubbleGroup extends Block<BubbleGroupProps> {
         return this.getRefs<Bubble>(this.refs.bubblesRef);
     }
 
-    protected render(): string {        
+    protected render(): string {
         // language=hbs
         return `
         <section class="bubbles-group">

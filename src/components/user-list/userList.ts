@@ -1,6 +1,5 @@
 import UserListItem, { UserListItemProps } from 'components/user-list-item/userListItem';
 import { Block } from 'core';
-import './userList.css';
 
 export interface UserListProps extends Props {
     usersList?: UserListItemProps[],

@@ -1,6 +1,6 @@
 import { CoreRouter } from 'core';
 
-export class PathRouter implements CoreRouter {
+export default class PathRouter implements CoreRouter {
     private routes: Record<string, Function> = {};
 
     private isStarted = false;
@@ -9,7 +9,7 @@ export class PathRouter implements CoreRouter {
         if (!this.isStarted) {
             this.isStarted = true;
 
-            window.onpopstate = (event: PopStateEvent) => {
+            window.onpopstate = () => {
                 this._onRouteChange.call(this);
             };
 
@@ -31,28 +31,27 @@ export class PathRouter implements CoreRouter {
         }
     }
 
-    private _fixPath = (pathname: string, prefix: string = '/'): string => {
+    private _fixPath(pathname: string, prefix: string = '/'): string {
         if (!pathname) {
             return prefix;
         }
-        else {
-            return pathname[0] !== prefix ? prefix + pathname : pathname;
-        }
-    };
+
+        return pathname[0] !== prefix ? prefix + pathname : pathname;
+    }
 
     use(path: string, callback: Function) {
-        path = this._fixPath(path);
+        const fixedPath = this._fixPath(path);
 
-        this.routes[path] = callback;
-        
+        this.routes[fixedPath] = callback;
+
         return this;
     }
 
     go(path: string) {
-        path = this._fixPath(path);
+        const fixedPath = this._fixPath(path);
 
-        window.history.pushState({}, '', path);
-        this._onRouteChange(path);
+        window.history.pushState({}, '', fixedPath);
+        this._onRouteChange(fixedPath);
     }
 
     back() {

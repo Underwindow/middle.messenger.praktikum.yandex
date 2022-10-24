@@ -34,7 +34,7 @@ export default class InputField extends Block<InputFieldProps> {
     }
 
     protected render(): string {
-        const display = `display: ${this.props.display}`;  
+        const display = `display: ${this.props.display}`;
 
         // language=hbs
         return `

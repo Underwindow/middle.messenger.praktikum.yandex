@@ -6,11 +6,14 @@ import { ValidationType } from 'utils/validateValue';
 import ButtonIcon, { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { Chat } from 'components/chat';
 import { ChatDialogProps } from 'components/sidebar-chats/chat-dialog/chatDialog';
-import { nanoid } from 'nanoid';
-import { Screens, withRouter, withStore, withUser } from 'utils';
-import { createChat, getChats, getUser, logout } from 'services';
+import {
+    Screens, withRouter, withStore, withUser,
+} from 'utils';
+import {
+    createChat, getChats, logout,
+} from 'services';
 import { NewChatForm } from 'components/new-chat';
-import { connectUserToChat, getChatToken, getChatUsers } from 'services/chats';
+import { connectUserToChat, getChatToken } from 'services/chats';
 import { BubbleProps } from 'components/bubble/bubble';
 import { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
 
@@ -55,6 +58,7 @@ export class Messenger extends Block<MessengerProps> {
                 chatForm.show();
             },
             onAddChatSubmit: (e: Event) => {
+                /* eslint-disable-next-line */
                 e.preventDefault;
 
                 const chatForm = (this.refs.newChatFormRef as NewChatForm);
@@ -62,13 +66,12 @@ export class Messenger extends Block<MessengerProps> {
 
                 createChat({ title: input.value })
                     .then((chat) => {
-                        if (!chat)
-                            return;
+                        if (!chat) return;
 
                         chatForm.hide();
                         this._initChats(true);
                     });
-            }
+            },
         });
     }
 
@@ -77,7 +80,7 @@ export class Messenger extends Block<MessengerProps> {
             .then((userChats) => {
                 const chats = this.refs.sidebarChatsRef as SidebarChats;
 
-                const chatsProps = userChats!.map(chat => {
+                const chatsProps = userChats!.map((chat) => {
                     const tempChatProp: ChatDialogProps = {
                         chatId: chat.id,
                         chatName: chat.title,
@@ -90,11 +93,11 @@ export class Messenger extends Block<MessengerProps> {
 
                             chats.selectChat(chat.id);
                             this._initChat(chat);
-                        }
+                        },
                     };
 
                     return tempChatProp;
-                })
+                });
 
                 chats.setProps({ chatsProps });
             });
@@ -106,7 +109,7 @@ export class Messenger extends Block<MessengerProps> {
         }
 
         return getChats({ offset, limit, title }).then((userChats) => {
-            this.props.store.dispatch({ userChats: userChats });
+            this.props.store.dispatch({ userChats });
             return userChats;
         });
     }
@@ -120,27 +123,29 @@ export class Messenger extends Block<MessengerProps> {
         return props;
     }
 
-    private _initChat(chatData: UserChat) {
+    private _initChat(userChat: UserChat) {
         const chat = this.refs.chatRef as Chat;
 
-        getChatToken(chatData.id).then((token) => {
+        getChatToken(userChat.id).then((token) => {
             if (!token) {
-                alert('Ошибка открытия чата');
-                return null;
+                return;
             }
 
-            this._chatSocket = connectUserToChat(this.props.user!.id, chatData.id, token,
-                (messages) => {
-                    this._onMessage(chat, messages);
-                }
+            const userId = this.props.user!.id;
+
+            this._chatSocket = connectUserToChat(
+                userId,
+                userChat.id,
+                token,
+                (messages) => this._onMessage(chat, messages),
             );
-            
+
             chat.setProps({
                 socket: this._chatSocket,
-                chatId: chatData?.id,
-                title: chatData?.title,
-                avatar: chatData.avatar,
-            })
+                chatId: userChat?.id,
+                title: userChat?.title,
+                avatar: userChat.avatar,
+            });
 
             chat.getStub().hide();
         });
@@ -156,14 +161,14 @@ export class Messenger extends Block<MessengerProps> {
                 time: message.time,
                 userId: message.userId,
                 name: '',
-            }
+            };
             return bubble;
         });
 
         const bubbleGroup: BubbleGroupProps = {
             bubblesDate: new Date().toLocaleDateString(),
             bubbleProps: bubbles,
-        }
+        };
 
         console.log('here', bubbleGroup);
 

@@ -11,6 +11,7 @@ export interface UserListItemProps extends Props {
 
 export default class UserListItem extends Block<UserListItemProps> {
     static readonly componentName: string = 'UserListItem';
+
     static readonly activeClassName: string = 'item-active__text';
 
     constructor(props: UserListItemProps) {
@@ -24,17 +25,16 @@ export default class UserListItem extends Block<UserListItemProps> {
 
     getLogin(): string | undefined {
         return this.props.login;
-    } 
+    }
 
     getId(): number | undefined {
         return this.props.userId;
-    } 
+    }
 
     setActive(value = true) {
-        if (this.props.selected)
-            value = false;
+        const active = this.props.selected ? false : value;
 
-        this.props.selected = value ? UserListItem.activeClassName : '';
+        this.props.selected = active ? UserListItem.activeClassName : '';
     }
 
     protected render(): string {

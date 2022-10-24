@@ -1,5 +1,13 @@
-import { APIError, apiHasError, ChatDTO, ChatMessageDTO, chats, GetChatsRequestData, GetChatUsersRequestData, transformChat, transformChatMessage, transformChatUser } from "api";
-import { Dispatch } from "core";
+import {
+    chats,
+    apiHasError,
+    GetChatsRequestData,
+    GetChatUsersRequestData,
+    ChatMessageDTO,
+    transformChat,
+    transformChatMessage,
+    transformChatUser,
+} from 'api';
 
 export const createChat = async (
     action: { title: string },
@@ -27,7 +35,7 @@ export const getChats = async (
         return null;
     }
 
-    const userChats = response.map(chatDTO => transformChat(chatDTO));
+    const userChats = response.map((chatDTO) => transformChat(chatDTO));
 
     return userChats;
 };
@@ -43,14 +51,14 @@ export const getChatUsers = async (
         return null;
     }
 
-    const chatUsers = responseChatUsers.map(chatUserDTO => transformChatUser(chatUserDTO));
+    const chatUsers = responseChatUsers.map((chatUserDTO) => transformChatUser(chatUserDTO));
 
     return chatUsers;
 };
 
 export const addChatUsers = async (
     action: { users: number[], chatId: number },
-): Promise<null | APIError> => {
+): Promise<null | {}> => {
     const response = await chats.addUsers(action);
 
     if (apiHasError(response)) {
@@ -67,7 +75,7 @@ export const addChatUsers = async (
 
 export const deleteChatUsers = async (
     action: { users: number[], chatId: number },
-): Promise<null | APIError> => {
+): Promise<null | {}> => {
     const response = await chats.deleteUsers(action);
 
     if (apiHasError(response)) {
@@ -99,18 +107,18 @@ export const getChatToken = async (
 const socketPingInterval: number = 5000;
 
 export const connectUserToChat = (
-    userId: number, chatId: number, token: string, 
+    userId: number,
+    chatId: number,
+    token: string,
     onMessage?: (messages: ChatMessage[]) => void,
 ): WebSocket => {
     const socket = chats.initSocket(userId, chatId, token);
 
     socket.onmessage = (event) => {
-
         const data = JSON.parse(event.data);
         console.log('Получено сообщение', data);
-        
-        if (data.type === 'error' || data.type === 'user connected')
-            return;
+
+        if (data.type === 'error' || data.type === 'user connected') return;
 
         const chatMessagesDTO = Array.isArray(data)
             ? data.map((message) => message as ChatMessageDTO)
@@ -118,17 +126,15 @@ export const connectUserToChat = (
 
         const messages = chatMessagesDTO
             .map((chatMessageDTO) => transformChatMessage(chatMessageDTO))
-            .filter(message => message.content)
+            .filter((message) => message.content)
             .reverse();
 
-        if (onMessage && messages.length > 0)
-            onMessage(messages);
+        if (onMessage && messages.length > 0) onMessage(messages);
     };
 
     const intervalID = setInterval(() => {
         socket.send('');
         console.log('ping');
-
     }, socketPingInterval);
 
     socket.onclose = (event) => {
@@ -152,9 +158,7 @@ export const connectUserToChat = (
     return socket;
 };
 
-export const sendMessage = (
-    message: string, socket: WebSocket
-): void => {
+export const sendMessage = (message: string, socket: WebSocket): void => {
     socket.send(JSON.stringify({
         content: message,
         type: 'message',

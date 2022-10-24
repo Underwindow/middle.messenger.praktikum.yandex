@@ -14,12 +14,11 @@ export default class Input extends Block<InputProps> {
     static readonly componentName: string = 'Input';
 
     static trasformFieldset<TData = Indexed>(fieldset: Input[]): TData {
-        return fieldset.reduce(
-            (data, input) => {
-                data[input.name] = input.value;
-                return data;
-            }, {} as Indexed
-        ) as TData;
+        return fieldset.reduce((data, input) => {
+            /* eslint-disable-next-line */
+            data[input.name] = input.value;
+            return data;
+        }, {} as Indexed) as TData;
     }
 
     static validateFieldset(fieldset: Input[]): boolean {
@@ -38,27 +37,22 @@ export default class Input extends Block<InputProps> {
 
     private readonly _inputEl: HTMLInputElement;
 
-    constructor({ onInput, onFocus, onKeydown, onEnter, validationType, ...props }: InputProps) {
+    constructor({
+        onInput, onFocus, onKeydown, onEnter, validationType, ...props
+    }: InputProps) {
         super({
             ...props,
             validationType,
             error: '',
-            onInput: onInput
-                ? onInput
-                : () => this.validate(),
-            onFocus: onFocus
-                ? onFocus
-                : () => {
-                    if (!this._inputEl.value)
-                        this.setErrorMessage('');
-                    else
-                        this.validate();
-                },
+            onInput: onInput || (() => this.validate()),
+            onFocus: onFocus || (() => {
+                if (!this._inputEl.value) this.setErrorMessage('');
+                else this.validate();
+            }),
             onBlur: () => {
-                if (!this._inputEl.value)
-                    this.setErrorMessage('');
+                if (!this._inputEl.value) this.setErrorMessage('');
             },
-            onEnter: onEnter,
+            onEnter,
             onKeydown: (e: KeyboardEvent) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -67,8 +61,7 @@ export default class Input extends Block<InputProps> {
 
                     if (onEnter) {
                         onEnter(e);
-                    }
-                    else {
+                    } else {
                         this.validate();
                     }
                 }

@@ -17,7 +17,7 @@ export default class Logo extends Block {
     render() {
         // language=hbs
         return `
-        <div class="logo{{#if black}} logo_type_black{{/if}}">
+        <div class="logo{{#if black}} logo__logo-black{{/if}}">
             <div class="logo__top"></div>
             <div class="logo__left"></div>
             <div class="logo__right"></div>

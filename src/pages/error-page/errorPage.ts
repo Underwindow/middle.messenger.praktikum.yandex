@@ -19,7 +19,7 @@ export default class ErrorPage extends Block<ErrorProps> {
     };
 
     constructor({ ...props }: ErrorProps) {
-        super({ 
+        super({
             ...props,
             text: 'Вернуться на главную',
             onClick: () => renderDOM(new Messenger()),

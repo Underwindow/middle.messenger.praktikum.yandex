@@ -10,10 +10,6 @@ export interface ChatActionsProps extends Props {
 export default class ChatActions extends Block<ChatActionsProps> {
     static readonly componentName: string = 'ChatActions';
 
-    constructor(props: ChatActionsProps) {
-        super(props);
-    }
-
     protected render(): string {
         // language=hbs
         return `

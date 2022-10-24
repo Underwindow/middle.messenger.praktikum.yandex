@@ -25,8 +25,11 @@ export default abstract class Block<P extends Props = {}> {
     private _element: Nullable<HTMLElement> = null;
 
     protected readonly props: P;
+
     protected state: Record<string, unknown> = {};
+
     protected children: { [id: string]: Block } = {};
+
     protected refs: { [key: string]: Block<Props> | Block<Props>[] } = {};
 
     eventBus: () => EventBus<Events>;
@@ -46,6 +49,7 @@ export default abstract class Block<P extends Props = {}> {
         eventBus.emit(Block.EVENTS.INIT, this.props);
     }
 
+    /* eslint-disable-next-line */
     protected getStateFromProps(props?: P): void {
         this.state = {};
     }
@@ -132,11 +136,11 @@ export default abstract class Block<P extends Props = {}> {
 
     protected componentDidUpdate(oldProps: P, newProps: P): boolean {
         if (oldProps !== newProps) {
-            Object.keys(this.children).forEach(id => {
+            Object.keys(this.children).forEach((id) => {
                 this.children[id]._removeEvents();
                 delete this.children[id];
             });
-            Object.keys(this.refs).forEach(key => delete this.refs[key]);
+            Object.keys(this.refs).forEach((key) => delete this.refs[key]);
 
             return true;
         }
@@ -165,7 +169,7 @@ export default abstract class Block<P extends Props = {}> {
             ...this.state,
             ...this.props,
             children: this.children,
-            refs: this.refs
+            refs: this.refs,
         });
 
         Object.entries(this.children).forEach(([id, component]) => {
@@ -224,15 +228,11 @@ export default abstract class Block<P extends Props = {}> {
         }
     };
 
-    // protected getStateFromProps(props: any): void {
-    //     this.state = {};
-    // }
-
-    getRefs<Ref = Block>(ref: Block | Block[]): Ref[] | undefined {
+    getRefs = <Ref = Block>(ref: Block | Block[]): Ref[] | undefined => {
         const refs = (Array.isArray(ref) ? ref : [ref]) as Ref[];
 
         return refs;
-    }
+    };
 
     setState = (nextState: any) => {
         if (!nextState) {

@@ -5,7 +5,9 @@ import { Input } from 'components/input';
 import { CoreRouter, Store } from 'core';
 import { ValidationType } from 'utils/validateValue';
 import { ButtonSecondary } from 'components/button/button-secondary';
-import { changeAvatar, changePassword, changeProfile, logout } from 'services';
+import {
+    changeAvatar, changePassword, changeProfile, logout,
+} from 'services';
 import { withRouter, withStore, withUser } from 'utils';
 import { ChangePasswordRequestData, ChangeProfileRequestData } from 'api';
 import { ImageUpload } from 'components/image-upload';
@@ -49,11 +51,11 @@ export class Profile extends Block<ProfilePageProps> {
             },
             onSaveAvatar: (e: Event) => {
                 e.preventDefault();
-                
+
                 const avatarInput = this.refs.avatarInputRef as ImageUpload;
 
                 if (avatarInput) {
-                    const file = avatarInput.fileList![0]; 
+                    const file = avatarInput.fileList![0];
                     console.log(file);
                     const formData = new FormData();
                     formData.append(avatarInput.name, file);
@@ -65,7 +67,7 @@ export class Profile extends Block<ProfilePageProps> {
                 const fieldset = this.refs.fieldsetRef as Input[];
                 const isValid = Input.validateFieldset(fieldset);
                 const profileData = Input.trasformFieldset<ChangeProfileRequestData>(fieldset);
-                
+
                 if (isValid) {
                     this.props.store.dispatch(changeProfile, profileData);
                 }
@@ -76,9 +78,9 @@ export class Profile extends Block<ProfilePageProps> {
                 const isValid = Input.validateFieldset(passwords);
 
                 if (isValid) {
-                    const requestData = Input.trasformFieldset<ChangePasswordRequestData>(passwords);
+                    const data = Input.trasformFieldset<ChangePasswordRequestData>(passwords);
 
-                    this.props.store.dispatch(changePassword, requestData);
+                    this.props.store.dispatch(changePassword, data);
                 }
             },
         });

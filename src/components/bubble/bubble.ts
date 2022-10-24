@@ -20,8 +20,8 @@ export default class Bubble extends Block<BubbleProps> {
             getUser(props.userId).then((user) => {
                 if (user) {
                     this.setProps({
-                        name: user.displayName ? user.displayName : user.login
-                    })
+                        name: user.displayName ? user.displayName : user.login,
+                    });
                 }
             });
         }

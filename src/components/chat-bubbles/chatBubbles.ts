@@ -19,28 +19,28 @@ export default class ChatBubbles extends Block<ChatBubblesProps> {
         const bubbleGroups = this.getRefs<BubbleGroup>(this.refs.bubbleGroupsRef);
 
         if (bubbleGroups) {
-            bubbleGroups.forEach(group => {
+            bubbleGroups.forEach((group) => {
                 group?.getBubbles()?.forEach((bubble) => {
-                    if (bubble.name)
-                        this.chatUsersCache[bubble.userId] = bubble.name;
-                })
-            })
+                    if (bubble.name) this.chatUsersCache[bubble.userId] = bubble.name;
+                });
+            });
         }
 
         const current = this.props.bubbleGroupProps;
 
-        const result = current? current.concat(bubbleGroupProps) : bubbleGroupProps;
+        const result = current ? current.concat(bubbleGroupProps) : bubbleGroupProps;
 
         result.forEach((groups) => {
             groups.bubbleProps?.forEach((bubbleProps) => {
+                /* eslint-disable-next-line */
                 bubbleProps.name = this.chatUsersCache[bubbleProps.userId];
-            })
+            });
         });
 
         console.log(result);
 
         this.setProps({
-            bubbleGroupProps: result
+            bubbleGroupProps: result,
         });
     }
 

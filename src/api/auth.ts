@@ -1,16 +1,16 @@
-import { http } from "utils";
-import { APIError, LoginRequestData, SignInResponseData, SignUpRequestData, SignUpResponseData, UserDTO } from "./types";
+import { http } from 'utils';
+import {
+    APIError, LoginRequestData, SignInResponseData, SignUpRequestData, SignUpResponseData, UserDTO,
+} from './types';
 
-export const auth = {
-    signUp: (data: SignUpRequestData) =>
-        http.post<SignUpResponseData>('auth/signup', data),
+const auth = {
+    signUp: (data: SignUpRequestData) => http.post<SignUpResponseData>('auth/signup', data),
 
-    signIn: (data: LoginRequestData) =>
-        http.post<SignInResponseData>('auth/signin', data),
+    signIn: (data: LoginRequestData) => http.post<SignInResponseData>('auth/signin', data),
 
-    user: () =>
-        http.get<UserDTO | APIError>('auth/user'),
+    user: () => http.get<UserDTO | APIError>('auth/user'),
 
-    logout: () =>
-        http.post('auth/logout'),
+    logout: () => http.post('auth/logout'),
 };
+
+export default auth;

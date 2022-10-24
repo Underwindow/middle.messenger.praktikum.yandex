@@ -5,11 +5,11 @@ type Route = {
     path: string,
     block: Screens,
     shouldAuthorized: boolean,
-}
+};
 
 const routes: Route[] = [
     {
-        path: `/`,
+        path: '/',
         block: Screens.SignIn,
         shouldAuthorized: false,
     },
@@ -29,14 +29,14 @@ const routes: Route[] = [
         shouldAuthorized: true,
     },
     {
-        path: `*`,
+        path: '*',
         block: Screens.Messenger,
         shouldAuthorized: true,
     },
 ];
 
-export function initRouter(router: CoreRouter, store: Store<AppState>) {
-    routes.forEach(route => {
+export default function initRouter(router: CoreRouter, store: Store<AppState>) {
+    routes.forEach((route) => {
         router.use(route.path, () => {
             const isAuthorized = Boolean(store.getState().user);
             const currentScreen = Boolean(store.getState().screen);

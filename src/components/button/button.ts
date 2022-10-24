@@ -24,9 +24,7 @@ export abstract class Button extends Block<ButtonProps> {
         `;
     }
 
-    
     get disabled() : boolean {
         return this.props.disabled!;
     }
-    
 }

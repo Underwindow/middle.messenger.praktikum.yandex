@@ -1,11 +1,10 @@
-import { apiHasError, auth, transformUser, UserDTO } from 'api';
+import {
+    apiHasError, auth, transformUser, UserDTO,
+} from 'api';
 import type { Dispatch } from 'core';
-import { Screens } from 'utils';
 
-export async function initApp(dispatch: Dispatch<AppState>) {
-
-    // Ручкая задержка для демонстрации загрузочного экрана
-    await new Promise(r => setTimeout(r, 700));
+export default async function initApp(dispatch: Dispatch<AppState>) {
+    // await new Promise((r) => setTimeout(r, 500));
 
     try {
         const response = await auth.user();

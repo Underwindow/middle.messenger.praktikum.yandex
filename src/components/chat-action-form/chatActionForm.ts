@@ -42,12 +42,13 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
     }
 
     private _inputTimeout?: NodeJS.Timeout;
+
     private _inputDelay: number = 700;
 
     private _selectedItems: number[] = [];
 
     private _updateUsersList(users: User[] = []) {
-        const usersList = users.map(user => {
+        const usersList = users.map((user) => {
             const userListItem: UserListItemProps = {
                 userId: user.id,
                 login: user.login,
@@ -55,20 +56,20 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
                 onClick: () => {
                     this._selectUser(user);
                     this._updateButton();
-                }
-            }
+                },
+            };
             return userListItem;
-        })
+        });
 
         const userListRef = this.refs.userListRef as UserList;
 
-        userListRef.setProps({ usersList: usersList });
+        userListRef.setProps({ usersList });
     }
 
     private _updateButton() {
         const submitBtn = this.refs.submitButtonRef as Button;
         submitBtn.setProps({
-            text: `${this.props.submitText}${this._selectionCount()}`
+            text: `${this.props.submitText}${this._selectionCount()}`,
         });
     }
 
@@ -78,11 +79,10 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
         const index = this._selectedItems.indexOf(user.id);
         const userSelected = index > -1;
 
-        userSelected
-            ? this._selectedItems.splice(index, 1)
-            : this._selectedItems.push(user.id);
+        if (userSelected) this._selectedItems.splice(index, 1);
+        else this._selectedItems.push(user.id);
 
-        usersList.find(userItem => userItem.getId() === user.id)
+        usersList.find((userItem) => userItem.getId() === user.id)
             ?.setActive(!userSelected);
 
         console.log(this._selectedItems);
@@ -113,6 +113,7 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
             ? ''
             : ` ${this._selectedItems.length}`;
     }
+
     protected render(): string {
         // language=hbs
         return `

@@ -32,9 +32,11 @@ export class SignUpPage extends Block<SignUpPageProps> {
                 const isValid = Input.validateFieldset([...fieldset, password, passwordRepeat]);
 
                 if (isValid) {
-                    password.value === passwordRepeat.value
-                        ? this.props.store.dispatch(signUp, this.state.signUpData)
-                        : passwordRepeat.setErrorMessage('пароли должны совпадать');
+                    if (password.value === passwordRepeat.value) {
+                        this.props.store.dispatch(signUp, this.state.signUpData);
+                    } else {
+                        passwordRepeat.setErrorMessage('пароли должны совпадать');
+                    }
                 }
             },
             onClick: () => {
@@ -54,14 +56,14 @@ export class SignUpPage extends Block<SignUpPageProps> {
                 phone: '',
                 password: '',
             },
-            repeatPassword: ''
+            repeatPassword: '',
         };
 
         if ((this.refs.passwordRef as Input)) {
-            const signUpFieldset = [...this.refs.fieldsetRef as Input[], this.refs.passwordRef as Input];
+            const fieldset = [...this.refs.fieldsetRef as Input[], this.refs.passwordRef as Input];
             const pwdRepeatInput = this.refs.passwordRepeatRef as Input;
-            
-            const signUpData = Input.trasformFieldset<SignUpRequestData>(signUpFieldset);
+
+            const signUpData = Input.trasformFieldset<SignUpRequestData>(fieldset);
 
             nextState.signUpData = signUpData;
             nextState.repeatPassword = pwdRepeatInput.value;
@@ -72,7 +74,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
 
     protected render() {
         const values = this.state.signUpData as SignUpRequestData;
-        const repeatPassword = this.state.repeatPassword;
+        const { repeatPassword } = this.state;
 
         // language=hbs
         return `

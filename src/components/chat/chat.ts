@@ -9,7 +9,9 @@ import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { ChatBubbles } from 'components/chat-bubbles';
 import { ChatActions } from 'components/chat-actions';
 import { ChatActionForm } from 'components/chat-action-form';
-import { addChatUsers, deleteChatUsers, getChatUsers, searchUsers, sendMessage } from 'services';
+import {
+    addChatUsers, deleteChatUsers, getChatUsers, searchUsers, sendMessage,
+} from 'services';
 
 interface ChatProps extends Props {
     chatId: number,
@@ -20,12 +22,13 @@ interface ChatProps extends Props {
     onAddUserClick?: Callback,
     onRemoveUserClick?: Callback,
     onSendMessage: Callback,
-};
+}
 
 export default class Chat extends Block<ChatProps> {
     static readonly componentName = 'Chat';
 
     private _currentUserId: number | undefined;
+
     private _actionsVisible: boolean = false;
 
     constructor(props: ChatProps) {
@@ -47,7 +50,7 @@ export default class Chat extends Block<ChatProps> {
                     'Добавить участников',
                     'Добавить',
                     this._searchUsers.bind(this, login),
-                    addChatUsers
+                    addChatUsers,
                 );
             },
             onRemoveUserClick: () => {
@@ -57,23 +60,24 @@ export default class Chat extends Block<ChatProps> {
                     'Исключить участников',
                     'Исключить',
                     this._getChatUsers.bind(this, props.chatId, 0, 10, username),
-                    deleteChatUsers
+                    deleteChatUsers,
                 );
             },
             onSendMessage: (e: Event) => {
                 e.preventDefault();
                 const messageBtn = this.refs.sendButtonRef as ButtonIcon;
-                const messageInput = this.refs.messageInputRef as Input;
 
-                this._sendMessage(messageInput, messageBtn);
+                this._sendMessage(messageBtn);
             },
         });
     }
 
     private _messageTimeout?: NodeJS.Timeout;
+
     private _messageDelay: number = 700;
 
-    private _sendMessage(messageInput: Input, messageBtn: ButtonIcon) {
+    private _sendMessage(messageBtn: ButtonIcon) {
+        const messageInput = this.refs.messageInputRef as Input;
         const isValid = Input.validateFieldset([messageInput]);
 
         if (isValid && !messageBtn.disabled) {
@@ -95,22 +99,24 @@ export default class Chat extends Block<ChatProps> {
         this._actionsVisible = !this._actionsVisible;
 
         if (this._actionsVisible) {
-            chatActions.show()
+            chatActions.show();
         } else {
             chatActions.hide();
         }
     }
 
-    private _initForm(title: string, submitText: string,
+    private _initForm(
+        title: string,
+        submitText: string,
         getUsers: Callback<Promise<User[] | null>>,
-        onSubmitChatRequest: Callback<Promise<{} | null>>) {
-
+        onSubmitChatRequest: Callback<Promise<{} | null>>,
+    ) {
         const form = this.refs.chatActionFormRef as ChatActionForm;
 
         form.setProps({
-            title: title,
-            submitText: submitText,
-            getUsers: getUsers,
+            title,
+            submitText,
+            getUsers,
             onSubmit: () => {
                 const selection = form.getSelected();
                 if (selection) {
@@ -129,24 +135,22 @@ export default class Chat extends Block<ChatProps> {
         return this.refs.chatActionFormRef as ChatActionForm;
     }
 
-    private _searchUsers(login?: () => string): Promise<User[] | null> {
+    private _searchUsers(login: () => string): Promise<User[] | null> {
         return searchUsers({
-            login: login ? login() : ''
+            login: login(),
         });
     }
 
     private _getChatUsers(chatId: number, offset: number = 0, limit: number = 10, name?: () => string, email: string = ''): Promise<User[] | null> {
         return getChatUsers({
             id: chatId,
-            offset: offset,
-            limit: limit,
+            offset,
+            limit,
             name: name ? name() : '',
-            email: email
-        }).then((chatUsers) => {
-            return chatUsers
-                ? chatUsers.filter(user => user.id !== this._currentUserId)
-                : null;
-        }) as Promise<User[] | null>;
+            email,
+        }).then((chatUsers) => (chatUsers
+            ? chatUsers.filter((user) => user.id !== this._currentUserId)
+            : null)) as Promise<User[] | null>;
     }
 
     getBubbles(): ChatBubbles {

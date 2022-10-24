@@ -1,5 +1,6 @@
-import { APIError, ChangePasswordRequestData, ChangeProfileRequestData, transformUser, user, UserDTO } from 'api';
-import { hasError as apiHasError } from 'api/apiHasError';
+import {
+    apiHasError, ChangePasswordRequestData, ChangeProfileRequestData, transformUser, user, UserDTO,
+} from 'api';
 import type { Dispatch } from 'core';
 
 export const changeProfile = async (
@@ -48,8 +49,7 @@ export const changePassword = async (
     if (apiHasError(response)) {
         console.log('---ERROR changePassword', response.reason);
         alert(response.reason);
-    }
-    else {
+    } else {
         alert('Пароль изменен');
     }
 };
@@ -76,11 +76,9 @@ export const searchUsers = async (
         console.log('---ERROR getUser', responseUsers.reason);
         return null;
     }
-    else {
-        const users = (responseUsers as UserDTO[])
-            .map(userDTO => transformUser(userDTO));
 
-        return users;
-    }
+    const users = (responseUsers as UserDTO[])
+        .map((userDTO) => transformUser(userDTO));
+
+    return users;
 };
-

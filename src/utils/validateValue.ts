@@ -9,20 +9,20 @@ export enum ValidationType {
     INPUT_MESSAGE = 'message',
 }
 
-export type ValidationRule = { 
-    pattern: string, 
-    message: string 
+export type ValidationRule = {
+    pattern: string,
+    message: string
 };
 
-const EMPTY: ValidationRule = { 
+const EMPTY: ValidationRule = {
     pattern: '^.+$',
     message: 'обязательно заполнить',
 };
-const NO_DIGITS: ValidationRule = { 
+const NO_DIGITS: ValidationRule = {
     pattern: '^[^0-9]*$',
     message: 'без цифр',
 };
-const NO_SPACES: ValidationRule = { 
+const NO_SPACES: ValidationRule = {
     pattern: '^[^ ]*$',
     message: 'без пробелов',
 };
@@ -74,17 +74,17 @@ const validationRules: { [type: string]: { [pattern: string]: string } } = {
 };
 
 export function validateValue(type: ValidationType, value: string): string | null {
+    function patternExists(souurce: string, pattern: string, flags?: string): boolean {
+        const regex = new RegExp(pattern, flags);
+        return regex.test(souurce);
+    }
+
     const rules = validationRules[type];
 
     const failedRule = Object
         .keys(rules)
-        .find(pattern => !patternExists(value, pattern, 'u'));
+        .find((pattern) => !patternExists(value, pattern, 'u'));
 
     const errorMsg = failedRule ? rules[failedRule] : null;
     return errorMsg;
-
-    function patternExists(value: string, pattern: string, flags?: string): boolean {
-        const regex = new RegExp(pattern, flags);
-        return regex.test(value);
-    }
 }

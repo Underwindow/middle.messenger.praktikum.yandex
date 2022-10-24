@@ -2,7 +2,7 @@ import { BlockClass } from 'core';
 
 type WithUserProps = { user: User | null };
 
-export function withUser<P extends WithUserProps>(WrappedBlock: BlockClass<P>) {
+export default function withUser<P extends WithUserProps>(WrappedBlock: BlockClass<P>) {
     // @ts-expect-error No base constructor has the specified
     return class extends WrappedBlock<P> {
         public static componentName = WrappedBlock.componentName || WrappedBlock.name;
@@ -16,7 +16,7 @@ export function withUser<P extends WithUserProps>(WrappedBlock: BlockClass<P>) {
                 // @ts-expect-error this is not typed
                 this.setProps({ ...this.props, user: nextState.user });
             }
-        }
+        };
 
         componentDidMount(props: P) {
             super.componentDidMount(props);
@@ -27,6 +27,5 @@ export function withUser<P extends WithUserProps>(WrappedBlock: BlockClass<P>) {
             super.componentWillUnmount();
             window.store.off('changed', this.__onChangeUserCallback);
         }
-
     } as BlockClass<Omit<P, 'user'>>;
 }

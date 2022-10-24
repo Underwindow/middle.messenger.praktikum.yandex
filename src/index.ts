@@ -20,7 +20,6 @@ import { Input } from 'components/input';
 import { InputField } from 'components/input/input-field';
 import { InputError } from 'components/input/input-error';
 import { defaultState } from 'store';
-import { initRouter } from './router';
 import { initApp } from 'services';
 import { SplashScreen } from 'pages/splash';
 import { Logo } from 'components/logo';
@@ -29,6 +28,7 @@ import { ChatActions } from 'components/chat-actions';
 import { ChatActionForm } from 'components/chat-action-form';
 import { UserListItem } from 'components/user-list-item';
 import { UserList } from 'components/user-list';
+import initRouter from './router';
 
 registerComponent(Header);
 registerComponent(Avatar);

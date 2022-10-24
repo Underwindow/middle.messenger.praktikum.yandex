@@ -72,7 +72,7 @@ export type MessageDTO = {
     user: MessageUserDTO,
     time: string,
     content: string,
-}
+};
 
 export type MessageUserDTO = {
     first_name: string,
@@ -81,7 +81,7 @@ export type MessageUserDTO = {
     email: string,
     login: string,
     phone: string,
-}
+};
 
 export type ChatUserDTO = {
     id: number;

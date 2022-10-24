@@ -14,9 +14,7 @@ export default class NewChatForm extends Block<NewChatFormProps> {
     constructor({ onFormCancel, ...props }: NewChatFormProps) {
         super({
             ...props,
-            onFormCancel: onFormCancel
-                ? onFormCancel
-                : () => this.hide()
+            onFormCancel: onFormCancel || (() => this.hide()),
         });
     }
 
@@ -25,7 +23,6 @@ export default class NewChatForm extends Block<NewChatFormProps> {
     }
 
     protected render(): string {
-
         // language=hbs
         return `
             <div class="disabled">

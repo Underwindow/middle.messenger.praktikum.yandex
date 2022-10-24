@@ -1,4 +1,4 @@
-import queryStringify from "./queryStringify";
+import queryStringify from './queryStringify';
 
 export enum METHOD {
     GET = 'GET',
@@ -58,23 +58,13 @@ export class HTTPTransport {
             method, credentials, headers, body, timeout = 5000,
         } = options;
 
-        if (body instanceof FormData) {
-            console.log(body);
-            const formData = body as FormData;
-    
-            for (const pair of formData.entries()) {
-                console.log(pair);
-            }
-        }
-
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             const isGet = method === METHOD.GET;
 
             xhr.open(method, url, true);
 
-            if (credentials === 'include')
-                xhr.withCredentials = true;
+            if (credentials === 'include') xhr.withCredentials = true;
 
             function onLoad(): void {
                 resolve(xhr);

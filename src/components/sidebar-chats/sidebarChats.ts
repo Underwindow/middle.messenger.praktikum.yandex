@@ -18,7 +18,7 @@ export default class SidebarChats extends Block<SidebarChatsProps> {
     selectChat(id: number) {
         const chats = this.refs.chats as ChatDialog[];
 
-        const selectedChat = chats.find(chat => chat.getId() === id);
+        const selectedChat = chats.find((chat) => chat.getId() === id);
 
         this._onChatClick(selectedChat!);
     }

@@ -1,5 +1,5 @@
-import Block from './Block';
 import Handlebars, { HelperOptions } from 'handlebars';
+import Block from './Block';
 
 interface BlockConstructable<P extends Props = {}, IncomingProps = Props> {
     new(props: IncomingProps): Block<P>;
@@ -47,8 +47,7 @@ export default function registerComponent<P extends Props = {}, IncomingProps ex
                     ) as Block<P>[];
 
                     refs[ref] = [...oldRefs, component];
-                }
-                else {
+                } else {
                     refs[ref] = component;
                 }
             }

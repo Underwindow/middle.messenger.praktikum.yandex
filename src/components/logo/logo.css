@@ -4,12 +4,6 @@
   position: relative;
 }
 
-.logo_type_black .logo__top,
-.logo_type_black .logo__left,
-.logo_type_black .logo__right {
-  background-color: #000;
-}
-
 .logo__top {
   width: 18px;
   background-color: #fff;
@@ -25,7 +19,7 @@
   height: 22px;
   position: absolute;
   top: 6px;
-  left: 0px;
+  left: 0;
 }
 
 .logo__right {
@@ -34,5 +28,11 @@
   height: 22px;
   position: absolute;
   top: 6px;
-  right: 0px;
+  right: 0;
+}
+
+.logo__logo-black .logo__top,
+.logo__logo-black .logo__left,
+.logo__logo-black .logo__right {
+  background-color: #000;
 }

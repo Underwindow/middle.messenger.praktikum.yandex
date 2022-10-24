@@ -1,9 +1,20 @@
-import { LoginRequestData, SignUpRequestData, transformUser, UserDTO } from 'api';
-import { hasError as apiHasError } from 'api/apiHasError';
-import { auth } from 'api/auth';
+import {
+    LoginRequestData, SignUpRequestData, transformUser, UserDTO,
+    apiHasError, auth,
+} from 'api';
+
 import type { Dispatch } from 'core';
 import { Screens } from 'utils';
 
+export const logout = async (dispatch: Dispatch<AppState>) => {
+    dispatch({ isLoading: true });
+
+    await auth.logout();
+
+    dispatch({ isLoading: false, user: null });
+
+    window.router.go(Screens.SignIn);
+};
 
 export const signUp = async (
     dispatch: Dispatch<AppState>,
@@ -59,15 +70,4 @@ export const login = async (
     dispatch({ user: transformUser(responseUser as UserDTO) });
 
     window.router.go(Screens.Messenger);
-};
-
-export const logout = async (dispatch: Dispatch<AppState>) => {
-
-    dispatch({ isLoading: true });
-
-    await auth.logout();
-
-    dispatch({ isLoading: false, user: null });
-
-    window.router.go(Screens.SignIn);
 };

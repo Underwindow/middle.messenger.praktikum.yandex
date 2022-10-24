@@ -1,4 +1,4 @@
-@import '../button.css';
+@import "../button.css";
 
 .button__button-icon.material-icons {
   height: 100%;
@@ -14,5 +14,5 @@
 }
 
 .button__button-icon[disabled] {
-  opacity: .75;
+  opacity: 0.75;
 }
