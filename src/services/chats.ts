@@ -106,20 +106,21 @@ export const getChatToken = async (
 
 const socketPingInterval: number = 5000;
 
-export const connectUserToChat = (
+export const connectUserToChat = async (
     userId: number,
     chatId: number,
     token: string,
-    onMessage?: (messages: ChatMessage[]) => void,
-): WebSocket => {
+    onMessage?: (messages: ChatMessage[], isOld: boolean) => void,
+): Promise<WebSocket> => {
     const socket = chats.initSocket(userId, chatId, token);
 
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log('Получено сообщение', data);
-
+        
         if (data.type === 'error' || data.type === 'user connected') return;
-
+        console.log('Получено сообщение', data);
+        
+        const isOld = Array.isArray(data);
         const chatMessagesDTO = Array.isArray(data)
             ? data.map((message) => message as ChatMessageDTO)
             : [data as ChatMessageDTO];
@@ -129,7 +130,7 @@ export const connectUserToChat = (
             .filter((message) => message.content)
             .reverse();
 
-        if (onMessage && messages.length > 0) onMessage(messages);
+        if (onMessage && messages.length > 0) onMessage(messages, isOld);
     };
 
     const intervalID = setInterval(() => {
@@ -162,5 +163,12 @@ export const sendMessage = (message: string, socket: WebSocket): void => {
     socket.send(JSON.stringify({
         content: message,
         type: 'message',
+    }));
+};
+
+export const loadOldMessages = (socket: WebSocket, from: number): void => {
+    socket.send(JSON.stringify({
+        content: `${from}`,
+        type: 'get old',
     }));
 };

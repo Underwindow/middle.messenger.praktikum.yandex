@@ -1,0 +1,19 @@
+.scroll {
+  flex: 1 1 auto;
+  position: relative;
+  width: 100%;
+}
+
+.scroll > .scrollable-y {
+  height: auto;
+  padding: 0 0 8px 0;
+}
+
+.scroll__scroll-default {
+  display: block;
+}
+
+.scroll__scroll-reversed {
+  display: flex;
+  flex-direction: column-reverse;
+}

@@ -44,7 +44,9 @@ export default class Input extends Block<InputProps> {
             ...props,
             validationType,
             error: '',
-            onInput: onInput || (() => this.validate()),
+            onInput: onInput || (() => {
+                if (this.value) this.validate();
+            }),
             onFocus: onFocus || (() => {
                 if (!this._inputEl.value) this.setErrorMessage('');
                 else this.validate();

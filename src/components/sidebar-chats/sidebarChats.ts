@@ -1,9 +1,11 @@
 import './sidebarChats.css';
 import Block from 'core/Block';
 import ChatDialog, { ChatDialogProps } from './chat-dialog/chatDialog';
+import { ScrollDirection } from 'components/scroll';
 
 export interface SidebarChatsProps extends Props {
     chatsProps?: ChatDialogProps[],
+    stub?: string,
 }
 
 export default class SidebarChats extends Block<SidebarChatsProps> {
@@ -40,7 +42,6 @@ export default class SidebarChats extends Block<SidebarChatsProps> {
         // language=hbs
         return `
         <div class="sidebar__chats">
-            <div class="scrollable-y">
             {{#if chatsProps}}
                 {{#each chatsProps}}
                     {{#with this}}
@@ -57,11 +58,10 @@ export default class SidebarChats extends Block<SidebarChatsProps> {
                     {{/with}}                
                 {{/each}}
             {{else}}
-            <div class="sidebar__chats-stub grey content-center">
-                У вас нет чатов :(
-            </div>
+                <div class="sidebar__chats-stub grey content-center">
+                    {{stub}}
+                </div>
             {{/if}}
-            </div>
         </div>
     `;
     }

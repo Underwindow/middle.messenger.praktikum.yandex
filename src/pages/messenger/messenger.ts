@@ -14,8 +14,8 @@ import {
 } from 'services';
 import { NewChatForm } from 'components/new-chat';
 import { connectUserToChat, getChatToken } from 'services/chats';
-import { BubbleProps } from 'components/bubble/bubble';
-import { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
+import { Header } from 'components/header';
+import { Scroll, ScrollDirection } from 'components/scroll';
 
 type MessengerProps = {
     router: CoreRouter,
@@ -32,22 +32,22 @@ export class Messenger extends Block<MessengerProps> {
     static readonly componentName = 'Messenger';
 
     private _chatSocket?: WebSocket;
+    private _chatsUpdateInterval?: NodeJS.Timer;
 
     constructor(props: MessengerProps) {
-        super(props);
-
-        const btnLogoutProps: ButtonIconProps = {
-            icon: ButtonIcon.ICONS.LOGOUT,
-            onClick: () => {
-                this._chatSocket?.close();
-                this.props.store.dispatch(logout);
+        super({
+            ...props,
+            btnLogoutProps: {
+                icon: ButtonIcon.ICONS.LOGOUT,
+                onClick: () => {
+                    this._chatSocket?.close();
+                    clearTimeout(this._chatsUpdateInterval!);
+                    this.props.store.dispatch(logout);
+                },
             },
-        };
-
-        this.setProps({
-            btnLogoutProps,
             onProfileClick: () => {
                 this._chatSocket?.close();
+                clearTimeout(this._chatsUpdateInterval!);
                 this.props.router.go(Screens.Profile);
             },
             onSearch: () => {
@@ -69,56 +69,58 @@ export class Messenger extends Block<MessengerProps> {
                         if (!chat) return;
 
                         chatForm.hide();
-                        this._initChats(true);
+                        this._updateChats();
                     });
             },
+
         });
     }
 
-    private _initChats(update: boolean = false, offset: number = 0, limit: number = 10, title: string = '') {
-        this._getChats(update, offset, limit, title)
-            .then((userChats) => {
-                const chats = this.refs.sidebarChatsRef as SidebarChats;
-
-                const chatsProps = userChats!.map((chat) => {
-                    const tempChatProp: ChatDialogProps = {
-                        chatId: chat.id,
-                        chatName: chat.title,
-                        avatarSrc: chat.avatar,
-                        lastMessage: chat.lastMessage?.content ?? 'Sample text',
-                        time: chat.lastMessage?.time ?? 'XX:XX',
-                        badge: chat.unreadCount,
-                        onClick: () => {
-                            this._chatSocket?.close();
-
-                            chats.selectChat(chat.id);
-                            this._initChat(chat);
-                        },
-                    };
-
-                    return tempChatProp;
-                });
-
-                chats.setProps({ chatsProps });
-            });
+    private _initChats(chats: SidebarChats, userChats: UserChat[]) {
+        chats.setProps({
+            chatsProps: userChats!.map((chat) => {
+                return {
+                    chatId: chat.id,
+                    chatName: chat.title,
+                    avatarSrc: chat.avatar,
+                    lastMessage: chat.lastMessage?.content ?? '',
+                    time: chat.lastMessage?.time ?? 'Новый',
+                    badge: chat.unreadCount,
+                    onClick: () => {
+                        this._chatSocket?.close();
+                        chats.selectChat(chat.id);
+                        this._initChat(chat);
+                    },
+                } as ChatDialogProps;
+            })
+        });
     }
 
-    private async _getChats(update: boolean = false, offset: number = 0, limit: number = 10, title: string = ''): Promise<UserChat[] | null> {
-        if (!update) {
-            return this.props.store.getState().userChats;
-        }
+    private async _updateChats(offset: number = 0, limit: number = 10, title: string = '') {
+        getChats({ offset, limit, title }).then((userChats) => {
+            const chats = this
+                .getRef<Scroll>(this.refs.sidebarScrollRef)
+                ?.getScrollContent<SidebarChats>()!;
 
-        return getChats({ offset, limit, title }).then((userChats) => {
-            this.props.store.dispatch({ userChats });
-            return userChats;
+            if (userChats === null) {
+                chats.setProps({ stub: 'Ошибка загрузки' });
+            }
+            else if (userChats?.length === 0) {
+                chats.setProps({ stub: 'У вас нет чатов :(' });
+            }
+            else {
+                this._initChats(chats, userChats);
+            }
         });
     }
 
     protected componentDidMount(props: MessengerProps): MessengerProps {
-        const chatData = this.props.store.getState().userChats;
-        const needUpdate = chatData === null || chatData === undefined;
+        this._chatsUpdateInterval = setInterval(() => {
+            this._updateChats();
+            console.log('update sidebar chats');
 
-        this._initChats(needUpdate);
+            clearTimeout(this._chatsUpdateInterval!);
+        }, 2000);
 
         return props;
     }
@@ -133,51 +135,24 @@ export class Messenger extends Block<MessengerProps> {
 
             const userId = this.props.user!.id;
 
-            this._chatSocket = connectUserToChat(
-                userId,
-                userChat.id,
-                token,
-                (messages) => this._onMessage(chat, messages),
-            );
+            connectUserToChat(userId, userChat.id, token, (messages, isOld) => {
+                chat.setMessages(messages, isOld);
+            })
+                .then((socket) => {
+                    this._chatSocket = socket;
+                    chat.setProps({
+                        socket: this._chatSocket,
+                        chatId: userChat?.id,
+                        title: userChat?.title,
+                        avatar: userChat.avatar,
+                    });
 
-            chat.setProps({
-                socket: this._chatSocket,
-                chatId: userChat?.id,
-                title: userChat?.title,
-                avatar: userChat.avatar,
-            });
-
-            chat.getStub().hide();
+                    chat.getStub().hide();
+                })
         });
-    }
-
-    private _onMessage(chat: Chat, messages: ChatMessage[]) {
-        const bubbles = messages.map((message) => {
-            console.log(message.userId);
-
-            const bubble: BubbleProps = {
-                isIn: message.userId !== this.props.user!.id,
-                message: message.content,
-                time: message.time,
-                userId: message.userId,
-                name: '',
-            };
-            return bubble;
-        });
-
-        const bubbleGroup: BubbleGroupProps = {
-            bubblesDate: new Date().toLocaleDateString(),
-            bubbleProps: bubbles,
-        };
-
-        console.log('here', bubbleGroup);
-
-        chat.getBubbles().concatBubbleGroups([bubbleGroup]);
     }
 
     protected render() {
-        console.log('render Messenger');
-
         // language=hbs
         return `
         <div class="whole">
@@ -205,8 +180,10 @@ export class Messenger extends Block<MessengerProps> {
                             }}}
                             {{{ButtonIcon onClick=onAddChatClick type="button" icon="${ButtonIcon.ICONS.ADD}"}}}
                         </form>
-                        {{{SidebarChats 
-                            ref="sidebarChatsRef"
+                        {{{Scroll 
+                            ref="sidebarScrollRef"
+                            direction="${ScrollDirection.Default}"
+                            scrollContent="${SidebarChats.componentName}"
                         }}}
                     </div>
                 </div>

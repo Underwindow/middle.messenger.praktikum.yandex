@@ -7,4 +7,4 @@ export { default as withStore } from './withStore';
 export { default as withUser } from './withUser';
 export { default as withIsLoading } from './withIsLoading';
 export { Screens, getScreenComponent } from './screenList';
-export { default as timeFormat } from './timeFormat';
+export { default as dateFormat } from './dateFormat';

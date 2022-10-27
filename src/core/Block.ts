@@ -39,7 +39,7 @@ export default abstract class Block<P extends Props = {}> {
 
         this.getStateFromProps(props);
 
-        this.props = this._makePropsProxy(props || {} as P);
+        this.props = this._makePropsProxy(props);
         this.state = this._makePropsProxy(this.state);
 
         this.eventBus = () => eventBus;
@@ -231,7 +231,14 @@ export default abstract class Block<P extends Props = {}> {
     getRefs = <Ref = Block>(ref: Block | Block[]): Ref[] | undefined => {
         const refs = (Array.isArray(ref) ? ref : [ref]) as Ref[];
 
+        if (refs && refs.length > 0 && refs[0] === undefined)
+            return undefined;
+
         return refs;
+    };
+
+    getRef = <Ref = Block>(ref: Block | Block[]): Ref | undefined => {
+        return Array.isArray(ref) ? undefined : ref as Ref;
     };
 
     setState = (nextState: any) => {
@@ -246,7 +253,7 @@ export default abstract class Block<P extends Props = {}> {
         if (this.element?.parentNode?.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
             setTimeout(() => {
                 if (this.element?.parentNode?.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
-                    this.eventBus().emit(Block.EVENTS.FLOW_CDM);
+                    this.eventBus().emit(Block.EVENTS.FLOW_CDM, this.props);
                 }
             }, 100);
         }

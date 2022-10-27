@@ -84,6 +84,7 @@ export class SignInPage extends Block<SignInPageProps> {
                             name="login"
                             type="text"
                             placeholder="Логин"
+                            onEnter=onSubmit
                         }}}
                     </div>
                     <div class="entry__input">
@@ -94,6 +95,7 @@ export class SignInPage extends Block<SignInPageProps> {
                             name="password"
                             type="password"
                             placeholder="Пароль"
+                            onEnter=onSubmit
                         }}}
                     </div>
                 </div>

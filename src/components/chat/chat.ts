@@ -10,8 +10,11 @@ import { ChatBubbles } from 'components/chat-bubbles';
 import { ChatActions } from 'components/chat-actions';
 import { ChatActionForm } from 'components/chat-action-form';
 import {
-    addChatUsers, deleteChatUsers, getChatUsers, searchUsers, sendMessage,
+    addChatUsers, deleteChatUsers, getChatUsers, getUser, loadOldMessages, searchUsers, sendMessage,
 } from 'services';
+import { BubbleProps } from 'components/bubble/bubble';
+import { dateFormat } from 'utils';
+import { Scroll, ScrollDirection } from 'components/scroll';
 
 interface ChatProps extends Props {
     chatId: number,
@@ -21,6 +24,7 @@ interface ChatProps extends Props {
     moreBtnProps: ButtonIconProps,
     onAddUserClick?: Callback,
     onRemoveUserClick?: Callback,
+    onLoadOld?: Callback,
     onSendMessage: Callback,
 }
 
@@ -32,17 +36,12 @@ export default class Chat extends Block<ChatProps> {
     private _actionsVisible: boolean = false;
 
     constructor(props: ChatProps) {
-        super(props);
-
-        this._currentUserId = window.store.getState().user?.id;
-
-        const moreBtnProps: ButtonIconProps = {
-            icon: ButtonIcon.ICONS.MORE_VERT,
-            onClick: () => this._toggleActions(),
-        };
-
-        this.setProps({
-            moreBtnProps,
+        super({
+            ...props,
+            moreBtnProps: {
+                icon: ButtonIcon.ICONS.MORE_VERT,
+                onClick: () => this._toggleActions(),
+            },
             onAddUserClick: () => {
                 const login = () => this._getForm().getInput().value;
 
@@ -63,6 +62,13 @@ export default class Chat extends Block<ChatProps> {
                     deleteChatUsers,
                 );
             },
+            onLoadOld: () => {
+                const from = this.getChatBubbles()!.getGroups()![0].getBubbles()![0].getProps().id;
+
+                if (from) {
+                    loadOldMessages(this.props.socket, from);
+                }
+            },
             onSendMessage: (e: Event) => {
                 e.preventDefault();
                 const messageBtn = this.refs.sendButtonRef as ButtonIcon;
@@ -70,6 +76,8 @@ export default class Chat extends Block<ChatProps> {
                 this._sendMessage(messageBtn);
             },
         });
+
+        this._currentUserId = window.store.getState().user?.id;
     }
 
     private _messageTimeout?: NodeJS.Timeout;
@@ -153,8 +161,54 @@ export default class Chat extends Block<ChatProps> {
             : null)) as Promise<User[] | null>;
     }
 
-    getBubbles(): ChatBubbles {
-        return this.refs.chatBubblesRef as ChatBubbles;
+    private _chatUsernames: { [id: number]: string } = {};
+
+    setMessages(messages: ChatMessage[], isOld: boolean = false) {
+        const uniqueByUser = messages.filter((msg, i, self) =>
+            self.findIndex(other => other.userId === msg.userId) === i
+        );
+
+        const promises = uniqueByUser.map(message => this.getMessageWithName(message))
+        Promise.all<ChatMessage | null>(promises).then((results) => {
+            results.forEach(message => {
+                if (message)
+                    this._chatUsernames[message.userId] = message.username;
+            });
+
+            const chatBubbles = this._transformMessagesToBubbles(messages);
+
+            this.getChatBubbles().updateBubbles(chatBubbles, isOld);
+        }).then(() => {
+            this.getRef<Scroll>(this.refs.chatScrollRef)!.watch();
+        });
+    }
+
+    private _transformMessagesToBubbles(messages: ChatMessage[]): BubbleProps[] {
+        return messages.map((msg) => {
+            return {
+                isIn: msg.userId !== this._currentUserId,
+                message: msg.content,
+                time: dateFormat(msg.date),
+                date: msg.date,
+                userId: msg.userId,
+                id: msg.id,
+                name: this._chatUsernames[msg.userId],
+            } as BubbleProps;
+        });
+    }
+
+    getMessageWithName(message: ChatMessage) {
+        return getUser(message.userId).then((user) => {
+            if (user) {
+                message.username = user.displayName ? user.displayName : user.login;
+                return message;
+            }
+            else return null;
+        });
+    }
+
+    getChatBubbles(): ChatBubbles {
+        return this.getRef<Scroll>(this.refs.chatScrollRef)?.getScrollContent<ChatBubbles>()!;
     }
 
     getStub(): ChatStub {
@@ -162,7 +216,7 @@ export default class Chat extends Block<ChatProps> {
     }
 
     getHeader(): Header {
-        return this.refs.chatHeader as Header;
+        return this.refs.chatHeaderRef as Header;
     }
 
     protected render() {
@@ -172,25 +226,25 @@ export default class Chat extends Block<ChatProps> {
         return `
         <div class="chat whole">
             {{{Header 
-                ref="chatHeader"
+                ref="chatHeaderRef"
                 title=title
                 rightBtnProps=moreBtnProps
             }}}
-            <div class="chat__actions">
-                {{{ChatActions 
-                    ref="chatActionsRef"
-                    onAddUserClick=onAddUserClick
-                    onRemoveUserClick=onRemoveUserClick
-                }}}
-            </div>
+            {{{ChatActions 
+                ref="chatActionsRef"
+                onAddUserClick=onAddUserClick
+                onRemoveUserClick=onRemoveUserClick
+            }}}
             {{{ChatActionForm
                 ref="chatActionFormRef"
             }}}
-            <div class="chat__bubbles-container">
-                <div class="scrollable-y">
-                    {{{ChatBubbles ref="chatBubblesRef"}}}
-                </div>
-            </div>
+            {{{Scroll 
+                ref="chatScrollRef"
+                direction="${ScrollDirection.Reversed}"
+                scrollContent="${ChatBubbles.componentName}"
+                watchSelector=".bubble:first-of-type"
+                onWatch=onLoadOld
+            }}}
             <div class="chat__message-container">
                 <form class="chat__message-wrapper">
                     <div class="chat__message-rows-wrapper">
@@ -211,17 +265,19 @@ export default class Chat extends Block<ChatProps> {
                         </div>
                     </div>
                     <div class="chat__button">
-                    {{{ButtonIcon 
-                        ref="sendButtonRef" 
-                        onClick=onSendMessage 
-                        type="submit" 
-                        icon="${ButtonIcon.ICONS.SEND}"
-                        color="${ButtonIcon.COLORS.WHITE}"
-                    }}}
+                        {{{ButtonIcon 
+                            ref="sendButtonRef" 
+                            onClick=onSendMessage 
+                            type="submit" 
+                            icon="${ButtonIcon.ICONS.SEND}"
+                            color="${ButtonIcon.COLORS.WHITE}"
+                        }}}
                     </div>
                 </form>
             </div>
-            {{{ChatStub ref="stubRef"}}}
+            {{{ChatStub 
+                ref="stubRef"
+            }}}
         </div>
     `;
     }

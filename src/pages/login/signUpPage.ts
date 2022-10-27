@@ -93,8 +93,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="email"
                             type="text"
                             placeholder="Почта"
-                            onInput=onInput
-                            onFocus=onFocus
+                            onEnter=onSubmit
                         }}}
                     </div>
                     <div class="entry__input">
@@ -105,8 +104,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="login"
                             type="text"
                             placeholder="Логин"
-                            onInput=onInput
-                            onFocus=onFocus
+                            onEnter=onSubmit
                         }}}
                     </div>
                     <div class="entry__input">
@@ -117,8 +115,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="first_name"
                             type="text"
                             placeholder="Имя"
-                            onInput=onInput
-                            onFocus=onFocus
+                            onEnter=onSubmit
                         }}}
                     </div>
                     <div class="entry__input">
@@ -129,8 +126,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="second_name"
                             type="text"
                             placeholder="Фамилия"
-                            onInput=onInput
-                            onFocus=onFocus
+                            onEnter=onSubmit
                         }}}
                     </div>
                     <div class="entry__input">
@@ -141,8 +137,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="phone"
                             type="text"
                             placeholder="Телефон"
-                            onInput=onInput
-                            onFocus=onFocus
+                            onEnter=onSubmit
                         }}}
                     </div>
                     <div class="entry__input">
@@ -153,8 +148,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="password"
                             type="password"
                             placeholder="Пароль"
-                            onInput=onInput
-                            onFocus=onFocus
+                            onEnter=onSubmit
                         }}}
                     </div>
                     <div class="entry__input">
@@ -165,8 +159,7 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="repeat_password"
                             type="password"
                             placeholder="Пароль (еще раз)"
-                            onInput=onInput
-                            onFocus=onFocus
+                            onEnter=onSubmit
                         }}}
                     </div>
                 </div>

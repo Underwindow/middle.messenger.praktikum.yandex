@@ -12,8 +12,6 @@ declare global {
         isLoading: boolean;
         loginFormError: string | null;
         user: User | null;
-        userChats: UserChat[] | null;
-        chatUsers: { [id: number]: string };
     };
 
     export type User = {
@@ -62,9 +60,10 @@ declare global {
         file: File;
         id: number;
         isRead: boolean;
-        time: string;
+        date: Date;
         type: string;
         userId: number;
+        username: string;
     };
 }
 

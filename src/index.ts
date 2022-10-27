@@ -28,6 +28,7 @@ import { ChatActions } from 'components/chat-actions';
 import { ChatActionForm } from 'components/chat-action-form';
 import { UserListItem } from 'components/user-list-item';
 import { UserList } from 'components/user-list';
+import { Scroll } from 'components/scroll';
 import initRouter from './router';
 
 registerComponent(Header);
@@ -41,6 +42,7 @@ registerComponent(ChatActions);
 registerComponent(ChatActionForm);
 registerComponent(UserList);
 registerComponent(UserListItem);
+registerComponent(Scroll);
 registerComponent(ChatStub);
 registerComponent(ChatBubbles);
 registerComponent(BubbleGroup);
