@@ -1,8 +1,7 @@
 import './chatBubbles.css';
-import Block from 'core/Block';
-import BubbleGroup, { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
-import { Bubble } from 'components/bubble';
-import { BubbleProps } from 'components/bubble/bubble';
+import { Block } from 'core';
+import { Bubble, BubbleProps } from 'components/bubble';
+import { BubbleGroup, BubbleGroupProps } from 'components/bubble/bubble-group';
 
 export interface ChatBubblesProps extends Props {
     bubbleGroupProps?: BubbleGroupProps[],

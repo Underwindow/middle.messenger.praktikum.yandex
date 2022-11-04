@@ -1,5 +1,5 @@
 import './chatDialog.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 
 export interface ChatDialogProps extends Props {
     chatId?: number,

@@ -1,16 +1,15 @@
 import './login.css';
-import Block from 'core/Block';
-import { CoreRouter, Store } from 'core';
-import { Input } from 'components/input';
+import { Block, CoreRouter, Store } from 'core';
+import { Screens, withRouter, withStore } from 'utils';
 import { ValidationType } from 'utils/validateValue';
 import { login } from 'services';
 import { LoginRequestData } from 'api';
-import { Screens, withRouter, withStore } from 'utils';
+import { Input } from 'components/input';
 
 type SignInPageProps = {
-    router: CoreRouter;
-    store: Store<AppState>;
-    formError?: () => string | null;
+    router: CoreRouter,
+    store: Store<AppState>,
+    formError?: () => string | null,
     onSubmit: Callback,
     onClick: Callback,
 };

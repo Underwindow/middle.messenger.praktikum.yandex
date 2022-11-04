@@ -1,5 +1,5 @@
 import './bubble.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 
 export interface BubbleProps extends Props {
     id: number,

@@ -1,13 +1,13 @@
 import './input.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { validateValue, ValidationType } from 'utils/validateValue';
-import InputField, { InputFieldProps } from './input-field/inputField';
+import { InputField, InputFieldProps } from './input-field';
 import { InputError } from './input-error';
 
 export interface InputProps extends InputFieldProps {
-    icon?: string;
-    validationType?: ValidationType;
-    onEnter?: Callback;
+    icon?: string,
+    validationType?: ValidationType,
+    onEnter?: Callback,
 }
 
 export default class Input extends Block<InputProps> {
@@ -99,15 +99,10 @@ export default class Input extends Block<InputProps> {
 
         if (errorMessage) {
             this.setErrorMessage(errorMessage);
-        } else {
+        } 
+        else {
             this.setErrorMessage();
         }
-
-        // console.log(
-        //     `name: ${this._inputEl.name}`,
-        //     `value: ${this._inputEl.value}`,
-        //     errorMessage ? `error: ${errorMessage}` : 'success',
-        // );
 
         return errorMessage;
     }

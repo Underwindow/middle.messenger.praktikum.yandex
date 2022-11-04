@@ -1,11 +1,9 @@
 import './chat.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { Input } from 'components/input';
 import { ValidationType } from 'utils/validateValue';
 import { ChatStub } from 'components/chat-stub';
 import { Header } from 'components/header';
-import { ButtonIcon } from 'components/button/button-icon';
-import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { ChatBubbles } from 'components/chat-bubbles';
 import { ChatActions } from 'components/chat-actions';
 import { ChatActionForm } from 'components/chat-action-form';
@@ -15,11 +13,14 @@ import {
 import { BubbleProps } from 'components/bubble/bubble';
 import { dateFormat } from 'utils';
 import { Scroll, ScrollDirection } from 'components/scroll';
+import { ButtonIcon } from 'components/button';
+import { ButtonIconProps } from 'components/button/button-icon';
 
 interface ChatProps extends Props {
     chatId: number,
+    user: User, 
     socket: WebSocket,
-    title: string,
+    title: string, 
     avatar: string,
     moreBtnProps: ButtonIconProps,
     onAddUserClick?: Callback,
@@ -30,8 +31,6 @@ interface ChatProps extends Props {
 
 export default class Chat extends Block<ChatProps> {
     static readonly componentName = 'Chat';
-
-    private _currentUserId: number | undefined;
 
     private _actionsVisible: boolean = false;
 
@@ -54,16 +53,16 @@ export default class Chat extends Block<ChatProps> {
             },
             onRemoveUserClick: () => {
                 const username = () => this._getForm().getInput().value;
-
+                
                 this._initForm(
                     'Исключить участников',
                     'Исключить',
-                    this._getChatUsers.bind(this, props.chatId, 0, 10, username),
+                    this._getChatUsers.bind(this, this.props.chatId, 0, 10, username),
                     deleteChatUsers,
                 );
             },
             onLoadOld: () => {
-                const from = this.getChatBubbles()!.getGroups()![0].getBubbles()![0].getProps().id;
+                const from = this.getChatBubbles().getGroups()![0].getBubbles()![0].getProps().id;
 
                 if (from) {
                     loadOldMessages(this.props.socket, from);
@@ -76,8 +75,6 @@ export default class Chat extends Block<ChatProps> {
                 this._sendMessage(messageBtn);
             },
         });
-
-        this._currentUserId = window.store.getState().user?.id;
     }
 
     private _messageTimeout?: NodeJS.Timeout;
@@ -157,7 +154,7 @@ export default class Chat extends Block<ChatProps> {
             name: name ? name() : '',
             email,
         }).then((chatUsers) => (chatUsers
-            ? chatUsers.filter((user) => user.id !== this._currentUserId)
+            ? chatUsers.filter((user) => user.id !== this.props.user.id)
             : null)) as Promise<User[] | null>;
     }
 
@@ -186,7 +183,7 @@ export default class Chat extends Block<ChatProps> {
     private _transformMessagesToBubbles(messages: ChatMessage[]): BubbleProps[] {
         return messages.map((msg) => {
             return {
-                isIn: msg.userId !== this._currentUserId,
+                isIn: msg.userId !== this.props.user.id,
                 message: msg.content,
                 time: dateFormat(msg.date),
                 date: msg.date,
@@ -242,8 +239,8 @@ export default class Chat extends Block<ChatProps> {
                 ref="chatScrollRef"
                 direction="${ScrollDirection.Reversed}"
                 scrollContent="${ChatBubbles.componentName}"
-                watchSelector=".bubble:first-of-type"
-                onWatch=onLoadOld
+                observeSelector=".bubble:first-of-type"
+                onObserve=onLoadOld
             }}}
             <div class="chat__message-container">
                 <form class="chat__message-wrapper">

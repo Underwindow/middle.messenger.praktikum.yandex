@@ -28,6 +28,7 @@
   left: 0;
   font-size: clamp(14px, 2vw, 2vh);
   z-index: 10000;
+  white-space: nowrap;
 }
 
 .entry__input {

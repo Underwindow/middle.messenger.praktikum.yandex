@@ -1,6 +1,9 @@
 export type APIError = {
+    status: number;
     reason: string;
 };
+
+export type APIResponse<T = {} & Indexed> = T | APIError;
 
 export type SignUpRequestData = {
     first_name: string;
@@ -11,14 +14,14 @@ export type SignUpRequestData = {
     password: string;
 };
 
-export type SignUpResponseData = { id: string } | APIError;
+export type SignUpResponseData = APIResponse<{ id: string }>;
 
 export type LoginRequestData = {
     login: string;
     password: string;
 };
 
-export type SignInResponseData = {} | APIError;
+export type SignInResponseData = APIResponse;
 
 export type UserDTO = {
     id: number;

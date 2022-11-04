@@ -43,6 +43,8 @@ export const getChats = async (
 export const getChatUsers = async (
     action: GetChatUsersRequestData,
 ): Promise<ChatUser[] | null> => {
+    console.log(action);
+    
     const responseChatUsers = await chats.getChatUsers(action);
 
     if (apiHasError(responseChatUsers)) {

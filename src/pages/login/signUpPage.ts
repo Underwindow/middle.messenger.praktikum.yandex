@@ -1,11 +1,10 @@
 import './login.css';
-import Block from 'core/Block';
-import { Input } from 'components/input';
-import { ValidationType } from 'utils/validateValue';
-import { SignUpRequestData } from 'api';
+import { Block, CoreRouter, Store } from 'core';
 import { Screens, withRouter, withStore } from 'utils';
-import { CoreRouter, Store } from 'core';
+import { ValidationType } from 'utils/validateValue';
 import { signUp } from 'services';
+import { SignUpRequestData } from 'api';
+import { Input } from 'components/input';
 
 type SignUpPageProps = {
     router: CoreRouter;

@@ -1,18 +1,17 @@
 import './profile.css';
-import Block from 'core/Block';
-import ButtonIcon, { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
-import { Input } from 'components/input';
-import { CoreRouter, Store } from 'core';
+import { Block, CoreRouter, Store } from 'core';
+import { withRouter, withStore, withUser } from 'utils';
 import { ValidationType } from 'utils/validateValue';
-import { ButtonSecondary } from 'components/button/button-secondary';
 import {
     changeAvatar, changePassword, changeProfile, logout,
 } from 'services';
-import { withRouter, withStore, withUser } from 'utils';
 import { ChangePasswordRequestData, ChangeProfileRequestData } from 'api';
+import { Input } from 'components/input';
+import { ButtonSecondary } from 'components/button';
+import { ButtonIcon, ButtonIconProps } from 'components/button/button-icon';
 import { ImageUpload } from 'components/image-upload';
 
-type ProfilePageProps = {
+type ProfileProps = {
     router: CoreRouter,
     store: Store<AppState>,
     user: User | null,
@@ -24,26 +23,20 @@ type ProfilePageProps = {
     onSavePassword: Callback,
 };
 
-export class Profile extends Block<ProfilePageProps> {
+export class Profile extends Block<ProfileProps> {
     static readonly componentName = 'Profile';
 
-    constructor(props: ProfilePageProps) {
-        super(props);
-
-        const btnLogoutProps: ButtonIconProps = {
-            icon: ButtonIcon.ICONS.LOGOUT,
-            onClick: () => this.props.store.dispatch(logout),
-        };
-
-        const btnBackProps: ButtonIconProps = {
-            icon: ButtonIcon.ICONS.BACK,
-            onClick: () => this.props.router.back(),
-        };
-
-        this.setProps({
-            user: this.props.store.getState().user,
-            btnLogoutProps,
-            btnBackProps,
+    constructor(props: ProfileProps) {
+        super({
+            ...props,
+            btnLogoutProps: {
+                icon: ButtonIcon.ICONS.LOGOUT,
+                onClick: () => this.props.store.dispatch(logout),
+            },
+            btnBackProps: {
+                icon: ButtonIcon.ICONS.BACK,
+                onClick: () => this.props.router.back(),
+            },
             onChooseAvatar: () => {
                 const saveAvatarBtn = this.refs.avatarSubmitRef as ButtonSecondary;
                 const avatarInput = this.refs.avatarInputRef as ImageUpload;
@@ -84,6 +77,12 @@ export class Profile extends Block<ProfilePageProps> {
                 }
             },
         });
+    }
+
+    protected componentDidUpdate(oldProps: ProfileProps, newProps: ProfileProps): boolean {
+        super.componentDidUpdate(oldProps, newProps);
+
+        return false;
     }
 
     protected render() {

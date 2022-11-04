@@ -2,7 +2,6 @@ import { CoreRouter } from 'core';
 
 export default class PathRouter implements CoreRouter {
     private routes: Record<string, Function> = {};
-
     private isStarted = false;
 
     start() {
@@ -18,16 +17,21 @@ export default class PathRouter implements CoreRouter {
     }
 
     private _onRouteChange(pathname: string = window.location.pathname) {
+        console.log(pathname);
+        
         const found = Object.entries(this.routes).some(([routePath, callback]) => {
             if (routePath === pathname) {
                 callback();
                 return true;
             }
+
             return false;
         });
 
-        if (!found && this.routes['*']) {
-            this.routes['*']();
+        if (!found) {
+            if (this.routes['/*']) {
+                this.routes['/*']();
+            }
         }
     }
 

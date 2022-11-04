@@ -1,21 +1,19 @@
 import './messenger.css';
-import Block from 'core/Block';
-import { SidebarChats } from 'components/sidebar-chats';
-import { CoreRouter, Store } from 'core';
-import { ValidationType } from 'utils/validateValue';
-import ButtonIcon, { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
-import { Chat } from 'components/chat';
-import { ChatDialogProps } from 'components/sidebar-chats/chat-dialog/chatDialog';
+import { Block, CoreRouter, Store } from 'core';
 import {
     Screens, withRouter, withStore, withUser,
 } from 'utils';
+import { ValidationType } from 'utils/validateValue';
 import {
-    createChat, getChats, logout,
+    connectUserToChat,
+    createChat, getChats, getChatToken, logout,
 } from 'services';
-import { NewChatForm } from 'components/new-chat';
-import { connectUserToChat, getChatToken } from 'services/chats';
-import { Header } from 'components/header';
 import { Scroll, ScrollDirection } from 'components/scroll';
+import { SidebarChats } from 'components/sidebar-chats';
+import { ChatDialogProps } from 'components/sidebar-chats/chat-dialog';
+import { NewChatForm } from 'components/new-chat';
+import { Chat } from 'components/chat';
+import { ButtonIcon, ButtonIconProps } from 'components/button/button-icon';
 
 type MessengerProps = {
     router: CoreRouter,
@@ -126,7 +124,7 @@ export class Messenger extends Block<MessengerProps> {
     }
 
     private _initChat(userChat: UserChat) {
-        const chat = this.refs.chatRef as Chat;
+        const chat = this.getRef<Chat>(this.refs.chatRef)!;
 
         getChatToken(userChat.id).then((token) => {
             if (!token) {
@@ -143,6 +141,7 @@ export class Messenger extends Block<MessengerProps> {
                     chat.setProps({
                         socket: this._chatSocket,
                         chatId: userChat?.id,
+                        user: this.props.user!,
                         title: userChat?.title,
                         avatar: userChat.avatar,
                     });
@@ -150,6 +149,12 @@ export class Messenger extends Block<MessengerProps> {
                     chat.getStub().hide();
                 })
         });
+    }
+
+    protected componentDidUpdate(oldProps: MessengerProps, newProps: MessengerProps): boolean {
+        super.componentDidUpdate(oldProps, newProps);
+
+        return false;
     }
 
     protected render() {

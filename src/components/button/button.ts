@@ -1,17 +1,17 @@
-import { Block } from 'core';
 import './button.css';
+import { Block } from 'core';
 
-export default interface ButtonProps extends Props {
-    class?: string
-    name?: string
-    type?: 'submit' | 'button' | 'reset'
-    text?: string
-    color?: string
-    disabled?: boolean
-    onClick?: Callback
+export interface ButtonProps extends Props {
+    class?: string,
+    name?: string,
+    type?: 'submit' | 'button' | 'reset',
+    text?: string,
+    color?: string,
+    disabled?: boolean,
+    onClick?: Callback,
 }
 
-export abstract class Button extends Block<ButtonProps> {
+export default abstract class Button extends Block<ButtonProps> {
     constructor({ onClick, disabled = false, ...props }: ButtonProps) {
         super({ ...props, disabled, events: { click: onClick } });
     }

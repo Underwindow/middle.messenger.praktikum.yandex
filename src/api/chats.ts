@@ -1,22 +1,22 @@
 import { http, queryStringify } from 'utils';
 import {
-    APIError, ChatDTO, ChatUserDTO, GetChatsRequestData, GetChatUsersRequestData,
+    APIResponse, ChatDTO, ChatUserDTO, GetChatsRequestData, GetChatUsersRequestData,
 } from './types';
 
 const chats = {
-    getChats: (data: GetChatsRequestData) => http.get<ChatDTO[] | APIError>(`chats${queryStringify(data)}`),
+    getChats: (data: GetChatsRequestData) => http.get<APIResponse<ChatDTO[]>>(`chats${queryStringify(data)}`),
 
-    getChatUsers: (data: GetChatUsersRequestData) => http.get<ChatUserDTO[] | APIError>(
+    getChatUsers: (data: GetChatUsersRequestData) => http.get<APIResponse<ChatUserDTO[]>>(
         `chats/${data.id}/users${queryStringify(data as Omit<GetChatUsersRequestData, 'id'>)}`,
     ),
 
-    createChat: (data: { title: string }) => http.post<{ id: number } | APIError>('chats', data),
+    createChat: (data: { title: string }) => http.post<APIResponse<{ id: number }>>('chats', data),
 
-    addUsers: (data: { users: number[], chatId: number }) => http.put<{} | APIError>('chats/users', data),
+    addUsers: (data: { users: number[], chatId: number }) => http.put<APIResponse>('chats/users', data),
 
-    deleteUsers: (data: { users: number[], chatId: number }) => http.delete<{} | APIError>('chats/users', data),
+    deleteUsers: (data: { users: number[], chatId: number }) => http.delete<APIResponse>('chats/users', data),
 
-    requestToken: (chatId: number) => http.post<{ token: string } | APIError>(`chats/token/${chatId}`),
+    requestToken: (chatId: number) => http.post<APIResponse<{ token: string }>>(`chats/token/${chatId}`),
 
     initSocket: (userId: number, chatId: number, token: string): WebSocket => {
         const socket = new WebSocket(`wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`);

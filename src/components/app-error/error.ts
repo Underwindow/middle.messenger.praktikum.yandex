@@ -1,15 +1,15 @@
 import './error.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 
 export interface ErrorProps extends Props {
-    code?: string
-    description?: string
+    code?: string,
+    description?: string,
 }
 
 export default class Error extends Block<ErrorProps> {
     static readonly componentName: string = 'Error';
 
-    constructor({ ...props }: ErrorProps) {
+    constructor(props: ErrorProps) {
         super(props);
     }
 

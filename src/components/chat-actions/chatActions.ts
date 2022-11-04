@@ -1,10 +1,10 @@
 import './chatActions.css';
-import Block from 'core/Block';
-import { ButtonIcon } from 'components/button/button-icon';
+import { Block } from 'core';
+import { ButtonIcon } from 'components/button';
 
 export interface ChatActionsProps extends Props {
-    onAddUserClick?: Callback
-    onRemoveUserClick?: Callback
+    onAddUserClick?: Callback,
+    onRemoveUserClick?: Callback,
 }
 
 export default class ChatActions extends Block<ChatActionsProps> {

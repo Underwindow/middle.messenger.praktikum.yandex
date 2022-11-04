@@ -1,10 +1,10 @@
 import './bubbleGroup.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import Bubble, { BubbleProps } from '../bubble';
 
-export interface BubbleGroupProps {
-    bubblesDate?: string;
-    bubbleProps?: BubbleProps[];
+export interface BubbleGroupProps extends Props {
+    bubblesDate?: string,
+    bubbleProps?: BubbleProps[],
     last?: boolean,
 }
 

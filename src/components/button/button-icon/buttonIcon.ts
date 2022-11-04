@@ -1,9 +1,9 @@
 import './buttonIcon.css';
-import ButtonProps, { Button } from '../button';
+import Button, { ButtonProps } from '../button';
 
 export interface ButtonIconProps extends ButtonProps {
     icon: Icons,
-    color?: Colors
+    color?: Colors,
 }
 
 type Icons = Values<typeof ButtonIcon.ICONS>;

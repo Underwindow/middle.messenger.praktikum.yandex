@@ -5,6 +5,7 @@ type Route = {
     path: string,
     block: Screens,
     shouldAuthorized: boolean,
+    shouldGuest?: boolean,
 };
 
 const routes: Route[] = [
@@ -29,19 +30,23 @@ const routes: Route[] = [
         shouldAuthorized: true,
     },
     {
-        path: '*',
-        block: Screens.Messenger,
-        shouldAuthorized: true,
-    },
+        path: `*`,
+        block: Screens.Error,
+        shouldAuthorized: false,
+        shouldGuest: true,
+    }
 ];
 
-export default function initRouter(router: CoreRouter, store: Store<AppState>) {
+export function initRouter(router: CoreRouter, store: Store<AppState>) {
     routes.forEach((route) => {
         router.use(route.path, () => {
             const isAuthorized = Boolean(store.getState().user);
             const currentScreen = Boolean(store.getState().screen);
 
-            console.log('isAuthorized && !route.shouldAuthorized');
+            if (route.shouldGuest) {
+                store.dispatch({ screen: route.block });
+                return;
+            }
 
             if (isAuthorized && route.shouldAuthorized) {
                 store.dispatch({ screen: route.block });
@@ -55,19 +60,16 @@ export default function initRouter(router: CoreRouter, store: Store<AppState>) {
 
             if (isAuthorized && !route.shouldAuthorized) {
                 router.go(Screens.Messenger);
-                // store.dispatch({ screen: Screens.Messenger });
                 return;
             }
 
             if (!isAuthorized && route.shouldAuthorized) {
                 router.go(Screens.SignIn);
-                // store.dispatch({ screen: Screens.SignIn });
                 return;
             }
 
             if (!currentScreen) {
                 router.go(Screens.SignIn);
-                // store.dispatch({ screen: Screens.SignIn });
             }
         });
     });

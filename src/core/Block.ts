@@ -4,7 +4,7 @@ import EventBus from './EventBus';
 
 type Events = Values<typeof Block.EVENTS>;
 
-export interface BlockClass<P extends Props = {}> extends Function {
+export interface BlockClass<P extends Props = {}> {
     new(props: P): Block<P>;
     componentName?: string;
 }

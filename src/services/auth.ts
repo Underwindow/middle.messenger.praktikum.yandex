@@ -3,17 +3,18 @@ import {
     apiHasError, auth,
 } from 'api';
 
-import type { Dispatch } from 'core';
+import { Dispatch } from 'core';
 import { Screens } from 'utils';
 
-export const logout = async (dispatch: Dispatch<AppState>) => {
+export const logout = async (dispatch: Dispatch<AppState>, state: AppState,) => {
     dispatch({ isLoading: true });
 
     await auth.logout();
 
     dispatch({ isLoading: false, user: null });
 
-    window.router.go(Screens.SignIn);
+    console.log(state)
+    dispatch({ screen: Screens.SignIn });
 };
 
 export const signUp = async (
@@ -32,16 +33,14 @@ export const signUp = async (
 
     const responseUser = await auth.user();
 
-    dispatch({ isLoading: false, loginFormError: null });
+    dispatch({ isLoading: false, loginFormError: null, user: transformUser(responseUser as UserDTO) });
 
     if (apiHasError(responseUser)) {
         dispatch(logout);
         return;
     }
 
-    dispatch({ user: transformUser(responseUser as UserDTO) });
-
-    window.router.go(Screens.Messenger);
+    dispatch({ screen: Screens.Messenger });
 };
 
 export const login = async (
@@ -55,19 +54,18 @@ export const login = async (
 
     if (apiHasError(response)) {
         dispatch({ isLoading: false, loginFormError: response.reason });
+        dispatch({ screen: Screens.Error });
         return;
     }
 
     const responseUser = await auth.user();
 
-    dispatch({ isLoading: false, loginFormError: null });
+    dispatch({ isLoading: false, loginFormError: null, user: transformUser(responseUser as UserDTO) });
 
     if (apiHasError(responseUser)) {
         dispatch(logout);
         return;
     }
 
-    dispatch({ user: transformUser(responseUser as UserDTO) });
-
-    window.router.go(Screens.Messenger);
+    dispatch({ screen: Screens.Messenger });
 };

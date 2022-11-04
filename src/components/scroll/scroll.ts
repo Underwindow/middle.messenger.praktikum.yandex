@@ -1,11 +1,11 @@
 import './scroll.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 
 export interface ScrollProps extends Props {
-    scrollContent: string;
-    watchSelector: string;
-    direction?: ScrollDirection;
-    onWatch: Callback;
+    scrollContent: string,
+    observeSelector: string,
+    direction?: ScrollDirection,
+    onObserve: Callback,
 }
 
 export enum ScrollDirection {
@@ -21,12 +21,12 @@ export default class Scroll extends Block<ScrollProps> {
     }
 
     watch() {
-        const watch = this.getContent().querySelector(this.props.watchSelector);
+        const watch = this.getContent().querySelector(this.props.observeSelector);
 
         if (watch) {
             const ob = new IntersectionObserver((payload) => {
                 if (payload[0].isIntersecting) {
-                    this.props.onWatch();
+                    this.props.onObserve();
                     ob.unobserve(watch);
                 }
 

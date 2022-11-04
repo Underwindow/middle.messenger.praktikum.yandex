@@ -6,7 +6,6 @@
 
 .scroll > .scrollable-y {
   height: auto;
-  padding: 0 0 8px 0;
 }
 
 .scroll__scroll-default {

@@ -1,15 +1,15 @@
 import './inputError.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 
 export interface InputErrorProps extends Props {
-    text?: string
+    text?: string,
 }
 
 export default class InputError extends Block<InputErrorProps> {
     static readonly componentName = 'InputError';
 
     constructor(props: InputErrorProps) {
-        super({ ...props });
+        super(props);
     }
 
     protected render(): string {

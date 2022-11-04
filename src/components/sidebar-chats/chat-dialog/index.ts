@@ -1,1 +1,1 @@
-export { default as ChatDialog } from './chatDialog';
+export { default as ChatDialog, ChatDialogProps } from './chatDialog';

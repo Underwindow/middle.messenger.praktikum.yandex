@@ -1,6 +1,6 @@
 import { http } from 'utils';
 import {
-    APIError, LoginRequestData, SignInResponseData, SignUpRequestData, SignUpResponseData, UserDTO,
+    APIResponse, LoginRequestData, SignInResponseData, SignUpRequestData, SignUpResponseData, UserDTO,
 } from './types';
 
 const auth = {
@@ -8,7 +8,7 @@ const auth = {
 
     signIn: (data: LoginRequestData) => http.post<SignInResponseData>('auth/signin', data),
 
-    user: () => http.get<UserDTO | APIError>('auth/user'),
+    user: () => http.get<APIResponse<UserDTO>>('auth/user'),
 
     logout: () => http.post('auth/logout'),
 };

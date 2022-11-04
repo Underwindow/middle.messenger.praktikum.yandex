@@ -1,10 +1,10 @@
 import './chatActionForm.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { ValidationType } from 'utils/validateValue';
 import { Input } from 'components/input';
 import { UserListItemProps } from 'components/user-list-item/userListItem';
-import { Button } from 'components/button/button';
 import { UserList } from 'components/user-list';
+import { Button } from 'components/button';
 
 export interface ChatActionFormProps extends Props {
     title: string,

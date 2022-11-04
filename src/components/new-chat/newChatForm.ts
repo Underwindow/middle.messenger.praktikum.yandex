@@ -1,11 +1,11 @@
 import './newChatForm.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { ValidationType } from 'utils/validateValue';
 import { Input } from 'components/input';
 
 export interface NewChatFormProps extends Props {
-    onFormSubmit?: Callback;
-    onFormCancel?: Callback;
+    onFormSubmit?: Callback,
+    onFormCancel?: Callback,
 }
 
 export default class NewChatForm extends Block<NewChatFormProps> {

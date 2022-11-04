@@ -1,13 +1,13 @@
 import './header.css';
-import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
-import Block from 'core/Block';
+import { Block } from 'core';
+import { ButtonIconProps } from 'components/button/button-icon';
 
 export interface HeaderProps extends Props {
-    leftBtnProps?: ButtonIconProps
-    rightBtnProps?: ButtonIconProps
-    title?: string
-    avatarSrc?: string
-    onClick?: () => void
+    leftBtnProps?: ButtonIconProps,
+    rightBtnProps?: ButtonIconProps,
+    title?: string,
+    avatarSrc?: string,
+    onClick?: () => void,
 }
 
 export default class Header extends Block<HeaderProps> {
@@ -17,7 +17,7 @@ export default class Header extends Block<HeaderProps> {
         bubbles: false,
     });
 
-    constructor({ ...props }: HeaderProps) {
+    constructor(props: HeaderProps) {
         super({
             ...props,
             events: {

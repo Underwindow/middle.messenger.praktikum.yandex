@@ -1,14 +1,13 @@
+import './logo.css';
 import { Block } from 'core';
 
-import './logo.css';
-
-interface LogoProps {
-    black?: boolean;
-    onClick?: string;
+interface LogoProps extends Props {
+    black?: boolean,
+    onClick?: string,
 }
 
-export default class Logo extends Block {
-    static componentName = 'Logo';
+export default class Logo extends Block<LogoProps> {
+    static readonly componentName = 'Logo';
 
     constructor(props: LogoProps) {
         super({ ...props, events: { click: props.onClick } });
