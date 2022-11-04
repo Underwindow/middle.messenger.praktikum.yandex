@@ -1,3 +1,5 @@
+import { APIError } from "api";
+
 declare global {
     export type Nullable<T> = T | null;
     export type Callback<T = unknown> = (...args: any[]) => T;
@@ -12,6 +14,7 @@ declare global {
         isLoading: boolean;
         loginFormError: string | null;
         user: User | null;
+        apiError: APIError | null;
     };
 
     export type User = {
