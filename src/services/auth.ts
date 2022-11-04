@@ -27,13 +27,14 @@ export const signUp = async (
     const response = await auth.signUp(action);
 
     if (apiHasError(response)) {
-        dispatch({ isLoading: false, loginFormError: response.reason });
+        dispatch({ isLoading: false, loginFormError: response.reason, apiError: response });
         return;
     }
 
     const responseUser = await auth.user();
+    const user = transformUser(responseUser as UserDTO);
 
-    dispatch({ isLoading: false, loginFormError: null, user: transformUser(responseUser as UserDTO) });
+    dispatch({ isLoading: false, loginFormError: null, apiError: null, user: user });
 
     if (apiHasError(responseUser)) {
         dispatch(logout);
@@ -53,14 +54,14 @@ export const login = async (
     const response = await auth.signIn(action);
 
     if (apiHasError(response)) {
-        dispatch({ isLoading: false, loginFormError: response.reason });
-        dispatch({ screen: Screens.Error });
+        dispatch({ isLoading: false, loginFormError: response.reason, apiError: response });
         return;
     }
 
     const responseUser = await auth.user();
+    const user = transformUser(responseUser as UserDTO);
 
-    dispatch({ isLoading: false, loginFormError: null, user: transformUser(responseUser as UserDTO) });
+    dispatch({ isLoading: false, loginFormError: null, apiError: null, user: user });
 
     if (apiHasError(responseUser)) {
         dispatch(logout);
