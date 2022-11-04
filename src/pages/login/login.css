@@ -23,10 +23,10 @@
 
 .entry__error {
   position: absolute;
-  top: -10;
+  top: -16;
   right: 0;
   left: 0;
-  font-size: clamp(14px, 2vw, 2vh);
+  font-size: clamp(14px, 2vw, 1vh);
   z-index: 10000;
   white-space: nowrap;
 }
