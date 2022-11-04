@@ -36,8 +36,7 @@ export class SignInPage extends Block<SignInPageProps> {
                 }
             },
             onClick: () => {
-                this.props.store.dispatch({ loginFormError: null });
-                this.props.router.go(Screens.SignUp);
+                this.props.store.dispatch({ screen: Screens.SignUp, loginFormError: null });
             },
         });
     }
