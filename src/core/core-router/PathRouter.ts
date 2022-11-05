@@ -1,22 +1,22 @@
 import { CoreRouter } from 'core';
 
 export default class PathRouter implements CoreRouter {
-    private routes: Record<string, Function> = {};
-    private isStarted = false;
+    protected routes: Record<string, Function> = {};
+    protected isStarted = false;
 
     start() {
         if (!this.isStarted) {
             this.isStarted = true;
 
             window.onpopstate = () => {
-                this._onRouteChange.call(this);
+                this.onRouteChange.call(this);
             };
 
-            this._onRouteChange();
+            this.onRouteChange();
         }
     }
 
-    private _onRouteChange(pathname: string = window.location.pathname) {
+    onRouteChange(pathname: string = window.location.pathname) {
         console.log(pathname);
         
         const found = Object.entries(this.routes).some(([routePath, callback]) => {
@@ -55,7 +55,7 @@ export default class PathRouter implements CoreRouter {
         const fixedPath = this._fixPath(path);
 
         window.history.pushState({}, '', fixedPath);
-        this._onRouteChange(fixedPath);
+        this.onRouteChange(fixedPath);
     }
 
     back() {

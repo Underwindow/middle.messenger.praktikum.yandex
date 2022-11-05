@@ -7,7 +7,7 @@ export default class SplashPage extends Block<SplashPageProps> {
 
     render() {
         return `
-        <div class="whole screen content-center color-hint">
+        <div data-testid="splash-logo" class="whole screen content-center color-hint">
             {{{Logo}}}
         </div>
     `;

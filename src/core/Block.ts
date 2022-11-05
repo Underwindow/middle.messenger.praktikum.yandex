@@ -1,6 +1,6 @@
-import { nanoid } from 'nanoid';
 import Handlebars from 'handlebars';
 import EventBus from './EventBus';
+import { nanoid } from 'nanoid';
 
 type Events = Values<typeof Block.EVENTS>;
 
@@ -51,7 +51,7 @@ export default abstract class Block<P extends Props = {}> {
 
     /* eslint-disable-next-line */
     protected getStateFromProps(props?: P): void {
-        this.state = {};
+        this.state = props ?? {};
     }
 
     private _makePropsProxy(props: any): any {

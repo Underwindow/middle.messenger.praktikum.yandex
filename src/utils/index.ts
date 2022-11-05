@@ -8,3 +8,5 @@ export { default as withUser } from './withUser';
 export { default as withIsLoading } from './withIsLoading';
 export { Screens, getScreenComponent } from './screenList';
 export { default as dateFormat } from './dateFormat';
+export { default as sleep } from './sleep';
+export { default as isEqual } from './isEqual';

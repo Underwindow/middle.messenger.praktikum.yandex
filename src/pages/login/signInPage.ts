@@ -67,7 +67,7 @@ export class SignInPage extends Block<SignInPageProps> {
 
         // language=hbs
         return `
-        <div class="entry whole content-center">
+        <div data-testid="sign-in-screen" class="entry whole content-center">
             <form class="entry__form" action="">
                 <div class="entry__header content-center">Вход</div>
                 <div class="entry__fieldset content-center">

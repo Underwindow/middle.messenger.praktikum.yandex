@@ -40,7 +40,6 @@ export default class ImageUpload extends Block<ImageUploadProps> {
     }
 
     protected render(): string {
-        console.log('render', this.constructor.name, this.id);
         const src = this.props.src
             ? resources + this.props.src
             : 'https://www.w3schools.com/tags/img_girl.jpg';

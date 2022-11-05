@@ -29,9 +29,6 @@ export class Store<State extends Record<string, any>> extends EventBus {
         const prevState = { ...this.state };
 
         this.state = { ...this.state, ...nextState };
-
-        console.log(this.state);
-        
         this.emit('changed', prevState, nextState);
     }
 

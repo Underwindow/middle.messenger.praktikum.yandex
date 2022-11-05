@@ -1,6 +1,6 @@
 import './profile.css';
 import { Block, CoreRouter, Store } from 'core';
-import { withRouter, withStore, withUser } from 'utils';
+import { isEqual, withRouter, withStore, withUser } from 'utils';
 import { ValidationType } from 'utils/validateValue';
 import {
     changeAvatar, changePassword, changeProfile, logout,
@@ -42,7 +42,7 @@ export class Profile extends Block<ProfileProps> {
                 const avatarInput = this.refs.avatarInputRef as ImageUpload;
                 saveAvatarBtn.setProps({ disabled: !avatarInput.fileList });
             },
-            onSaveAvatar: (e: Event) => {
+            onSaveAvatar: (e: Event) => {                
                 e.preventDefault();
 
                 const avatarInput = this.refs.avatarInputRef as ImageUpload;
@@ -56,6 +56,8 @@ export class Profile extends Block<ProfileProps> {
                 }
             },
             onSaveProfile: (e: Event) => {
+                console.log('onSaveAvatar');
+
                 e.preventDefault();
                 const fieldset = this.refs.fieldsetRef as Input[];
                 const isValid = Input.validateFieldset(fieldset);
@@ -77,12 +79,6 @@ export class Profile extends Block<ProfileProps> {
                 }
             },
         });
-    }
-
-    protected componentDidUpdate(oldProps: ProfileProps, newProps: ProfileProps): boolean {
-        super.componentDidUpdate(oldProps, newProps);
-
-        return false;
     }
 
     protected render() {
