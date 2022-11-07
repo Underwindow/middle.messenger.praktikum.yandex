@@ -1,15 +1,64 @@
-Sprint 3 PR: https://github.com/Underwindow/middle.messenger.praktikum.yandex/pull/7
+# Wassup (messenger app)
 
-Дизайн-макет: https://www.figma.com/file/CMuaKeTrpFbWYlssKF3IFE/Wassup?node-id=0%3A1
+**Wassup** — это веб-мессенджер с привычным для данного сервиса набором функций.
 
-Netlify-домен: https://elaborate-medovik-c1bd79.netlify.app/
+[Дизайн-макет](https://www.figma.com/file/CMuaKeTrpFbWYlssKF3IFE/Wassup?node-id=0%3A1 "Дизайн-макет")
 
-Мессенджер с привычным для данного сервиса функционалом: 
-Cоздание аккаунта и чатов, добавление/удаление пользователей из чатов, отправка сообщений и редактирование профиля. 
+[Netlify-домен](https://elaborate-medovik-c1bd79.netlify.app/ "Netlify-домен")
 
-Проект находится на стадии разработки.
+[Heroku-домен](https://wassup-messenger-app.herokuapp.com/ "Heroku-домен")
 
-Доступные команды:
-    npm run build,
-    npm run dev,
-    npm run start
+### Features
+
+- Регистрация
+- Авторизация
+- Создание чатов
+- Отправка сообщений
+- Добавление/удаление пользователей из чатов
+- Редактирование профиля
+
+**Проект находится на стадии разработки.**
+
+------------
+
+###Getting Started
+
+####Installation
+
+`$ npm install`
+
+------------
+
+
+####Development
+#####Start dev-server:
+`$ npm run dev`
+
+#####Run tests:
+`$ npm run test`
+
+#####Eslint:
+`$ npm run eslint` or `$ npm run eslint:fix`
+
+#####Stylelint:
+`$ npm run stylelint` or `$ npm run stylelint:fix`
+
+#####Run linters:
+`$ npm run lint`
+
+#####Run linters and tests:
+`$ npm run check`
+
+------------
+
+
+####Building
+`$ npm run build`
+
+------------
+
+####Docker
+
+`$ docker run -p <PORT> -v -t -d <CONTAINER_NAME>`
+
+------------
