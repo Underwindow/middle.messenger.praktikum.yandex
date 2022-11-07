@@ -21,43 +21,51 @@
 
 ------------
 
-###Getting Started
+### Getting Started
 
-####Installation
+#### Installation
 
 `$ npm install`
 
 ------------
 
 
-####Development
-#####Start dev-server:
+#### Development
+
+##### Start dev-server:
+
 `$ npm run dev`
 
-#####Run tests:
+##### Run tests:
+
 `$ npm run test`
 
-#####Eslint:
+##### Eslint:
+
 `$ npm run eslint` or `$ npm run eslint:fix`
 
-#####Stylelint:
+##### Stylelint:
+
 `$ npm run stylelint` or `$ npm run stylelint:fix`
 
-#####Run linters:
+##### Run linters:
+
 `$ npm run lint`
 
-#####Run linters and tests:
+##### Run linters and tests:
+
 `$ npm run check`
 
 ------------
 
 
-####Building
+#### Building
+
 `$ npm run build`
 
 ------------
 
-####Docker
+#### Docker
 
 `$ docker run -p <PORT> -v -t -d <CONTAINER_NAME>`
 
