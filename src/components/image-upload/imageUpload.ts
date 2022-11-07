@@ -4,8 +4,8 @@ import { resources } from 'utils/request';
 
 export interface ImageUploadProps extends Props {
     name: string,
-    src?: string, 
-    alt?: string, 
+    src?: string,
+    alt?: string,
     onInput?: Callback,
     onBlur?: Callback,
     onFocus?: Callback,

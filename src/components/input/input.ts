@@ -99,8 +99,7 @@ export default class Input extends Block<InputProps> {
 
         if (errorMessage) {
             this.setErrorMessage(errorMessage);
-        } 
-        else {
+        } else {
             this.setErrorMessage();
         }
 

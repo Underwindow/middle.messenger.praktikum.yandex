@@ -1,4 +1,4 @@
-import { APIError } from "api";
+import { APIError } from 'api';
 
 declare global {
     export type Nullable<T> = T | null;

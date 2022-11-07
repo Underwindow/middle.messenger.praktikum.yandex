@@ -22,6 +22,7 @@ type MethodOptions = Omit<Options, 'method'>;
 export class HTTPTransport {
     static fetchWithTries(url: string, options: Options): Promise<XMLHttpRequest> {
         const { tries = 1 } = options;
+        console.log(url);
         const self = this;
         function onError(err: Error) {
             const triesLeft = tries - 1;

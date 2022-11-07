@@ -6,15 +6,13 @@ import {
 import { Dispatch } from 'core';
 import { Screens } from 'utils';
 
-export const logout = async (dispatch: Dispatch<AppState>, state: AppState,) => {
+export const logout = async (dispatch: Dispatch<AppState>, state: AppState) => {
+    console.log(state);
     dispatch({ isLoading: true });
 
     await auth.logout();
 
-    dispatch({ isLoading: false, user: null });
-
-    console.log(state)
-    dispatch({ screen: Screens.SignIn });
+    dispatch({ isLoading: false, user: null, screen: Screens.SignIn });
 };
 
 export const signUp = async (
@@ -22,6 +20,7 @@ export const signUp = async (
     state: AppState,
     action: SignUpRequestData,
 ) => {
+    console.log(state);
     dispatch({ isLoading: true });
 
     const response = await auth.signUp(action);
@@ -34,7 +33,9 @@ export const signUp = async (
     const responseUser = await auth.user();
     const user = transformUser(responseUser as UserDTO);
 
-    dispatch({ isLoading: false, loginFormError: null, apiError: null, user: user });
+    dispatch({
+        isLoading: false, loginFormError: null, apiError: null, user,
+    });
 
     if (apiHasError(responseUser)) {
         dispatch(logout);
@@ -49,6 +50,7 @@ export const login = async (
     state: AppState,
     action: LoginRequestData,
 ) => {
+    console.log(state);
     dispatch({ isLoading: true });
 
     const response = await auth.signIn(action);
@@ -61,7 +63,9 @@ export const login = async (
     const responseUser = await auth.user();
     const user = transformUser(responseUser as UserDTO);
 
-    dispatch({ isLoading: false, loginFormError: null, apiError: null, user: user });
+    dispatch({
+        isLoading: false, loginFormError: null, apiError: null, user,
+    });
 
     if (apiHasError(responseUser)) {
         dispatch(logout);

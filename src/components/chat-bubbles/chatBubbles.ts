@@ -1,7 +1,7 @@
 import './chatBubbles.css';
 import { Block } from 'core';
 import { Bubble, BubbleProps } from 'components/bubble';
-import { BubbleGroup, BubbleGroupProps } from 'components/bubble/bubble-group';
+import { BubbleGroup, BubbleGroupProps } from 'components/bubble-group';
 
 export interface ChatBubblesProps extends Props {
     bubbleGroupProps?: BubbleGroupProps[],
@@ -14,7 +14,7 @@ export default class ChatBubbles extends Block<ChatBubblesProps> {
 
     private _groupBubblesByDay(bubbles: BubbleProps[]): BubbleGroupProps[] {
         const bubblesAsDayItems: DayItem[] = bubbles.map((bubble, i) => ({
-            day: bubble.date.toLocaleDateString(), i
+            day: bubble.date.toLocaleDateString(), i,
         }));
 
         const lastDayItems = this._getLastDayItems(bubblesAsDayItems);
@@ -35,13 +35,16 @@ export default class ChatBubbles extends Block<ChatBubblesProps> {
 
     private _getLastDayItems(dayItems: DayItem[]) {
         return dayItems
-            .map(item => item.day)
+            .map((item) => item.day)
             .reduce((res, day, _, self) => {
-                const lastItem = dayItems.find(item => self.lastIndexOf(day) === item.i);
-                const isUnique = lastItem && !res.find((item) => item.i === lastItem.i && item.day === lastItem.day);
+                const lastItem = dayItems
+                    .find((item) => self.lastIndexOf(day) === item.i);
+
+                const isUnique = lastItem && !res
+                    .find((item) => item.i === lastItem.i && item.day === lastItem.day);
 
                 return isUnique ? [...res, lastItem] : res;
-            }, [] as DayItem[])
+            }, [] as DayItem[]);
     }
 
     private _getCurrentBubbleProps(): BubbleProps[] {
@@ -50,7 +53,7 @@ export default class ChatBubbles extends Block<ChatBubblesProps> {
         if (refs !== undefined && refs.length > 0) {
             return refs
                 .reduce((a, b) => a.concat(b.getBubbles()!), [] as Bubble[])
-                .map(bubble => bubble.getProps());
+                .map((bubble) => bubble.getProps());
         }
 
         return [];

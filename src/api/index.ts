@@ -10,4 +10,5 @@ export {
 export { default as auth } from './auth';
 export { default as user } from './user';
 export { default as chats } from './chats';
-export * from './types';
+export * from './dto.types';
+export * from './request.types';

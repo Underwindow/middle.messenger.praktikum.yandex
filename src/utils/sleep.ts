@@ -1,3 +1,4 @@
 export default function sleep(ms: number = 200) {
-    return new Promise(r => setTimeout(r, ms));
+    // eslint-disable-next-line
+    return new Promise((r) => setTimeout(r, ms));
 }

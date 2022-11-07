@@ -1,7 +1,7 @@
-import {
-    ChatDTO, ChatMessageDTO, ChatUserDTO, MessageDTO, MessageUserDTO, UserDTO,
-} from 'api';
 import { dateFormat } from 'utils';
+import {
+    UserDTO, MessageUserDTO, MessageDTO, ChatDTO, ChatUserDTO, ChatMessageDTO,
+} from './dto.types';
 
 export const transformUser = (data: UserDTO): User => ({
     id: data.id,

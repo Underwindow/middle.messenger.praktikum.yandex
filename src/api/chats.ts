@@ -1,7 +1,8 @@
 import { http, queryStringify } from 'utils';
+import { ChatDTO, ChatUserDTO } from './dto.types';
 import {
-    APIResponse, ChatDTO, ChatUserDTO, GetChatsRequestData, GetChatUsersRequestData,
-} from './types';
+    GetChatsRequestData, APIResponse, GetChatUsersRequestData,
+} from './request.types';
 
 const chats = {
     getChats: (data: GetChatsRequestData) => http.get<APIResponse<ChatDTO[]>>(`chats${queryStringify(data)}`),

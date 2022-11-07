@@ -1,4 +1,5 @@
 export interface CoreRouter {
+
     start(): void
 
     use(path: string, callback: () => void): CoreRouter
@@ -8,4 +9,6 @@ export interface CoreRouter {
     back(): void
 
     forward(): void
+
+    redirect(path: string): void
 }

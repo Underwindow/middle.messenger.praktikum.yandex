@@ -1,7 +1,8 @@
 import { http } from 'utils';
+import { UserDTO } from './dto.types';
 import {
-    APIResponse, LoginRequestData, SignInResponseData, SignUpRequestData, SignUpResponseData, UserDTO,
-} from './types';
+    SignUpRequestData, SignUpResponseData, LoginRequestData, SignInResponseData, APIResponse,
+} from './request.types';
 
 const auth = {
     signUp: (data: SignUpRequestData) => http.post<SignUpResponseData>('auth/signup', data),

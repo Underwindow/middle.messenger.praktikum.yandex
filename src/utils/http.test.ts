@@ -12,7 +12,7 @@ describe('utils/request', () => {
         const response = await HTTPTransport.fetchWithTries(`${baseURL}/auth/user`, {
             method: METHOD.GET,
             credentials: 'include',
-            headers
+            headers,
         });
 
         expect(response.status).toEqual(200);
@@ -22,7 +22,7 @@ describe('utils/request', () => {
         const response = await HTTPTransport.fetchWithTries(`${baseURL}/auth/logout`, {
             method: METHOD.POST,
             credentials: 'include',
-            headers
+            headers,
         });
 
         expect(response.status).toEqual(200);

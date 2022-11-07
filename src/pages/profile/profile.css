@@ -40,7 +40,7 @@
   justify-content: space-between;
   align-items: center;
   border: solid;
-  border-width: 1px 0;
+  border-width: 0 0 1px;
   border-color: var(--bg);
   box-sizing: border-box;
 }

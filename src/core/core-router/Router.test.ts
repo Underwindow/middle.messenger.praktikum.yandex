@@ -1,14 +1,14 @@
-import { MockedPathRouter } from 'tests/MockedPathRouter';
+import MockedPathRouter from 'tests/MockedPathRouter';
 
 describe('core/core-router/PathRouter', () => {
-    const url = "/dummy.com";
+    const url = '/dummy.com';
 
     it('should change path', () => {
         global.window = Object.create(global.window);
         Object.defineProperty(window, 'location', {
             value: {
-                pathname: url
-            }
+                pathname: url,
+            },
         });
         expect(window.location.pathname).toEqual(url);
 
@@ -22,8 +22,8 @@ describe('core/core-router/PathRouter', () => {
         const router = new MockedPathRouter();
         const callback = () => {
             console.log('callback invoked!');
-        }
-        
+        };
+
         router.use(url, callback);
         expect(router.getRoutes()[url]).toEqual(callback);
     });
@@ -32,7 +32,7 @@ describe('core/core-router/PathRouter', () => {
         const router = new MockedPathRouter();
 
         const mockCallback = jest.fn();
-        
+
         router.use(url, mockCallback);
         router.go(url);
         expect(mockCallback).toHaveBeenCalled();

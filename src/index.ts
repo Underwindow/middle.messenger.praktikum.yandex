@@ -1,10 +1,11 @@
 require('babel-core/register');
 
 import 'styles/app.css';
+
 import { CoreRouter, PathRouter, registerComponent, renderDOM, Store } from 'core';
 import { defaultState } from 'store';
 import { initApp } from 'services';
-import { initRouter } from './router';
+import initRouter from './router';
 import { SplashScreen } from 'pages/splash';
 
 import * as components from 'components';
@@ -12,6 +13,7 @@ import * as components from 'components';
 Object.values(components).forEach((Component: any) => {
     registerComponent(Component);
 });
+
 
 declare global {
     interface Window {

@@ -17,7 +17,7 @@ export default class Scroll extends Block<ScrollProps> {
     static readonly componentName = 'Scroll';
 
     constructor({ direction = ScrollDirection.Default, ...props }: ScrollProps) {
-        super({ ...props, direction })
+        super({ ...props, direction });
     }
 
     watch() {
@@ -29,7 +29,6 @@ export default class Scroll extends Block<ScrollProps> {
                     this.props.onObserve();
                     ob.unobserve(watch);
                 }
-
             });
             ob.observe(watch);
         }
@@ -38,7 +37,7 @@ export default class Scroll extends Block<ScrollProps> {
     protected getStateFromProps(props?: ScrollProps): void {
         const nextState = {
             scrollContent: props === undefined ? '' : props.scrollContent,
-        }
+        };
 
         this.setState(nextState);
     }

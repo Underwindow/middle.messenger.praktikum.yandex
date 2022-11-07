@@ -1,16 +1,19 @@
-import { BlockClass, renderDOM, registerComponent, Store } from 'core';
+import {
+    BlockClass, renderDOM, registerComponent, Store,
+} from 'core';
 import { defaultState } from 'store';
-import * as components from 'components';
-import { initRouter } from '../router';
-import { MockedPathRouter } from 'tests/MockedPathRouter';
 import { sleep } from 'utils';
+import * as components from 'components';
+import MockedPathRouter from 'tests/MockedPathRouter';
+import initRouter from '../router';
 
 type RenderBlockParams<T extends Props> = {
     Block: BlockClass<T>;
     props?: T;
     state?: Partial<AppState>;
-}
+};
 
+// eslint-disable-next-line
 export async function renderBlock<T extends Props>({ Block, props = undefined, state = defaultState }: RenderBlockParams<T>) {
     Object.values(components).forEach((Component: any) => {
         registerComponent(Component);
@@ -24,7 +27,7 @@ export async function renderBlock<T extends Props>({ Block, props = undefined, s
 
     document.body.innerHTML = '<div id="app"></div>';
 
-    const block = new Block(props as T); 
+    const block = new Block(props as T);
     renderDOM(block);
 
     initRouter(router, store);

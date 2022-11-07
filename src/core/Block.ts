@@ -1,6 +1,6 @@
 import Handlebars from 'handlebars';
-import EventBus from './EventBus';
 import { nanoid } from 'nanoid';
+import EventBus from './EventBus';
 
 type Events = Values<typeof Block.EVENTS>;
 
@@ -228,17 +228,18 @@ export default abstract class Block<P extends Props = {}> {
         }
     };
 
-    getRefs = <Ref = Block>(ref: Block | Block[]): Ref[] | undefined => {
-        const refs = (Array.isArray(ref) ? ref : [ref]) as Ref[];
+    getRefs = <Ref extends Block>(ref: Block | Block[]): Ref[] | undefined => {
+        const refs = Array.isArray(ref) ? ref : [ref];
 
-        if (refs && refs.length > 0 && refs[0] === undefined)
-            return undefined;
+        if (refs && refs.length > 0 && refs[0] === undefined) { return undefined; }
 
-        return refs;
+        return refs as unknown as Ref[];
     };
 
-    getRef = <Ref = Block>(ref: Block | Block[]): Ref | undefined => {
-        return Array.isArray(ref) ? undefined : ref as Ref;
+    getRef = <Ref extends Block>(ref: Block | Block[]): Ref | undefined => {
+        const outRef = Array.isArray(ref) ? undefined : ref;
+
+        return outRef as unknown as Ref;
     };
 
     setState = (nextState: any) => {

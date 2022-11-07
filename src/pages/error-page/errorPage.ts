@@ -12,7 +12,7 @@ type ErrorPageProps = {
 export class ErrorPage extends Block<ErrorPageProps> {
     static readonly componentName = 'ErrorPage';
 
-    constructor({...props }: ErrorPageProps) {
+    constructor({ ...props }: ErrorPageProps) {
         super({
             ...props,
             text: 'Вернуться на главную',

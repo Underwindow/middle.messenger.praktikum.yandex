@@ -1,6 +1,6 @@
 import './sidebarChats.css';
 import { Block } from 'core';
-import { ChatDialogProps, ChatDialog } from './chat-dialog';
+import { ChatDialogProps, ChatDialog } from 'components/chat-dialog';
 
 export interface SidebarChatsProps extends Props {
     chatsProps?: ChatDialogProps[],
@@ -12,7 +12,7 @@ export default class SidebarChats extends Block<SidebarChatsProps> {
 
     constructor({ chatsProps, stub = 'Загрузка...' }: SidebarChatsProps) {
         super({
-            chatsProps, stub
+            chatsProps, stub,
         });
     }
 

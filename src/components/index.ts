@@ -1,6 +1,7 @@
+export { Bubble } from './bubble';
+export { BubbleGroup } from './bubble-group';
 export { ErrorComponent } from './app-error';
 export { Avatar } from './avatar';
-export { Bubble, BubbleGroup } from './bubble';
 export { Button, ButtonPrimary, ButtonSecondary, ButtonIcon } from './button';
 export { Chat } from './chat';
 export { ChatActionForm } from './chat-action-form';
@@ -13,6 +14,7 @@ export { Input, InputError, InputField } from './input';
 export { Logo } from './logo';
 export { NewChatForm } from './new-chat';
 export { Scroll } from './scroll';
-export { SidebarChats, ChatDialog } from './sidebar-chats';
+export { ChatDialog } from './chat-dialog';
+export { SidebarChats } from './sidebar-chats';
 export { UserList } from './user-list';
 export { UserListItem } from './user-list-item';

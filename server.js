@@ -1,10 +1,13 @@
 const express = require('express');
+const path = require('path');
+
+const PORT = process.env.PORT || 8000;
 
 const app = express();
-const PORT = 3000;
 
-app.use(express.static('dist'));
+app.use(express.static(path.join(__dirname, 'dist')));
+app.set('port', PORT);
 
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}!`);
+const server = app.listen(app.get('port'), () => {
+    console.log('Listening on port ', server.address().port);
 });

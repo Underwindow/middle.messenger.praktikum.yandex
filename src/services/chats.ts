@@ -44,7 +44,7 @@ export const getChatUsers = async (
     action: GetChatUsersRequestData,
 ): Promise<ChatUser[] | null> => {
     console.log(action);
-    
+
     const responseChatUsers = await chats.getChatUsers(action);
 
     if (apiHasError(responseChatUsers)) {
@@ -118,10 +118,10 @@ export const connectUserToChat = async (
 
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        
+
         if (data.type === 'error' || data.type === 'user connected') return;
         console.log('Получено сообщение', data);
-        
+
         const isOld = Array.isArray(data);
         const chatMessagesDTO = Array.isArray(data)
             ? data.map((message) => message as ChatMessageDTO)

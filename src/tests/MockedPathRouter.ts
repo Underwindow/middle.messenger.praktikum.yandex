@@ -1,6 +1,6 @@
-import { PathRouter } from "core";
+import { PathRouter } from 'core';
 
-export class MockedPathRouter extends PathRouter {
+export default class MockedPathRouter extends PathRouter {
     private _window: any;
 
     constructor(window: any = global.window) {
@@ -13,7 +13,7 @@ export class MockedPathRouter extends PathRouter {
         this._window.location.pathname = pathname;
         this.onRouteChange();
     }
-    
+
     getRoutes() {
         return this.routes;
     }

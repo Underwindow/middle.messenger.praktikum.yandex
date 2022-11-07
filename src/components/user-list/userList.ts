@@ -8,10 +8,6 @@ export interface UserListProps extends Props {
 export default class UserList extends Block<UserListProps> {
     static readonly componentName: string = 'UserList';
 
-    constructor(props: UserListProps) {
-        super(props);
-    }
-
     getUsersList() {
         return Array.isArray(this.refs.usersListRef)
             ? this.refs.usersListRef as UserListItem[]

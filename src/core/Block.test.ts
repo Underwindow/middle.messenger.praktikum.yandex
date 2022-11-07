@@ -7,27 +7,26 @@ describe('core/Block', () => {
         console.log('mockFunc called!');
     });
 
-    class ClickableBlock<T extends Props> extends Block<T>
-    {
+    class ClickableBlock<T extends Props> extends Block<T> {
         constructor(props: T) {
             super({
                 ...props,
                 events: {
                     click: () => mock(),
-                }
+                },
             });
         }
 
         getProps(): T {
             return this.props;
         }
-        
+
         protected render(): string {
             return `
                 <div data-testid="test-block">Sample Text, {{test}}</div>
             `;
         }
-    };
+    }
 
     it('should set events', async () => {
         await step('render testBlock to dom', () => {
@@ -91,6 +90,6 @@ describe('core/Block', () => {
         });
 
         expect(testBlock.element?.textContent !== oldContent).toEqual(true);
-        expect(testBlock.element?.textContent).toEqual(`Sample Text, Hello world!`);
+        expect(testBlock.element?.textContent).toEqual('Sample Text, Hello world!');
     });
 });

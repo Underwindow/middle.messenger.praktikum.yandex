@@ -1,6 +1,8 @@
 import './profile.css';
 import { Block, CoreRouter, Store } from 'core';
-import { isEqual, withRouter, withStore, withUser } from 'utils';
+import {
+    Screens, withRouter, withStore, withUser,
+} from 'utils';
 import { ValidationType } from 'utils/validateValue';
 import {
     changeAvatar, changePassword, changeProfile, logout,
@@ -35,14 +37,14 @@ export class Profile extends Block<ProfileProps> {
             },
             btnBackProps: {
                 icon: ButtonIcon.ICONS.BACK,
-                onClick: () => this.props.router.back(),
+                onClick: () => this.props.router.go(Screens.Messenger),
             },
             onChooseAvatar: () => {
                 const saveAvatarBtn = this.refs.avatarSubmitRef as ButtonSecondary;
                 const avatarInput = this.refs.avatarInputRef as ImageUpload;
                 saveAvatarBtn.setProps({ disabled: !avatarInput.fileList });
             },
-            onSaveAvatar: (e: Event) => {                
+            onSaveAvatar: (e: Event) => {
                 e.preventDefault();
 
                 const avatarInput = this.refs.avatarInputRef as ImageUpload;

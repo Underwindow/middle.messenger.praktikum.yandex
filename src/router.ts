@@ -30,46 +30,38 @@ const routes: Route[] = [
         shouldAuthorized: true,
     },
     {
-        path: `*`,
+        path: '*',
         block: Screens.Error,
         shouldAuthorized: false,
         shouldGuest: true,
-    }
+    },
 ];
 
-export function initRouter(router: CoreRouter, store: Store<AppState>) {
+export default function initRouter(router: CoreRouter, store: Store<AppState>) {
     routes.forEach((route) => {
         router.use(route.path, () => {
             const isAuthorized = Boolean(store.getState().user);
             const currentScreen = Boolean(store.getState().screen);
+            let screen;
 
             if (route.shouldGuest) {
-                store.dispatch({ screen: route.block });
-                return;
+                screen = route.block;
+            } else if (
+                (isAuthorized && route.shouldAuthorized)
+                || (!isAuthorized && !route.shouldAuthorized)) {
+                screen = route.block;
+            } else if (isAuthorized && !route.shouldAuthorized) {
+                screen = Screens.Messenger;
+            } else if (!isAuthorized && route.shouldAuthorized) {
+                screen = Screens.SignIn;
+            } else if (!currentScreen) {
+                screen = Screens.SignIn;
             }
 
-            if (isAuthorized && route.shouldAuthorized) {
-                store.dispatch({ screen: route.block });
-                return;
-            }
-
-            if (!isAuthorized && !route.shouldAuthorized) {
-                store.dispatch({ screen: route.block });
-                return;
-            }
-
-            if (isAuthorized && !route.shouldAuthorized) {
-                router.go(Screens.Messenger);
-                return;
-            }
-
-            if (!isAuthorized && route.shouldAuthorized) {
-                router.go(Screens.SignIn);
-                return;
-            }
-
-            if (!currentScreen) {
-                router.go(Screens.SignIn);
+            if (screen !== store.getState().screen) { // if router go() back() or forward()
+                store.dispatch({ screen });
+            } else { // if redirect or dispatched screen
+                router.redirect(store.getState().screen);
             }
         });
     });
@@ -82,6 +74,10 @@ export function initRouter(router: CoreRouter, store: Store<AppState>) {
         if (!prevState.appIsInited && nextState.appIsInited) {
             router.start();
         }
+
+        // console.log(prevState, nextState);
+        // router.go(nextState.screen);
+        router.go(nextState.screen);
 
         if (prevState.screen !== nextState.screen) {
             const Page = getScreenComponent(nextState.screen);

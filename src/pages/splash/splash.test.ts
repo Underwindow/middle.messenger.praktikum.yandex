@@ -1,4 +1,4 @@
-import { getByTestId } from '@testing-library/dom'
+import { getByTestId } from '@testing-library/dom';
 import { renderBlock } from 'tests/renderUtils';
 import SplashPage from './splash';
 

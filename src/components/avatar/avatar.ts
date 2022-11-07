@@ -10,10 +10,6 @@ export interface AvatarProps extends Props {
 export default class Avatar extends Block<AvatarProps> {
     static readonly componentName: string = 'Avatar';
 
-    constructor(props: AvatarProps) {
-        super(props);
-    }
-
     protected render(): string {
         const src = this.props.src
             ? resources + this.props.src

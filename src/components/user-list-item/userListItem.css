@@ -16,10 +16,6 @@
   background-color: var(--hover);
 }
 
-/* .user-list-item.item-active__text {
-  pointer-events: none;
-} */
-
 .user-list-item__active-hint {
   position: absolute;
   top: 0.431vh;

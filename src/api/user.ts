@@ -1,7 +1,8 @@
 import { http } from 'utils';
+import { UserDTO } from './dto.types';
 import {
-    APIResponse, ChangePasswordRequestData, ChangeProfileRequestData, UserDTO,
-} from './types';
+    ChangeProfileRequestData, APIResponse, ChangePasswordRequestData,
+} from './request.types';
 
 const user = {
     changeProfile: (data: ChangeProfileRequestData) => http.put<APIResponse<UserDTO>>('user/profile', data),

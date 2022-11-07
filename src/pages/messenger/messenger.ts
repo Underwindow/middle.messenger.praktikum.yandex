@@ -10,7 +10,7 @@ import {
 } from 'services';
 import { Scroll, ScrollDirection } from 'components/scroll';
 import { SidebarChats } from 'components/sidebar-chats';
-import { ChatDialogProps } from 'components/sidebar-chats/chat-dialog';
+import { ChatDialogProps } from 'components/chat-dialog';
 import { NewChatForm } from 'components/new-chat';
 import { Chat } from 'components/chat';
 import { ButtonIcon, ButtonIconProps } from 'components/button/button-icon';
@@ -30,6 +30,7 @@ export class Messenger extends Block<MessengerProps> {
     static readonly componentName = 'Messenger';
 
     private _chatSocket?: WebSocket;
+
     private _chatsUpdateInterval?: NodeJS.Timer;
 
     constructor(props: MessengerProps) {
@@ -76,21 +77,19 @@ export class Messenger extends Block<MessengerProps> {
 
     private _initChats(chats: SidebarChats, userChats: UserChat[]) {
         chats.setProps({
-            chatsProps: userChats!.map((chat) => {
-                return {
-                    chatId: chat.id,
-                    chatName: chat.title,
-                    avatarSrc: chat.avatar,
-                    lastMessage: chat.lastMessage?.content ?? '',
-                    time: chat.lastMessage?.time ?? 'Новый',
-                    badge: chat.unreadCount,
-                    onClick: () => {
-                        this._chatSocket?.close();
-                        chats.selectChat(chat.id);
-                        this._initChat(chat);
-                    },
-                } as ChatDialogProps;
-            })
+            chatsProps: userChats!.map((chat) => ({
+                chatId: chat.id,
+                chatName: chat.title,
+                avatarSrc: chat.avatar,
+                lastMessage: chat.lastMessage?.content ?? '',
+                time: chat.lastMessage?.time ?? 'Новый',
+                badge: chat.unreadCount,
+                onClick: () => {
+                    this._chatSocket?.close();
+                    chats.selectChat(chat.id);
+                    this._initChat(chat);
+                },
+            } as ChatDialogProps)),
         });
     }
 
@@ -102,11 +101,9 @@ export class Messenger extends Block<MessengerProps> {
 
             if (userChats === null) {
                 chats.setProps({ stub: 'Ошибка загрузки' });
-            }
-            else if (userChats?.length === 0) {
+            } else if (userChats?.length === 0) {
                 chats.setProps({ stub: 'У вас нет чатов :(' });
-            }
-            else {
+            } else {
                 this._initChats(chats, userChats);
             }
         });
@@ -147,7 +144,7 @@ export class Messenger extends Block<MessengerProps> {
                     });
 
                     chat.getStub().hide();
-                })
+                });
         });
     }
 

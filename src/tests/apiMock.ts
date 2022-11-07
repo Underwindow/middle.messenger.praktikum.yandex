@@ -1,5 +1,5 @@
 import { setupServer } from 'msw/node';
-import { rest } from 'msw'
+import { rest } from 'msw';
 
 const handlers = [
     rest.post(`${process.env.API_ENDPOINT}/auth/logout`, (_, res, ctx) => {
@@ -19,4 +19,6 @@ const handlers = [
     }),
 ];
 
-export const server = setupServer(...handlers);
+const server = setupServer(...handlers);
+
+export default server;

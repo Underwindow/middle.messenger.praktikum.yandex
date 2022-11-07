@@ -13,8 +13,8 @@ function getResponseData<T>(response: Promise<XMLHttpRequest>): Promise<T> {
                 ?.includes('application/json');
 
             const json = isJson ? JSON.parse(xhr.response) : null;
-            const data = json?.reason ? { status: xhr.status, reason: json.reason } : json; 
-            
+            const data = json?.reason ? { status: xhr.status, reason: json.reason } : json;
+
             return data as T;
         });
 }
@@ -29,7 +29,7 @@ export const http = <T extends any>({ method, path, data }: any): Promise<T> => 
             'X-XSS-Protection': '1; mode=block',
         },
         body: data,
-    })
+    }),
 );
 
 http.post = <T>(path: string, data?: any) => http<T>({ method: METHOD.POST, path, data });
@@ -45,5 +45,5 @@ http.upload = <T>(path: string, data?: FormData): Promise<T> => getResponseData(
         method: METHOD.PUT,
         credentials: 'include',
         body: data,
-    })
+    }),
 );

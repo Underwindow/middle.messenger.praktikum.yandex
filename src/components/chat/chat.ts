@@ -18,9 +18,9 @@ import { ButtonIconProps } from 'components/button/button-icon';
 
 interface ChatProps extends Props {
     chatId: number,
-    user: User, 
+    user: User,
     socket: WebSocket,
-    title: string, 
+    title: string,
     avatar: string,
     moreBtnProps: ButtonIconProps,
     onAddUserClick?: Callback,
@@ -53,7 +53,7 @@ export default class Chat extends Block<ChatProps> {
             },
             onRemoveUserClick: () => {
                 const username = () => this._getForm().getInput().value;
-                
+
                 this._initForm(
                     'Исключить участников',
                     'Исключить',
@@ -161,15 +161,14 @@ export default class Chat extends Block<ChatProps> {
     private _chatUsernames: { [id: number]: string } = {};
 
     setMessages(messages: ChatMessage[], isOld: boolean = false) {
-        const uniqueByUser = messages.filter((msg, i, self) =>
-            self.findIndex(other => other.userId === msg.userId) === i
-        );
+        const uniqueByUser = messages
+            .filter((msg, i, self) => self
+                .findIndex((other) => other.userId === msg.userId) === i);
 
-        const promises = uniqueByUser.map(message => this.getMessageWithName(message))
+        const promises = uniqueByUser.map((message) => this.getMessageWithName(message));
         Promise.all<ChatMessage | null>(promises).then((results) => {
-            results.forEach(message => {
-                if (message)
-                    this._chatUsernames[message.userId] = message.username;
+            results.forEach((message) => {
+                if (message) { this._chatUsernames[message.userId] = message.username; }
             });
 
             const chatBubbles = this._transformMessagesToBubbles(messages);
@@ -181,26 +180,24 @@ export default class Chat extends Block<ChatProps> {
     }
 
     private _transformMessagesToBubbles(messages: ChatMessage[]): BubbleProps[] {
-        return messages.map((msg) => {
-            return {
-                isIn: msg.userId !== this.props.user.id,
-                message: msg.content,
-                time: dateFormat(msg.date),
-                date: msg.date,
-                userId: msg.userId,
-                id: msg.id,
-                name: this._chatUsernames[msg.userId],
-            } as BubbleProps;
-        });
+        return messages.map((msg) => ({
+            isIn: msg.userId !== this.props.user.id,
+            message: msg.content,
+            time: dateFormat(msg.date),
+            date: msg.date,
+            userId: msg.userId,
+            id: msg.id,
+            name: this._chatUsernames[msg.userId],
+        } as BubbleProps));
     }
 
     getMessageWithName(message: ChatMessage) {
         return getUser(message.userId).then((user) => {
             if (user) {
-                message.username = user.displayName ? user.displayName : user.login;
-                return message;
+                const username = user.displayName ? user.displayName : user.login;
+                return { ...message, username };
             }
-            else return null;
+            return null;
         });
     }
 
