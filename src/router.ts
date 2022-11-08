@@ -58,9 +58,9 @@ export default function initRouter(router: CoreRouter, store: Store<AppState>) {
                 screen = Screens.SignIn;
             }
 
-            if (screen !== store.getState().screen) { // if router go() back() or forward()
+            if (screen !== store.getState().screen) {
                 store.dispatch({ screen });
-            } else { // if redirect or dispatched screen
+            } else {
                 router.redirect(store.getState().screen);
             }
         });
@@ -75,14 +75,12 @@ export default function initRouter(router: CoreRouter, store: Store<AppState>) {
             router.start();
         }
 
-        // console.log(prevState, nextState);
-        // router.go(nextState.screen);
-        router.go(nextState.screen);
-
         if (prevState.screen !== nextState.screen) {
             const Page = getScreenComponent(nextState.screen);
             renderDOM(new Page({}));
             document.title = `App / ${Page.componentName}`;
+
+            router.redirect(nextState.screen);
         }
     });
 }
