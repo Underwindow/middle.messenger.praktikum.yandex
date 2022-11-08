@@ -1,4 +1,4 @@
-Sprint 3 PR: https://github.com/Underwindow/middle.messenger.praktikum.yandex/pull/7
+Sprint 4 PR: https://github.com/Underwindow/middle.messenger.praktikum.yandex/pull/8
 
 Дизайн-макет: https://www.figma.com/file/CMuaKeTrpFbWYlssKF3IFE/Wassup?node-id=0%3A1
 
