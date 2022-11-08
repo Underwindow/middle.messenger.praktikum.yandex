@@ -31,7 +31,12 @@ module.exports = {
                 test: /\.css$/,
                 use: [
                     'style-loader',
-                    'css-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: 'global',
+                        }
+                    },
                 ],
             },
             {
@@ -64,6 +69,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',
+            favicon: './src/favicon.png',
             minify: {
                 collapseWhitespace: true,
                 removeComments: true,
