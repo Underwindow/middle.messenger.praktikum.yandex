@@ -1,6 +1,6 @@
 import {
     LoginRequestData, SignUpRequestData, transformUser, UserDTO,
-    apiHasError, auth,
+    apiHasError, auth, APIError,
 } from 'api';
 
 import { Dispatch } from 'core';
@@ -15,6 +15,14 @@ export const logout = async (dispatch: Dispatch<AppState>, state: AppState) => {
     dispatch({ isLoading: false, user: null, screen: Screens.SignIn });
 };
 
+const onAuthError = (error: APIError): Partial<AppState> => {
+    const state = error.status < 500
+        ? { isLoading: false, loginFormError: error.reason, apiError: error }
+        : { screen: Screens.Error, apiError: error };
+
+    return state;
+};
+
 export const signUp = async (
     dispatch: Dispatch<AppState>,
     state: AppState,
@@ -26,7 +34,7 @@ export const signUp = async (
     const response = await auth.signUp(action);
 
     if (apiHasError(response)) {
-        dispatch({ isLoading: false, loginFormError: response.reason, apiError: response });
+        dispatch(onAuthError(response));
         return;
     }
 
@@ -56,7 +64,7 @@ export const login = async (
     const response = await auth.signIn(action);
 
     if (apiHasError(response)) {
-        dispatch({ isLoading: false, loginFormError: response.reason, apiError: response });
+        dispatch(onAuthError(response));
         return;
     }
 
