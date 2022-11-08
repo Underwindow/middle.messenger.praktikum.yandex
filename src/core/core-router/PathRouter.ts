@@ -66,11 +66,19 @@ export default class PathRouter implements CoreRouter {
         }
     }
 
+    setPath(path: string) {
+        const fixedPath = this._fixPath(path);
+
+        console.log('pushstate', fixedPath);
+        window.history.pushState({}, '', fixedPath);
+        this.route = fixedPath;
+    }
+
     go(path: string) {
         const fixedPath = this._fixPath(path);
 
         if (this.route !== fixedPath) {
-            console.log('pushstate');
+            console.log('pushstate', fixedPath);
             window.history.pushState({}, '', fixedPath);
             this.onRouteChange(fixedPath);
         }

@@ -1,4 +1,5 @@
 export interface CoreRouter {
+    setPath(screen: any): unknown
 
     start(): void
 
