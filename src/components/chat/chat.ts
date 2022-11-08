@@ -34,6 +34,14 @@ export default class Chat extends Block<ChatProps> {
 
     private _actionsVisible: boolean = false;
 
+    private _chatUsernames: { [id: number]: string } = {};
+
+    private _lastMessage: Nullable<number> = null;
+
+    private _messageTimeout?: NodeJS.Timeout;
+
+    private _messageDelay: number = 700;
+
     constructor(props: ChatProps) {
         super({
             ...props,
@@ -62,10 +70,8 @@ export default class Chat extends Block<ChatProps> {
                 );
             },
             onLoadOld: () => {
-                const from = this.getChatBubbles().getGroups()![0].getBubbles()![0].getProps().id;
-
-                if (from) {
-                    loadOldMessages(this.props.socket, from);
+                if (this._lastMessage) {
+                    loadOldMessages(this.props.socket, this._lastMessage!);
                 }
             },
             onSendMessage: (e: Event) => {
@@ -76,10 +82,6 @@ export default class Chat extends Block<ChatProps> {
             },
         });
     }
-
-    private _messageTimeout?: NodeJS.Timeout;
-
-    private _messageDelay: number = 700;
 
     private _sendMessage(messageBtn: ButtonIcon) {
         const messageInput = this.refs.messageInputRef as Input;
@@ -158,9 +160,20 @@ export default class Chat extends Block<ChatProps> {
             : null)) as Promise<User[] | null>;
     }
 
-    private _chatUsernames: { [id: number]: string } = {};
+    private _transformMessagesToBubbles(messages: ChatMessage[]): BubbleProps[] {
+        return messages.map((msg) => ({
+            isIn: msg.userId !== this.props.user.id,
+            message: msg.content,
+            time: dateFormat(msg.date),
+            date: msg.date,
+            userId: msg.userId,
+            id: msg.id,
+            name: this._chatUsernames[msg.userId],
+        } as BubbleProps));
+    }
 
-    setMessages(messages: ChatMessage[], isOld: boolean = false) {
+    setMessages(messages: ChatMessage[], last: number, isOld: boolean = false) {
+        this._lastMessage = last;
         const uniqueByUser = messages
             .filter((msg, i, self) => self
                 .findIndex((other) => other.userId === msg.userId) === i);
@@ -177,18 +190,6 @@ export default class Chat extends Block<ChatProps> {
         }).then(() => {
             this.getRef<Scroll>(this.refs.chatScrollRef)!.watch();
         });
-    }
-
-    private _transformMessagesToBubbles(messages: ChatMessage[]): BubbleProps[] {
-        return messages.map((msg) => ({
-            isIn: msg.userId !== this.props.user.id,
-            message: msg.content,
-            time: dateFormat(msg.date),
-            date: msg.date,
-            userId: msg.userId,
-            id: msg.id,
-            name: this._chatUsernames[msg.userId],
-        } as BubbleProps));
     }
 
     getMessageWithName(message: ChatMessage) {

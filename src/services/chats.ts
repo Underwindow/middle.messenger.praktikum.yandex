@@ -112,7 +112,7 @@ export const connectUserToChat = async (
     userId: number,
     chatId: number,
     token: string,
-    onMessage?: (messages: ChatMessage[], isOld: boolean) => void,
+    onMessage?: (messages: ChatMessage[], last: number, isOld: boolean) => void,
 ): Promise<WebSocket> => {
     const socket = chats.initSocket(userId, chatId, token);
 
@@ -127,12 +127,15 @@ export const connectUserToChat = async (
             ? data.map((message) => message as ChatMessageDTO)
             : [data as ChatMessageDTO];
 
+        chatMessagesDTO.reverse();
+
+        const last = chatMessagesDTO[0]?.id;
+
         const messages = chatMessagesDTO
             .map((chatMessageDTO) => transformChatMessage(chatMessageDTO))
-            .filter((message) => message.content)
-            .reverse();
+            .filter((message) => message.content);
 
-        if (onMessage && messages.length > 0) onMessage(messages, isOld);
+        if (onMessage && messages.length > 0) onMessage(messages, last, isOld);
     };
 
     const intervalID = setInterval(() => {

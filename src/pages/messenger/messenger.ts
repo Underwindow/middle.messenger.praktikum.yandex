@@ -130,8 +130,8 @@ export class Messenger extends Block<MessengerProps> {
 
             const userId = this.props.user!.id;
 
-            connectUserToChat(userId, userChat.id, token, (messages, isOld) => {
-                chat.setMessages(messages, isOld);
+            connectUserToChat(userId, userChat.id, token, (messages, last, isOld) => {
+                chat.setMessages(messages, last, isOld);
             })
                 .then((socket) => {
                     this._chatSocket = socket;
