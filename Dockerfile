@@ -1,6 +1,7 @@
 FROM node:14.15.1
     
-RUN rm -rf /var/lib/apt/lists/* && apt-get update -y
+RUN apt-get install -y --no-install-recommends && \
+    apt-get update -y  && rm -rf /var/lib/apt/lists/*
 
 
 RUN rm -rf /var/www/html/* && \
