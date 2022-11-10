@@ -3,8 +3,10 @@ import { Block } from 'core';
 import { ButtonIcon } from 'components/button';
 
 export interface ChatActionsProps extends Props {
-    onAddUserClick?: Callback,
-    onRemoveUserClick?: Callback,
+    isAdmin: boolean,
+    onAddUserClick: Callback,
+    onRemoveUserClick: Callback,
+    onDeleteChatClick: Callback,
 }
 
 export default class ChatActions extends Block<ChatActionsProps> {
@@ -33,6 +35,17 @@ export default class ChatActions extends Block<ChatActionsProps> {
                         onClick=onRemoveUserClick
                     }}}
                 </div>
+                {{#if isAdmin}}
+                <div class="chat-actions__button">
+                    {{{ButtonIcon 
+                        ref="deleteChat" 
+                        type="button" 
+                        icon="${ButtonIcon.ICONS.DELETE}"
+                        color="${ButtonIcon.COLORS.ERROR}"
+                        onClick=onDeleteChatClick
+                    }}}
+                </div>
+                {{/if}}
             </div>
         </div>
         `;

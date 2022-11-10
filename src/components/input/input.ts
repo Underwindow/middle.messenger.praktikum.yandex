@@ -54,20 +54,6 @@ export default class Input extends Block<InputProps> {
             onBlur: () => {
                 if (!this._inputEl.value) this.setErrorMessage('');
             },
-            onEnter,
-            onKeydown: (e: KeyboardEvent) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-
-                    console.log('Enter submit check');
-
-                    if (onEnter) {
-                        onEnter(e);
-                    } else {
-                        this.validate();
-                    }
-                }
-            },
         });
 
         this._inputEl = (this.refs.inputFieldRef as InputField).element as HTMLInputElement;

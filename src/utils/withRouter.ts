@@ -1,8 +1,10 @@
 import { BlockClass, CoreRouter } from 'core';
 
-type WithRouterProps = { router: CoreRouter };
+interface WithRouterProps extends Props {
+    router: CoreRouter
+}
 
-export default function withRouter<P extends WithRouterProps>(WrappedBlock: BlockClass<P>) {
+export default function withRouter<P extends Props = WithRouterProps>(WrappedBlock: BlockClass<P>) {
     // @ts-expect-error No base constructor has the specified number of type arguments
     return class extends WrappedBlock<P> {
         public static componentName = WrappedBlock.componentName || WrappedBlock.name;

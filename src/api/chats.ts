@@ -13,6 +13,8 @@ const chats = {
 
     createChat: (data: { title: string }) => http.post<APIResponse<{ id: number }>>('chats', data),
 
+    deleteChat: (data: { chatId: number }) => http.delete<APIResponse>('chats', data),
+
     addUsers: (data: { users: number[], chatId: number }) => http.put<APIResponse>('chats/users', data),
 
     deleteUsers: (data: { users: number[], chatId: number }) => http.delete<APIResponse>('chats/users', data),
