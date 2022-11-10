@@ -242,7 +242,7 @@ export default abstract class Block<P extends Props = {}> {
         return outRef as unknown as Ref;
     };
 
-    setState = (nextState: any) => {
+    setState = (nextState: Record<string, unknown>) => {
         if (!nextState) {
             return;
         }
