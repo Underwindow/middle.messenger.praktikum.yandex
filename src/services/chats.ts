@@ -132,9 +132,9 @@ export const connectUserToChat = async (
         const last = chatMessagesDTO[0]?.id;
 
         const messages = chatMessagesDTO
-            .filter((chatMessageDTO) => chatMessageDTO) //filter of ping
+            .filter((chatMessageDTO) => chatMessageDTO) // filter of ping
             .map((chatMessageDTO) => transformChatMessage(chatMessageDTO!))
-            .filter((message) => message.content); //filter of empty messages
+            .filter((message) => message.content); // filter of empty messages (if exists)
 
         if (onMessage && last) onMessage(messages, last, isOld);
     };
