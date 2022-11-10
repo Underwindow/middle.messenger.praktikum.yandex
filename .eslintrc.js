@@ -7,7 +7,7 @@ module.exports = {
         project: './tsconfig.eslint.json',
     },
     rules: {
-        'linebreak-style': ['error', 'unix'],
+        'linebreak-style': ['error', 'windows'],
         'no-console': 'off',
         'no-alert': 'off',
         'no-underscore-dangle': 0,
