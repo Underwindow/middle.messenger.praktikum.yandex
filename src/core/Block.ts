@@ -54,7 +54,7 @@ export default abstract class Block<P extends Props = {}> {
         this.state = props ?? {};
     }
 
-    private _makePropsProxy(props: any): any {
+    private _makePropsProxy(props?: Props): P {
         const self = this;
 
         return new Proxy(props as unknown as object, {
