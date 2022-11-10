@@ -6,13 +6,13 @@ import { login } from 'services';
 import { LoginRequestData } from 'api';
 import { Input } from 'components/input';
 
-type SignInPageProps = {
+interface SignInPageProps extends Props {
     router: CoreRouter,
     store: Store<AppState>,
     formError?: () => string | null,
     onSubmit: Callback,
     onClick: Callback,
-};
+}
 
 export class SignInPage extends Block<SignInPageProps> {
     static readonly componentName = 'SignInPage';
@@ -22,21 +22,23 @@ export class SignInPage extends Block<SignInPageProps> {
 
         this.setProps({
             formError: () => this.props.store.getState().loginFormError,
-            onSubmit: (e: Event) => {
-                e.preventDefault();
-
-                this.getStateFromProps();
-
-                const loginInput = this.refs.loginRef as Input;
-                const passwordInput = this.refs.passwordRef as Input;
-                const isValid = Input.validateFieldset([loginInput, passwordInput]);
-
-                if (isValid) {
-                    this.props.store.dispatch(login, this.state.loginData);
-                }
-            },
             onClick: () => {
                 this.props.store.dispatch({ screen: Screens.SignUp, loginFormError: null });
+            },
+            events: {
+                submit: (e: Event) => {
+                    e.preventDefault();
+
+                    this.getStateFromProps();
+
+                    const loginInput = this.refs.loginRef as Input;
+                    const passwordInput = this.refs.passwordRef as Input;
+                    const isValid = Input.validateFieldset([loginInput, passwordInput]);
+
+                    if (isValid) {
+                        this.props.store.dispatch(login, this.state.loginData);
+                    }
+                },
             },
         });
     }
@@ -82,7 +84,6 @@ export class SignInPage extends Block<SignInPageProps> {
                             name="login"
                             type="text"
                             placeholder="Логин"
-                            onEnter=onSubmit
                         }}}
                     </div>
                     <div class="entry__input">
@@ -93,13 +94,12 @@ export class SignInPage extends Block<SignInPageProps> {
                             name="password"
                             type="password"
                             placeholder="Пароль"
-                            onEnter=onSubmit
                         }}}
                     </div>
                 </div>
                 <div class="entry__footer content-center">
                     <div class="entry__button">
-                        {{{ButtonPrimary onClick=onSubmit type="submit" text="Войти"}}}
+                        {{{ButtonPrimary type="submit" text="Войти"}}}
                     </div>
                     <div class="entry__button">
                         {{{ButtonSecondary onClick=onClick type="button" text="Нет аккаунта?"}}}

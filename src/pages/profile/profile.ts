@@ -13,17 +13,20 @@ import { ButtonSecondary } from 'components/button';
 import { ButtonIcon, ButtonIconProps } from 'components/button/button-icon';
 import { ImageUpload } from 'components/image-upload';
 
-type ProfileProps = {
+interface ProfileProps extends Props {
     router: CoreRouter,
     store: Store<AppState>,
     user: User | null,
     btnLogoutProps: ButtonIconProps,
     btnBackProps: ButtonIconProps,
     onChooseAvatar: Callback,
-    onSaveAvatar: Callback,
-    onSaveProfile: Callback,
-    onSavePassword: Callback,
-};
+}
+
+enum SaveBtnName {
+    Avatar = 'save_avatar',
+    Profile = 'save_profile',
+    Password = 'save_password',
+}
 
 export class Profile extends Block<ProfileProps> {
     static readonly componentName = 'Profile';
@@ -44,9 +47,7 @@ export class Profile extends Block<ProfileProps> {
                 const avatarInput = this.refs.avatarInputRef as ImageUpload;
                 saveAvatarBtn.setProps({ disabled: !avatarInput.fileList });
             },
-            onSaveAvatar: (e: Event) => {
-                e.preventDefault();
-
+            onSaveAvatar: () => {
                 const avatarInput = this.refs.avatarInputRef as ImageUpload;
 
                 if (avatarInput) {
@@ -57,10 +58,7 @@ export class Profile extends Block<ProfileProps> {
                     this.props.store.dispatch(changeAvatar, formData);
                 }
             },
-            onSaveProfile: (e: Event) => {
-                console.log('onSaveAvatar');
-
-                e.preventDefault();
+            onSaveProfile: () => {
                 const fieldset = this.refs.fieldsetRef as Input[];
                 const isValid = Input.validateFieldset(fieldset);
                 const profileData = Input.trasformFieldset<ChangeProfileRequestData>(fieldset);
@@ -69,8 +67,7 @@ export class Profile extends Block<ProfileProps> {
                     this.props.store.dispatch(changeProfile, profileData);
                 }
             },
-            onSavePassword: (e: Event) => {
-                e.preventDefault();
+            onSavePassword: () => {
                 const passwords = this.refs.passwordsRef as Input[];
                 const isValid = Input.validateFieldset(passwords);
 
@@ -79,6 +76,22 @@ export class Profile extends Block<ProfileProps> {
 
                     this.props.store.dispatch(changePassword, data);
                 }
+            },
+            events: {
+                submit: (e: SubmitEvent) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const buttonName = (e.submitter as HTMLButtonElement).name as SaveBtnName;
+
+                    if (buttonName === SaveBtnName.Avatar) {
+                        this.props.onSaveAvatar();
+                    } else if (buttonName === SaveBtnName.Profile) {
+                        this.props.onSaveProfile();
+                    } else if (buttonName === SaveBtnName.Password) {
+                        this.props.onSavePassword();
+                    }
+                },
             },
         });
     }
@@ -90,7 +103,7 @@ export class Profile extends Block<ProfileProps> {
             <div class="main-layout">
                 <div class="sidebar panel">
                     <div class="sidebar__header">
-                        {{{Header 
+                        {{{Header
                             ref="sidebarHeader"
                             title="Профиль"
                             leftBtnProps=btnBackProps
@@ -99,14 +112,14 @@ export class Profile extends Block<ProfileProps> {
                     </div>
                     <div class="sidebar__content panel">
                         <form enctype="multipart/form-data" class="sidebar__image-upload">
-                            {{{ImageUpload 
-                                ref="avatarInputRef" 
+                            {{{ImageUpload
+                                ref="avatarInputRef"
                                 name="avatar"
-                                onInput=onChooseAvatar 
+                                onInput=onChooseAvatar
                                 src=user.avatar
                             }}}
                             <div class="sidebar__button-secondary">
-                                {{{ButtonSecondary onClick=onSaveAvatar ref="avatarSubmitRef" type="submit" text="Сохранить изменения" disabled="true"}}}
+                                {{{ButtonSecondary name="${SaveBtnName.Avatar}" type="submit" ref="avatarSubmitRef"  text="Сохранить изменения" disabled="true"}}}
                             </div>
                         </form>
                         <form class="sidebar__fieldset" action="">
@@ -135,7 +148,7 @@ export class Profile extends Block<ProfileProps> {
                                 {{{Input ref="fieldsetRef" name="phone" type="text" value=user.phone placeholder="Введите текст" validationType="${ValidationType.INPUT_PHONE}"}}}
                             </div>
                             <div class="sidebar__button-secondary">
-                                {{{ButtonSecondary type="submit" text="Сохранить изменения" onClick=onSaveProfile}}}
+                                {{{ButtonSecondary name="${SaveBtnName.Profile}" type="submit" text="Сохранить изменения"}}}
                             </div>
                         </form>
                         <form class="sidebar__footer panel" action="">
@@ -146,7 +159,7 @@ export class Profile extends Block<ProfileProps> {
                                 {{{Input ref="passwordsRef" name="newPassword" type="password" placeholder="Новый пароль" validationType="${ValidationType.INPUT_PASSWORD}"}}}
                             </div>
                             <div class="sidebar__button-secondary">
-                                {{{ButtonSecondary type="submit" text="Сменить пароль" onClick=onSavePassword}}}
+                                {{{ButtonSecondary name="${SaveBtnName.Password}" type="submit" text="Сменить пароль"}}}
                             </div>
                         </form>
                     </div>

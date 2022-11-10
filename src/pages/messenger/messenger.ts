@@ -5,8 +5,7 @@ import {
 } from 'utils';
 import { ValidationType } from 'utils/validateValue';
 import {
-    connectUserToChat,
-    createChat, getChats, getChatToken, logout,
+    chatsService, logout,
 } from 'services';
 import { Scroll, ScrollDirection } from 'components/scroll';
 import { SidebarChats } from 'components/sidebar-chats';
@@ -14,8 +13,9 @@ import { ChatDialogProps } from 'components/chat-dialog';
 import { NewChatForm } from 'components/new-chat';
 import { Chat } from 'components/chat';
 import { ButtonIcon, ButtonIconProps } from 'components/button/button-icon';
+import { Input } from 'components';
 
-type MessengerProps = {
+interface MessengerProps extends Props {
     router: CoreRouter,
     store: Store<AppState>,
     user: User | null,
@@ -24,7 +24,7 @@ type MessengerProps = {
     onSearch: Callback,
     onAddChatClick: Callback,
     onAddChatSubmit: Callback,
-};
+}
 
 export class Messenger extends Block<MessengerProps> {
     static readonly componentName = 'Messenger';
@@ -56,22 +56,24 @@ export class Messenger extends Block<MessengerProps> {
                 const chatForm = (this.refs.newChatFormRef as NewChatForm);
                 chatForm.show();
             },
-            onAddChatSubmit: (e: Event) => {
-                /* eslint-disable-next-line */
-                e.preventDefault;
-
+            onAddChatSubmit: () => {
                 const chatForm = (this.refs.newChatFormRef as NewChatForm);
-                const input = chatForm.getInput();
-
-                createChat({ title: input.value })
-                    .then((chat) => {
-                        if (!chat) return;
-
-                        chatForm.hide();
-                        this._updateChats();
-                    });
+                chatForm.hide();
+                this._updateChats();
             },
+            events: {
+                submit: (e: SubmitEvent) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
+                    const chatForm = (this.refs.searchInputRef as Input);
+                    const isValid = Input.validateFieldset([chatForm]);
+
+                    if (isValid) {
+                        console.log('onSearch enter submit');
+                    }
+                },
+            },
         });
     }
 
@@ -94,7 +96,7 @@ export class Messenger extends Block<MessengerProps> {
     }
 
     private async _updateChats(offset: number = 0, limit: number = 10, title: string = '') {
-        getChats({ offset, limit, title }).then((userChats) => {
+        chatsService.getChats({ offset, limit, title }).then((userChats) => {
             const chats = this
                 .getRef<Scroll>(this.refs.sidebarScrollRef)
                 ?.getScrollContent<SidebarChats>()!;
@@ -123,24 +125,29 @@ export class Messenger extends Block<MessengerProps> {
     private _initChat(userChat: UserChat) {
         const chat = this.getRef<Chat>(this.refs.chatRef)!;
 
-        getChatToken(userChat.id).then((token) => {
+        chatsService.getChatToken(userChat.id).then((token) => {
             if (!token) {
                 return;
             }
 
             const userId = this.props.user!.id;
 
-            connectUserToChat(userId, userChat.id, token, (messages, last, isOld) => {
+            chatsService.connectUserToChat(userId, userChat.id, token, (messages, last, isOld) => {
                 chat.setMessages(messages, last, isOld);
             })
                 .then((socket) => {
                     this._chatSocket = socket;
                     chat.setProps({
                         socket: this._chatSocket,
-                        chatId: userChat?.id,
+                        chatId: userChat.id,
+                        isAdmin: userChat.createdBy === userId,
                         user: this.props.user!,
-                        title: userChat?.title,
+                        title: userChat.title,
                         avatar: userChat.avatar,
+                        onDeleteChat: () => {
+                            this._chatSocket?.close();
+                            this._updateChats();
+                        },
                     });
 
                     chat.getStub().hide();
@@ -161,7 +168,7 @@ export class Messenger extends Block<MessengerProps> {
             <div class="main-layout">
                 <div class="sidebar panel">
                     <div class="sidebar__header">
-                        {{{Header 
+                        {{{Header
                             ref="sidebarHeader"
                             title=user.login
                             avatarSrc=user.avatar
@@ -170,29 +177,31 @@ export class Messenger extends Block<MessengerProps> {
                         }}}
                     </div>
                     <div class="sidebar__content">
-                        <form class="sidebar__actions">
-                            {{{Input 
-                                validationType="${ValidationType.INPUT_MESSAGE}"
-                                ref="searchInputRef"
-                                name="message"
-                                type="text"
-                                placeholder="Поиск"
-                                icon="search"
-                                onInput=onSearch
-                            }}}
+                        <div class="sidebar__actions">
+                            <form>
+                                {{{Input
+                                    validationType="${ValidationType.INPUT_MESSAGE}"
+                                    ref="searchInputRef"
+                                    name="message"
+                                    type="text"
+                                    placeholder="Поиск"
+                                    icon="search"
+                                    onInput=onSearch
+                                }}}
+                            </form>
                             {{{ButtonIcon onClick=onAddChatClick type="button" icon="${ButtonIcon.ICONS.ADD}"}}}
-                        </form>
-                        {{{Scroll 
+                        </div>
+                        {{{Scroll
                             ref="sidebarScrollRef"
                             direction="${ScrollDirection.Default}"
                             scrollContent="${SidebarChats.componentName}"
                         }}}
                     </div>
                 </div>
-                {{{Chat 
+                {{{Chat
                     ref="chatRef"
                 }}}
-                {{{NewChatForm 
+                {{{NewChatForm
                     ref="newChatFormRef"
                     onFormSubmit=onAddChatSubmit
                 }}}

@@ -7,9 +7,7 @@ import { Header } from 'components/header';
 import { ChatBubbles } from 'components/chat-bubbles';
 import { ChatActions } from 'components/chat-actions';
 import { ChatActionForm } from 'components/chat-action-form';
-import {
-    addChatUsers, deleteChatUsers, getChatUsers, getUser, loadOldMessages, searchUsers, sendMessage,
-} from 'services';
+import { chatsService, getUser, searchUsers } from 'services';
 import { BubbleProps } from 'components/bubble/bubble';
 import { dateFormat } from 'utils';
 import { Scroll, ScrollDirection } from 'components/scroll';
@@ -18,15 +16,16 @@ import { ButtonIconProps } from 'components/button/button-icon';
 
 interface ChatProps extends Props {
     chatId: number,
+    isAdmin: boolean,
     user: User,
     socket: WebSocket,
     title: string,
     avatar: string,
     moreBtnProps: ButtonIconProps,
+    onDeleteChat: Callback,
     onAddUserClick?: Callback,
     onRemoveUserClick?: Callback,
     onLoadOld?: Callback,
-    onSendMessage: Callback,
 }
 
 export default class Chat extends Block<ChatProps> {
@@ -56,7 +55,7 @@ export default class Chat extends Block<ChatProps> {
                     'Добавить участников',
                     'Добавить',
                     this._searchUsers.bind(this, login),
-                    addChatUsers,
+                    chatsService.addChatUsers,
                 );
             },
             onRemoveUserClick: () => {
@@ -66,19 +65,30 @@ export default class Chat extends Block<ChatProps> {
                     'Исключить участников',
                     'Исключить',
                     this._getChatUsers.bind(this, this.props.chatId, 0, 10, username),
-                    deleteChatUsers,
+                    chatsService.deleteChatUsers,
                 );
+            },
+            onDeleteChatClick: () => {
+                chatsService.deleteChat({ chatId: this.props.chatId }).then((result) => {
+                    if (result !== null) {
+                        this._toggleActions();
+                        this.getRef<ChatStub>(this.refs.stubRef)?.show();
+                        this.props.onDeleteChat();
+                    }
+                });
             },
             onLoadOld: () => {
                 if (this._lastMessage) {
-                    loadOldMessages(this.props.socket, this._lastMessage);
+                    chatsService.loadOldMessages(this.props.socket, this._lastMessage);
                 }
             },
-            onSendMessage: (e: Event) => {
-                e.preventDefault();
-                const messageBtn = this.refs.sendButtonRef as ButtonIcon;
+            events: {
+                submit: (e: SubmitEvent) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                this._sendMessage(messageBtn);
+                    this._sendMessage(this.getRef<ButtonIcon>(this.refs.sendButtonRef)!);
+                },
             },
         });
     }
@@ -88,7 +98,7 @@ export default class Chat extends Block<ChatProps> {
         const isValid = Input.validateFieldset([messageInput]);
 
         if (isValid && !messageBtn.disabled) {
-            sendMessage(messageInput.value, this.props.socket);
+            chatsService.sendMessage(messageInput.value, this.props.socket);
             messageInput.value = '';
         }
 
@@ -126,7 +136,7 @@ export default class Chat extends Block<ChatProps> {
             getUsers,
             onSubmit: () => {
                 const selection = form.getSelected();
-                if (selection) {
+                if (selection.length) {
                     onSubmitChatRequest({ users: selection, chatId: this.props.chatId })
                         .then(() => this._getForm().submit())
                         .then(() => this._getForm().loadUsersList());
@@ -149,7 +159,7 @@ export default class Chat extends Block<ChatProps> {
     }
 
     private _getChatUsers(chatId: number, offset: number = 0, limit: number = 10, name?: () => string, email: string = ''): Promise<User[] | null> {
-        return getChatUsers({
+        return chatsService.getChatUsers({
             id: chatId,
             offset,
             limit,
@@ -220,20 +230,22 @@ export default class Chat extends Block<ChatProps> {
         // language=hbs
         return `
         <div class="chat whole">
-            {{{Header 
+            {{{Header
                 ref="chatHeaderRef"
                 title=title
                 rightBtnProps=moreBtnProps
             }}}
-            {{{ChatActions 
+            {{{ChatActions
                 ref="chatActionsRef"
+                isAdmin=isAdmin
                 onAddUserClick=onAddUserClick
                 onRemoveUserClick=onRemoveUserClick
+                onDeleteChatClick=onDeleteChatClick
             }}}
             {{{ChatActionForm
                 ref="chatActionFormRef"
             }}}
-            {{{Scroll 
+            {{{Scroll
                 ref="chatScrollRef"
                 direction="${ScrollDirection.Reversed}"
                 scrollContent="${ChatBubbles.componentName}"
@@ -246,31 +258,28 @@ export default class Chat extends Block<ChatProps> {
                         <div class="chat__message-input-container">
                             <div class="chat__message-input-wrapper">
                                 <div class="chat__input-container">
-                                    {{{Input 
+                                    {{{Input
                                         ref="messageInputRef"
                                         validationType="${ValidationType.INPUT_MESSAGE}"
                                         name="message"
                                         type="text"
-                                        onEnter=onSendMessage
                                         placeholder="Введите сообщние"
-                                        onBlur=onBlur
                                     }}}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="chat__button">
-                        {{{ButtonIcon 
-                            ref="sendButtonRef" 
-                            onClick=onSendMessage 
-                            type="submit" 
+                        {{{ButtonIcon
+                            ref="sendButtonRef"
+                            type="submit"
                             icon="${ButtonIcon.ICONS.SEND}"
                             color="${ButtonIcon.COLORS.WHITE}"
                         }}}
                     </div>
                 </form>
             </div>
-            {{{ChatStub 
+            {{{ChatStub
                 ref="stubRef"
             }}}
         </div>
