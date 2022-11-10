@@ -125,17 +125,18 @@ export const connectUserToChat = async (
         const isOld = Array.isArray(data);
         const chatMessagesDTO = Array.isArray(data)
             ? data.map((message) => message as ChatMessageDTO)
-            : [data as ChatMessageDTO];
+            : [data as ChatMessageDTO | undefined];
 
-        chatMessagesDTO.reverse();
+        chatMessagesDTO?.reverse();
 
         const last = chatMessagesDTO[0]?.id;
 
         const messages = chatMessagesDTO
-            .map((chatMessageDTO) => transformChatMessage(chatMessageDTO))
-            .filter((message) => message.content);
+            .filter((chatMessageDTO) => chatMessageDTO) //filter of ping
+            .map((chatMessageDTO) => transformChatMessage(chatMessageDTO!))
+            .filter((message) => message.content); //filter of empty messages
 
-        if (onMessage && messages.length > 0) onMessage(messages, last, isOld);
+        if (onMessage && last) onMessage(messages, last, isOld);
     };
 
     const intervalID = setInterval(() => {

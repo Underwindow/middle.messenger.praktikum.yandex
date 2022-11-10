@@ -71,7 +71,7 @@ export default class Chat extends Block<ChatProps> {
             },
             onLoadOld: () => {
                 if (this._lastMessage) {
-                    loadOldMessages(this.props.socket, this._lastMessage!);
+                    loadOldMessages(this.props.socket, this._lastMessage);
                 }
             },
             onSendMessage: (e: Event) => {
