@@ -1,6 +1,6 @@
 import { HTTPTransport, METHOD } from 'utils';
 
-export const baseURL = process.env.API_ENDPOINT!;
+export const baseURL = process.env.API_ENDPOINT ?? 'https://ya-praktikum.tech/api/v2';
 export const resources = `${baseURL}/resources`;
 
 function getResponseData<T>(response: Promise<XMLHttpRequest>): Promise<T> {
