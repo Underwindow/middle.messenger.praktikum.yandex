@@ -14,7 +14,7 @@ export default class ChatBubbles extends Block<ChatBubblesProps> {
 
     private _groupBubblesByDay(bubbles: BubbleProps[]): BubbleGroupProps[] {
         const bubblesAsDayItems: DayItem[] = bubbles.map((bubble, i) => ({
-            day: bubble.date.toLocaleDateString(), i,
+            day: bubble.date.toLocaleDateString('ru-RU'), i,
         }));
 
         const lastDayItems = this._getLastDayItems(bubblesAsDayItems);
