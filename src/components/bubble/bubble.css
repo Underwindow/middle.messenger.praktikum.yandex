@@ -1,7 +1,7 @@
 .bubble {
   display: flex;
   flex-wrap: wrap;
-  margin: 0px auto 8px;
+  margin: 0 auto 8px;
   position: relative;
   user-select: none;
 }
@@ -20,12 +20,12 @@
 
 .bubble__bubble-out > .bubble__wrapper {
   background-color: var(--hint);
-  border-radius: 15px 15px 0px;
+  border-radius: 15px 15px 0;
 }
 
 .bubble__bubble-in > .bubble__wrapper {
   background-color: var(--fg);
-  border-radius: 15px 15px 15px 0px;
+  border-radius: 15px 15px 15px 0;
 }
 
 .bubble__content {

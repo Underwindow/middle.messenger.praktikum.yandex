@@ -7,7 +7,7 @@
 
 .avatar-photo {
   position: absolute;
-  top: 0px;
-  bottom: 0px;
+  top: 0;
+  bottom: 0;
   object-fit: cover;
 }
