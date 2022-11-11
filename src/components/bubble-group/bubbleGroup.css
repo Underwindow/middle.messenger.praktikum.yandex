@@ -4,12 +4,12 @@
 }
 
 .bubbles-group__date {
-  top: 0;
+  top: -1px;
   position: sticky;
   display: block;
   text-align: center;
   margin: 8px auto;
-  padding: 8;
+  padding: 8px;
   color: var(--grey);
   z-index: 4;
   background-color: var(--bg-alpha);

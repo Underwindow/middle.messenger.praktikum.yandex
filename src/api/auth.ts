@@ -1,14 +1,15 @@
 import { http } from 'utils';
+import { UserDTO } from './dto.types';
 import {
-    APIError, LoginRequestData, SignInResponseData, SignUpRequestData, SignUpResponseData, UserDTO,
-} from './types';
+    SignUpRequestData, SignUpResponseData, LoginRequestData, SignInResponseData, APIResponse,
+} from './request.types';
 
 const auth = {
     signUp: (data: SignUpRequestData) => http.post<SignUpResponseData>('auth/signup', data),
 
     signIn: (data: LoginRequestData) => http.post<SignInResponseData>('auth/signin', data),
 
-    user: () => http.get<UserDTO | APIError>('auth/user'),
+    user: () => http.get<APIResponse<UserDTO>>('auth/user'),
 
     logout: () => http.post('auth/logout'),
 };

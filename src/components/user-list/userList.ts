@@ -1,5 +1,5 @@
-import UserListItem, { UserListItemProps } from 'components/user-list-item/userListItem';
 import { Block } from 'core';
+import { UserListItem, UserListItemProps } from 'components/user-list-item';
 
 export interface UserListProps extends Props {
     usersList?: UserListItemProps[],
@@ -7,10 +7,6 @@ export interface UserListProps extends Props {
 
 export default class UserList extends Block<UserListProps> {
     static readonly componentName: string = 'UserList';
-
-    constructor(props: UserListProps) {
-        super({ props });
-    }
 
     getUsersList() {
         return Array.isArray(this.refs.usersListRef)

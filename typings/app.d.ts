@@ -1,10 +1,12 @@
+import { APIError } from 'api';
+
 declare global {
     export type Nullable<T> = T | null;
     export type Callback<T = unknown> = (...args: any[]) => T;
     export type Keys<T extends Record<string, unknown>> = keyof T;
     export type Values<T extends Record<string, unknown>> = T[Keys<T>];
     export type Indexed = { [key: string]: any };
-    export type Props = Record<string, any>;
+    export type Props = Indexed;
 
     export type AppState = {
         appIsInited: boolean;
@@ -12,8 +14,7 @@ declare global {
         isLoading: boolean;
         loginFormError: string | null;
         user: User | null;
-        userChats: UserChat[] | null;
-        chatUsers: { [id: number]: string };
+        apiError: APIError | null;
     };
 
     export type User = {
@@ -62,9 +63,10 @@ declare global {
         file: File;
         id: number;
         isRead: boolean;
-        time: string;
+        date: Date;
         type: string;
         userId: number;
+        username: string;
     };
 }
 

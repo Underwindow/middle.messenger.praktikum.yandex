@@ -1,1 +1,1 @@
-export { default as UserListItem } from './userListItem';
+export { default as UserListItem, UserListItemProps } from './userListItem';

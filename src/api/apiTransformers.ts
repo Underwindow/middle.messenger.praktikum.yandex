@@ -1,7 +1,7 @@
+import { dateFormat } from 'utils';
 import {
-    ChatDTO, ChatMessageDTO, ChatUserDTO, MessageDTO, MessageUserDTO, UserDTO,
-} from 'api';
-import { timeFormat } from 'utils';
+    UserDTO, MessageUserDTO, MessageDTO, ChatDTO, ChatUserDTO, ChatMessageDTO,
+} from './dto.types';
 
 export const transformUser = (data: UserDTO): User => ({
     id: data.id,
@@ -25,7 +25,7 @@ export const transformMessageSender = (data: MessageUserDTO): MessageSender | nu
 
 export const transformSidebarMessage = (data: MessageDTO): SidebarChatMessage | null => (data ? {
     sender: transformMessageSender(data.user),
-    time: timeFormat(data.time),
+    time: dateFormat(new Date(data.time)),
     content: data.content,
 } : null);
 
@@ -56,7 +56,8 @@ export const transformChatMessage = (data: ChatMessageDTO): ChatMessage => ({
     file: data.file,
     id: data.id,
     isRead: data.is_read,
-    time: timeFormat(data.time),
+    date: new Date(data.time),
     type: data.type,
     userId: data.user_id,
+    username: '',
 });

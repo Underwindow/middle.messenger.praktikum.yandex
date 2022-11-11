@@ -1,11 +1,12 @@
 import './newChatForm.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { ValidationType } from 'utils/validateValue';
 import { Input } from 'components/input';
+import { chatsService } from 'services';
 
 export interface NewChatFormProps extends Props {
-    onFormSubmit?: Callback;
-    onFormCancel?: Callback;
+    onFormSubmit: Callback,
+    onFormCancel: Callback,
 }
 
 export default class NewChatForm extends Block<NewChatFormProps> {
@@ -15,11 +16,24 @@ export default class NewChatForm extends Block<NewChatFormProps> {
         super({
             ...props,
             onFormCancel: onFormCancel || (() => this.hide()),
-        });
-    }
+            events: {
+                submit: (e: SubmitEvent) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-    getInput() : Input {
-        return this.refs.titleInputRef as Input;
+                    const input = this.getRef<Input>(this.refs.titleInputRef)!;
+                    const isValid = Input.validateFieldset([input]);
+                    if (isValid) {
+                        chatsService.createChat({ title: input.value }).then((chat) => {
+                            if (!chat) return;
+
+                            input.value = '';
+                            this.props.onFormSubmit();
+                        });
+                    }
+                },
+            },
+        });
     }
 
     protected render(): string {
@@ -32,9 +46,9 @@ export default class NewChatForm extends Block<NewChatFormProps> {
                             Новый чат
                         </div>
                         <div class="newchat__input">
-                            {{{Input 
-                                ref="titleInputRef" 
-                                name="title" 
+                            {{{Input
+                                ref="titleInputRef"
+                                name="title"
                                 type="text"
                                 placeholder="Название чата"
                                 validationType="${ValidationType.INPUT_LOGIN}"
@@ -42,16 +56,15 @@ export default class NewChatForm extends Block<NewChatFormProps> {
                         </div>
                         <div class="newchat__footer">
                             <div class="newchat__button">
-                                {{{ButtonPrimary 
-                                    onClick=onFormSubmit 
-                                    type="button" 
+                                {{{ButtonPrimary
+                                    type="submit"
                                     text="Создать"
                                 }}}
                             </div>
                             <div class="newchat__button">
-                                {{{ButtonSecondary 
-                                    onClick=onFormCancel 
-                                    type="button" 
+                                {{{ButtonSecondary
+                                    onClick=onFormCancel
+                                    type="button"
                                     text="Отмена"
                                 }}}
                             </div>

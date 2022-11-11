@@ -1,40 +1,39 @@
 import './errorPage.css';
-import Block from 'core/Block';
-import { Messenger } from 'pages/messenger';
-import { renderDOM } from 'core';
-import { ErrorProps } from 'components/app-error/error';
+import { Block, CoreRouter, Store } from 'core';
+import { Screens, withRouter, withStore } from 'utils';
 
-export default class ErrorPage extends Block<ErrorProps> {
+type ErrorPageProps = {
+    router: CoreRouter,
+    store: Store<AppState>,
+    text?: string,
+    onClick?: Callback,
+};
+
+export class ErrorPage extends Block<ErrorPageProps> {
     static readonly componentName = 'ErrorPage';
 
-    static readonly CODES = {
-        404: {
-            code: '404',
-            description: 'Не туда попали',
-        } as ErrorProps,
-        505: {
-            code: '5**',
-            description: 'Что-то пошло не так',
-        } as ErrorProps,
-    };
-
-    constructor({ ...props }: ErrorProps) {
+    constructor({ ...props }: ErrorPageProps) {
         super({
             ...props,
             text: 'Вернуться на главную',
-            onClick: () => renderDOM(new Messenger()),
+            onClick: () => this.props.router.go(Screens.Messenger),
         });
     }
 
     protected render() {
+        const state = this.props.store.getState();
         // language=hbs
         return `
         <div class="screen content-center back-panel">
             <div class="error-container">
-                {{{Error code=code description=description}}}
+                {{{Error 
+                    code="${state.apiError?.status ?? 404}" 
+                    description="${state.apiError?.reason ?? 'Не туда попали'}"
+                }}}
                 {{{ButtonSecondary onClick=onClick type="button" text=text}}}
             </div>    
         </div>
     `;
     }
 }
+export default withRouter(withStore(ErrorPage));

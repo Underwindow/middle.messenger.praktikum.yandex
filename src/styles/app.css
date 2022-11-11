@@ -51,6 +51,7 @@ button:disabled {
 .scrollable-y {
   overflow-y: auto;
   position: absolute;
+  scroll-behavior: smooth;
   top: 0;
   right: 0;
   bottom: 0;

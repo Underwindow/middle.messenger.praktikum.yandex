@@ -1,10 +1,10 @@
 import './buttonPrimary.css';
-import ButtonProps, { Button } from '../button';
+import Button, { ButtonProps } from '../button';
 
 export default class ButtonPrimary extends Button {
     static readonly componentName = 'ButtonPrimary';
 
-    constructor({ ...props }: ButtonProps) {
+    constructor(props: ButtonProps) {
         super({
             ...props,
             class: 'clear-btn button__button-primary',

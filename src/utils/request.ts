@@ -1,14 +1,26 @@
 import { HTTPTransport, METHOD } from 'utils';
 
-export const baseURL = 'https://ya-praktikum.tech/api/v2';
+export const baseURL = process.env.API_ENDPOINT ?? 'https://ya-praktikum.tech/api/v2';
 export const resources = `${baseURL}/resources`;
 
-export function http<T extends any>({
-    method,
-    path,
-    data,
-}: any): Promise<T> {
-    return HTTPTransport.fetchWithTries(`${baseURL}/${path}`, {
+function getResponseData<T>(response: Promise<XMLHttpRequest>): Promise<T> {
+    return response
+        .then((xhr) => {
+            console.log('HTTP RESPONSE: ', xhr.response);
+
+            const isJson = xhr
+                .getResponseHeader('content-type')
+                ?.includes('application/json');
+
+            const json = isJson ? JSON.parse(xhr.response) : null;
+            const data = json?.reason ? { status: xhr.status, reason: json.reason } : json;
+
+            return data as T;
+        });
+}
+
+export const http = <T extends any>({ method, path, data }: any): Promise<T> => getResponseData<T>(
+    HTTPTransport.fetchWithTries(`${baseURL}/${path}`, {
         method,
         credentials: 'include',
         headers: {
@@ -17,18 +29,8 @@ export function http<T extends any>({
             'X-XSS-Protection': '1; mode=block',
         },
         body: data,
-    })
-        .then((xhr) => {
-            console.log('HTTP RESPONSE: ', xhr.response);
-
-            const isJson = xhr
-                .getResponseHeader('content-type')
-                ?.includes('application/json');
-
-            return isJson ? JSON.parse(xhr.response) : null;
-        })
-        .then((json) => json as T);
-}
+    }),
+);
 
 http.post = <T>(path: string, data?: any) => http<T>({ method: METHOD.POST, path, data });
 
@@ -38,18 +40,10 @@ http.put = <T>(path: string, data?: any) => http<T>({ method: METHOD.PUT, path, 
 
 http.delete = <T>(path: string, data?: any) => http<T>({ method: METHOD.DELETE, path, data });
 
-http.upload = <T>(path: string, data?: FormData): Promise<T> => HTTPTransport.fetchWithTries(`${baseURL}/${path}`, {
-    method: METHOD.PUT,
-    credentials: 'include',
-    body: data,
-})
-    .then((xhr) => {
-        console.log('HTTP RESPONSE: ', xhr.response);
-
-        const isJson = xhr
-            .getResponseHeader('content-type')
-            ?.includes('application/json');
-
-        return isJson ? JSON.parse(xhr.response) : null;
-    })
-    .then((json) => json as T);
+http.upload = <T>(path: string, data?: FormData): Promise<T> => getResponseData(
+    HTTPTransport.fetchWithTries(`${baseURL}/${path}`, {
+        method: METHOD.PUT,
+        credentials: 'include',
+        body: data,
+    }),
+);

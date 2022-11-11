@@ -1,23 +1,26 @@
 {
-	"compilerOptions": {
-		"target": "es2017",
-		"outDir": "dist",
-		"rootDir": "./",
-		"baseUrl": "./src",
-		"typeRoots": [
-			"node_modules/@types",
-			"typings/app.d.ts"
-		],
-		"declaration": false,
-		"module": "commonjs",
-		"strictNullChecks": true,
-		"sourceMap": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"strict": true,
-		"skipLibCheck": true,
-		"noImplicitAny": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true
-	}
+    "compilerOptions": {
+        "target": "es2017",
+        "module": "es6",
+        "outDir": "dist",
+        "rootDir": "./",
+        "baseUrl": "./src",
+        "typeRoots": [
+            "node_modules/@types",
+            "typings/app.d.ts"
+        ],
+        "declaration": false,
+        "strictNullChecks": true,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "jsx": "react",
+        "allowJs": true,
+        "moduleResolution": "node"
+    }
 }

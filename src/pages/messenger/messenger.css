@@ -6,8 +6,6 @@
 
 .sidebar {
   width: calc(100vw - 100% + 60vh);
-
-  /* min-width: 21.875vw; */
   max-width: 520px;
   display: flex;
   flex-flow: column;
@@ -39,7 +37,7 @@
   display: flex;
   flex: 0 0 auto;
   border: solid;
-  border-width: 1px 0;
+  border-width: 0 0 1px;
   border-color: var(--bg);
   box-sizing: border-box;
 }

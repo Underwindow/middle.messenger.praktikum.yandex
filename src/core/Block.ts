@@ -1,10 +1,10 @@
-import { nanoid } from 'nanoid';
 import Handlebars from 'handlebars';
+import { nanoid } from 'nanoid';
 import EventBus from './EventBus';
 
 type Events = Values<typeof Block.EVENTS>;
 
-export interface BlockClass<P extends Props = {}> extends Function {
+export interface BlockClass<P extends Props = {}> {
     new(props: P): Block<P>;
     componentName?: string;
 }
@@ -39,7 +39,7 @@ export default abstract class Block<P extends Props = {}> {
 
         this.getStateFromProps(props);
 
-        this.props = this._makePropsProxy(props || {} as P);
+        this.props = this._makePropsProxy(props);
         this.state = this._makePropsProxy(this.state);
 
         this.eventBus = () => eventBus;
@@ -51,10 +51,10 @@ export default abstract class Block<P extends Props = {}> {
 
     /* eslint-disable-next-line */
     protected getStateFromProps(props?: P): void {
-        this.state = {};
+        this.state = props ?? {};
     }
 
-    private _makePropsProxy(props: any): any {
+    private _makePropsProxy(props?: Props): P {
         const self = this;
 
         return new Proxy(props as unknown as object, {
@@ -228,13 +228,21 @@ export default abstract class Block<P extends Props = {}> {
         }
     };
 
-    getRefs = <Ref = Block>(ref: Block | Block[]): Ref[] | undefined => {
-        const refs = (Array.isArray(ref) ? ref : [ref]) as Ref[];
+    getRefs = <Ref extends Block>(ref: Block | Block[]): Ref[] | undefined => {
+        const refs = Array.isArray(ref) ? ref : [ref];
 
-        return refs;
+        if (refs && refs.length > 0 && refs[0] === undefined) { return undefined; }
+
+        return refs as unknown as Ref[];
     };
 
-    setState = (nextState: any) => {
+    getRef = <Ref extends Block>(ref: Block | Block[]): Ref | undefined => {
+        const outRef = Array.isArray(ref) ? undefined : ref;
+
+        return outRef as unknown as Ref;
+    };
+
+    setState = (nextState: Record<string, unknown>) => {
         if (!nextState) {
             return;
         }
@@ -246,7 +254,7 @@ export default abstract class Block<P extends Props = {}> {
         if (this.element?.parentNode?.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
             setTimeout(() => {
                 if (this.element?.parentNode?.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
-                    this.eventBus().emit(Block.EVENTS.FLOW_CDM);
+                    this.eventBus().emit(Block.EVENTS.FLOW_CDM, this.props);
                 }
             }, 100);
         }

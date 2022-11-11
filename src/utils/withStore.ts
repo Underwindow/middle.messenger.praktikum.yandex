@@ -1,8 +1,10 @@
 import { BlockClass, Store } from 'core';
 
-type WithStateProps = { store: Store<AppState> };
+interface WithStoreProps extends Props {
+    store: Store<AppState>
+}
 
-export default function withStore<P extends WithStateProps>(WrappedBlock: BlockClass<P>) {
+export default function withStore<P extends Props = WithStoreProps>(WrappedBlock: BlockClass<P>) {
     // @ts-expect-error No base constructor has the specified
     return class extends WrappedBlock<P> {
         public static componentName = WrappedBlock.componentName || WrappedBlock.name;

@@ -1,48 +1,53 @@
 import './chat.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { Input } from 'components/input';
 import { ValidationType } from 'utils/validateValue';
 import { ChatStub } from 'components/chat-stub';
 import { Header } from 'components/header';
-import { ButtonIcon } from 'components/button/button-icon';
-import { ButtonIconProps } from 'components/button/button-icon/buttonIcon';
 import { ChatBubbles } from 'components/chat-bubbles';
 import { ChatActions } from 'components/chat-actions';
 import { ChatActionForm } from 'components/chat-action-form';
-import {
-    addChatUsers, deleteChatUsers, getChatUsers, searchUsers, sendMessage,
-} from 'services';
+import { chatsService, getUser, searchUsers } from 'services';
+import { BubbleProps } from 'components/bubble/bubble';
+import { dateFormat } from 'utils';
+import { Scroll, ScrollDirection } from 'components/scroll';
+import { ButtonIcon } from 'components/button';
+import { ButtonIconProps } from 'components/button/button-icon';
 
 interface ChatProps extends Props {
     chatId: number,
+    isAdmin: boolean,
+    user: User,
     socket: WebSocket,
     title: string,
     avatar: string,
     moreBtnProps: ButtonIconProps,
+    onDeleteChat: Callback,
     onAddUserClick?: Callback,
     onRemoveUserClick?: Callback,
-    onSendMessage: Callback,
+    onLoadOld?: Callback,
 }
 
 export default class Chat extends Block<ChatProps> {
     static readonly componentName = 'Chat';
 
-    private _currentUserId: number | undefined;
-
     private _actionsVisible: boolean = false;
 
+    private _chatUsernames: { [id: number]: string } = {};
+
+    private _lastMessage: Nullable<number> = null;
+
+    private _messageTimeout?: NodeJS.Timeout;
+
+    private _messageDelay: number = 700;
+
     constructor(props: ChatProps) {
-        super(props);
-
-        this._currentUserId = window.store.getState().user?.id;
-
-        const moreBtnProps: ButtonIconProps = {
-            icon: ButtonIcon.ICONS.MORE_VERT,
-            onClick: () => this._toggleActions(),
-        };
-
-        this.setProps({
-            moreBtnProps,
+        super({
+            ...props,
+            moreBtnProps: {
+                icon: ButtonIcon.ICONS.MORE_VERT,
+                onClick: () => this._toggleActions(),
+            },
             onAddUserClick: () => {
                 const login = () => this._getForm().getInput().value;
 
@@ -50,7 +55,7 @@ export default class Chat extends Block<ChatProps> {
                     'Добавить участников',
                     'Добавить',
                     this._searchUsers.bind(this, login),
-                    addChatUsers,
+                    chatsService.addChatUsers,
                 );
             },
             onRemoveUserClick: () => {
@@ -59,29 +64,41 @@ export default class Chat extends Block<ChatProps> {
                 this._initForm(
                     'Исключить участников',
                     'Исключить',
-                    this._getChatUsers.bind(this, props.chatId, 0, 10, username),
-                    deleteChatUsers,
+                    this._getChatUsers.bind(this, this.props.chatId, 0, 10, username),
+                    chatsService.deleteChatUsers,
                 );
             },
-            onSendMessage: (e: Event) => {
-                e.preventDefault();
-                const messageBtn = this.refs.sendButtonRef as ButtonIcon;
+            onDeleteChatClick: () => {
+                chatsService.deleteChat({ chatId: this.props.chatId }).then((result) => {
+                    if (result !== null) {
+                        this._toggleActions();
+                        this.getRef<ChatStub>(this.refs.stubRef)?.show();
+                        this.props.onDeleteChat();
+                    }
+                });
+            },
+            onLoadOld: () => {
+                if (this._lastMessage) {
+                    chatsService.loadOldMessages(this.props.socket, this._lastMessage);
+                }
+            },
+            events: {
+                submit: (e: SubmitEvent) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                this._sendMessage(messageBtn);
+                    this._sendMessage(this.getRef<ButtonIcon>(this.refs.sendButtonRef)!);
+                },
             },
         });
     }
-
-    private _messageTimeout?: NodeJS.Timeout;
-
-    private _messageDelay: number = 700;
 
     private _sendMessage(messageBtn: ButtonIcon) {
         const messageInput = this.refs.messageInputRef as Input;
         const isValid = Input.validateFieldset([messageInput]);
 
         if (isValid && !messageBtn.disabled) {
-            sendMessage(messageInput.value, this.props.socket);
+            chatsService.sendMessage(messageInput.value, this.props.socket);
             messageInput.value = '';
         }
 
@@ -119,7 +136,7 @@ export default class Chat extends Block<ChatProps> {
             getUsers,
             onSubmit: () => {
                 const selection = form.getSelected();
-                if (selection) {
+                if (selection.length) {
                     onSubmitChatRequest({ users: selection, chatId: this.props.chatId })
                         .then(() => this._getForm().submit())
                         .then(() => this._getForm().loadUsersList());
@@ -142,19 +159,61 @@ export default class Chat extends Block<ChatProps> {
     }
 
     private _getChatUsers(chatId: number, offset: number = 0, limit: number = 10, name?: () => string, email: string = ''): Promise<User[] | null> {
-        return getChatUsers({
+        return chatsService.getChatUsers({
             id: chatId,
             offset,
             limit,
             name: name ? name() : '',
             email,
         }).then((chatUsers) => (chatUsers
-            ? chatUsers.filter((user) => user.id !== this._currentUserId)
+            ? chatUsers.filter((user) => user.id !== this.props.user.id)
             : null)) as Promise<User[] | null>;
     }
 
-    getBubbles(): ChatBubbles {
-        return this.refs.chatBubblesRef as ChatBubbles;
+    private _transformMessagesToBubbles(messages: ChatMessage[]): BubbleProps[] {
+        return messages.map((msg) => ({
+            isIn: msg.userId !== this.props.user.id,
+            message: msg.content,
+            time: dateFormat(msg.date),
+            date: msg.date,
+            userId: msg.userId,
+            id: msg.id,
+            name: this._chatUsernames[msg.userId],
+        } as BubbleProps));
+    }
+
+    setMessages(messages: ChatMessage[], last: number, isOld: boolean = false) {
+        this._lastMessage = last;
+        const uniqueByUser = messages
+            .filter((msg, i, self) => self
+                .findIndex((other) => other.userId === msg.userId) === i);
+
+        const promises = uniqueByUser.map((message) => this.getMessageWithName(message));
+        Promise.all<ChatMessage | null>(promises).then((results) => {
+            results.forEach((message) => {
+                if (message) { this._chatUsernames[message.userId] = message.username; }
+            });
+
+            const chatBubbles = this._transformMessagesToBubbles(messages);
+
+            this.getChatBubbles().updateBubbles(chatBubbles, isOld);
+        }).then(() => {
+            this.getRef<Scroll>(this.refs.chatScrollRef)!.watch();
+        });
+    }
+
+    getMessageWithName(message: ChatMessage) {
+        return getUser(message.userId).then((user) => {
+            if (user) {
+                const username = user.displayName ? user.displayName : user.login;
+                return { ...message, username };
+            }
+            return null;
+        });
+    }
+
+    getChatBubbles(): ChatBubbles {
+        return this.getRef<Scroll>(this.refs.chatScrollRef)?.getScrollContent<ChatBubbles>()!;
     }
 
     getStub(): ChatStub {
@@ -162,7 +221,7 @@ export default class Chat extends Block<ChatProps> {
     }
 
     getHeader(): Header {
-        return this.refs.chatHeader as Header;
+        return this.refs.chatHeaderRef as Header;
     }
 
     protected render() {
@@ -171,57 +230,58 @@ export default class Chat extends Block<ChatProps> {
         // language=hbs
         return `
         <div class="chat whole">
-            {{{Header 
-                ref="chatHeader"
+            {{{Header
+                ref="chatHeaderRef"
                 title=title
                 rightBtnProps=moreBtnProps
             }}}
-            <div class="chat__actions">
-                {{{ChatActions 
-                    ref="chatActionsRef"
-                    onAddUserClick=onAddUserClick
-                    onRemoveUserClick=onRemoveUserClick
-                }}}
-            </div>
+            {{{ChatActions
+                ref="chatActionsRef"
+                isAdmin=isAdmin
+                onAddUserClick=onAddUserClick
+                onRemoveUserClick=onRemoveUserClick
+                onDeleteChatClick=onDeleteChatClick
+            }}}
             {{{ChatActionForm
                 ref="chatActionFormRef"
             }}}
-            <div class="chat__bubbles-container">
-                <div class="scrollable-y">
-                    {{{ChatBubbles ref="chatBubblesRef"}}}
-                </div>
-            </div>
+            {{{Scroll
+                ref="chatScrollRef"
+                direction="${ScrollDirection.Reversed}"
+                scrollContent="${ChatBubbles.componentName}"
+                observeSelector=".bubble:first-of-type"
+                onObserve=onLoadOld
+            }}}
             <div class="chat__message-container">
                 <form class="chat__message-wrapper">
                     <div class="chat__message-rows-wrapper">
                         <div class="chat__message-input-container">
                             <div class="chat__message-input-wrapper">
                                 <div class="chat__input-container">
-                                    {{{Input 
+                                    {{{Input
                                         ref="messageInputRef"
                                         validationType="${ValidationType.INPUT_MESSAGE}"
                                         name="message"
                                         type="text"
-                                        onEnter=onSendMessage
                                         placeholder="Введите сообщние"
-                                        onBlur=onBlur
                                     }}}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="chat__button">
-                    {{{ButtonIcon 
-                        ref="sendButtonRef" 
-                        onClick=onSendMessage 
-                        type="submit" 
-                        icon="${ButtonIcon.ICONS.SEND}"
-                        color="${ButtonIcon.COLORS.WHITE}"
-                    }}}
+                        {{{ButtonIcon
+                            ref="sendButtonRef"
+                            type="submit"
+                            icon="${ButtonIcon.ICONS.SEND}"
+                            color="${ButtonIcon.COLORS.WHITE}"
+                        }}}
                     </div>
                 </form>
             </div>
-            {{{ChatStub ref="stubRef"}}}
+            {{{ChatStub
+                ref="stubRef"
+            }}}
         </div>
     `;
     }

@@ -1,19 +1,18 @@
 import './login.css';
-import Block from 'core/Block';
-import { Input } from 'components/input';
-import { ValidationType } from 'utils/validateValue';
-import { SignUpRequestData } from 'api';
+import { Block, CoreRouter, Store } from 'core';
 import { Screens, withRouter, withStore } from 'utils';
-import { CoreRouter, Store } from 'core';
+import { ValidationType } from 'utils/validateValue';
 import { signUp } from 'services';
+import { SignUpRequestData } from 'api';
+import { Input } from 'components/input';
 
-type SignUpPageProps = {
+interface SignUpPageProps extends Props {
     router: CoreRouter;
     store: Store<AppState>;
     formError?: () => string | null;
     onSubmit: Callback,
     onClick: Callback,
-};
+}
 
 export class SignUpPage extends Block<SignUpPageProps> {
     static readonly componentName = 'SignUpPage';
@@ -22,26 +21,28 @@ export class SignUpPage extends Block<SignUpPageProps> {
         super(props);
 
         this.setProps({
-            onSubmit: (e: Event) => {
-                e.preventDefault();
-                this.getStateFromProps();
-
-                const fieldset = this.refs.fieldsetRef as Input[];
-                const password = this.refs.passwordRef as Input;
-                const passwordRepeat = this.refs.passwordRepeatRef as Input;
-                const isValid = Input.validateFieldset([...fieldset, password, passwordRepeat]);
-
-                if (isValid) {
-                    if (password.value === passwordRepeat.value) {
-                        this.props.store.dispatch(signUp, this.state.signUpData);
-                    } else {
-                        passwordRepeat.setErrorMessage('пароли должны совпадать');
-                    }
-                }
-            },
+            formError: () => this.props.store.getState().loginFormError,
             onClick: () => {
-                this.props.store.dispatch({ loginFormError: null });
-                this.props.router.go(Screens.SignIn);
+                this.props.store.dispatch({ screen: Screens.SignIn, loginFormError: null });
+            },
+            events: {
+                submit: (e: Event) => {
+                    e.preventDefault();
+                    this.getStateFromProps();
+
+                    const fieldset = this.refs.fieldsetRef as Input[];
+                    const password = this.refs.passwordRef as Input;
+                    const passwordRepeat = this.refs.passwordRepeatRef as Input;
+                    const isValid = Input.validateFieldset([...fieldset, password, passwordRepeat]);
+
+                    if (isValid) {
+                        if (password.value === passwordRepeat.value) {
+                            this.props.store.dispatch(signUp, this.state.signUpData);
+                        } else {
+                            passwordRepeat.setErrorMessage('пароли должны совпадать');
+                        }
+                    }
+                },
             },
         });
     }
@@ -93,8 +94,6 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="email"
                             type="text"
                             placeholder="Почта"
-                            onInput=onInput
-                            onFocus=onFocus
                         }}}
                     </div>
                     <div class="entry__input">
@@ -105,8 +104,6 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="login"
                             type="text"
                             placeholder="Логин"
-                            onInput=onInput
-                            onFocus=onFocus
                         }}}
                     </div>
                     <div class="entry__input">
@@ -117,8 +114,6 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="first_name"
                             type="text"
                             placeholder="Имя"
-                            onInput=onInput
-                            onFocus=onFocus
                         }}}
                     </div>
                     <div class="entry__input">
@@ -129,8 +124,6 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="second_name"
                             type="text"
                             placeholder="Фамилия"
-                            onInput=onInput
-                            onFocus=onFocus
                         }}}
                     </div>
                     <div class="entry__input">
@@ -141,8 +134,6 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="phone"
                             type="text"
                             placeholder="Телефон"
-                            onInput=onInput
-                            onFocus=onFocus
                         }}}
                     </div>
                     <div class="entry__input">
@@ -153,8 +144,6 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="password"
                             type="password"
                             placeholder="Пароль"
-                            onInput=onInput
-                            onFocus=onFocus
                         }}}
                     </div>
                     <div class="entry__input">
@@ -165,14 +154,12 @@ export class SignUpPage extends Block<SignUpPageProps> {
                             name="repeat_password"
                             type="password"
                             placeholder="Пароль (еще раз)"
-                            onInput=onInput
-                            onFocus=onFocus
                         }}}
                     </div>
                 </div>
                 <div class="entry__footer content-center">
                     <div class="entry__button">
-                        {{{ButtonPrimary onClick=onSubmit type="submit" text="Создать аккаунт"}}}
+                        {{{ButtonPrimary type="submit" text="Создать аккаунт"}}}
                     </div>
                     <div class="entry__button">
                         {{{ButtonSecondary onClick=onClick type="button" text="Войти"}}}

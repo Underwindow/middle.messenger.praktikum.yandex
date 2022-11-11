@@ -1,13 +1,13 @@
 import './input.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { validateValue, ValidationType } from 'utils/validateValue';
-import InputField, { InputFieldProps } from './input-field/inputField';
+import { InputField, InputFieldProps } from './input-field';
 import { InputError } from './input-error';
 
 export interface InputProps extends InputFieldProps {
-    icon?: string;
-    validationType?: ValidationType;
-    onEnter?: Callback;
+    icon?: string,
+    validationType?: ValidationType,
+    onEnter?: Callback,
 }
 
 export default class Input extends Block<InputProps> {
@@ -44,27 +44,15 @@ export default class Input extends Block<InputProps> {
             ...props,
             validationType,
             error: '',
-            onInput: onInput || (() => this.validate()),
+            onInput: onInput || (() => {
+                if (this.value) this.validate();
+            }),
             onFocus: onFocus || (() => {
                 if (!this._inputEl.value) this.setErrorMessage('');
                 else this.validate();
             }),
             onBlur: () => {
                 if (!this._inputEl.value) this.setErrorMessage('');
-            },
-            onEnter,
-            onKeydown: (e: KeyboardEvent) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-
-                    console.log('Enter submit check');
-
-                    if (onEnter) {
-                        onEnter(e);
-                    } else {
-                        this.validate();
-                    }
-                }
             },
         });
 
@@ -100,12 +88,6 @@ export default class Input extends Block<InputProps> {
         } else {
             this.setErrorMessage();
         }
-
-        // console.log(
-        //     `name: ${this._inputEl.name}`,
-        //     `value: ${this._inputEl.value}`,
-        //     errorMessage ? `error: ${errorMessage}` : 'success',
-        // );
 
         return errorMessage;
     }

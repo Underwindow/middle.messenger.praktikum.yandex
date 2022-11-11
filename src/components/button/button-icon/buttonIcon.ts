@@ -1,9 +1,9 @@
 import './buttonIcon.css';
-import ButtonProps, { Button } from '../button';
+import Button, { ButtonProps } from '../button';
 
 export interface ButtonIconProps extends ButtonProps {
     icon: Icons,
-    color?: Colors
+    color?: Colors,
 }
 
 type Icons = Values<typeof ButtonIcon.ICONS>;
@@ -20,6 +20,7 @@ export default class ButtonIcon extends Button {
         SEND: 'send',
         PERSON_ADD: 'group_add',
         PERSON_REMOVE: 'group_remove',
+        DELETE: 'delete',
     } as const;
 
     public static readonly COLORS = {
@@ -30,11 +31,11 @@ export default class ButtonIcon extends Button {
     } as const;
 
     constructor({
-        icon, color = ButtonIcon.COLORS.HINT, type, ...props
+        icon, color = ButtonIcon.COLORS.HINT, type = 'button', ...props
     }: ButtonIconProps) {
         super({
             ...props,
-            type: 'button',
+            type,
             color,
             text: icon,
             class: 'material-icons button__button-icon',

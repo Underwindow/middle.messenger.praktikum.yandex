@@ -1,1 +1,2 @@
-export { default as Bubble } from './bubble';
+export { default as Bubble, BubbleProps } from './bubble';
+export { BubbleGroup } from '../bubble-group';

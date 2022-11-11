@@ -1,18 +1,18 @@
 import './inputField.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 
 export interface InputFieldProps extends Props {
-    name?: string;
-    type?: 'text' | 'password' | 'email' | 'file';
-    placeholder?: string;
-    value?: string;
-    accept?: string;
-    onBlur?: Callback;
-    onFocus?: Callback;
-    onInput?: Callback;
-    onKeydown?: Callback;
-    display?: 'inline-block' | 'none';
-    id? : string;
+    name?: string,
+    type?: 'text' | 'password' | 'email' | 'file',
+    placeholder?: string,
+    value?: string,
+    accept?: string,
+    onBlur?: Callback,
+    onFocus?: Callback,
+    onInput?: Callback,
+    onKeydown?: Callback,
+    display?: 'inline-block' | 'none',
+    id? : string,
 }
 
 export default class InputField extends Block<InputFieldProps> {

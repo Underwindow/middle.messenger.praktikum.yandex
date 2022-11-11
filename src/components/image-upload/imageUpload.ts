@@ -1,10 +1,11 @@
 import './imageUpload.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { resources } from 'utils/request';
 
 export interface ImageUploadProps extends Props {
     name: string,
     src?: string,
+    alt?: string,
     onInput?: Callback,
     onBlur?: Callback,
     onFocus?: Callback,
@@ -39,7 +40,6 @@ export default class ImageUpload extends Block<ImageUploadProps> {
     }
 
     protected render(): string {
-        console.log('render', this.constructor.name, this.id);
         const src = this.props.src
             ? resources + this.props.src
             : 'https://www.w3schools.com/tags/img_girl.jpg';
@@ -48,7 +48,7 @@ export default class ImageUpload extends Block<ImageUploadProps> {
         return `
         <div class="image-upload">
             <label class="image-upload__label" for="${this.id}">
-                <img class="image-upload__image" src="${src}" />
+                <img class="image-upload__image" src="${src}" alt={{alt}}/>
                 <div class="image-upload__icon-wrapper content-center">
                     <div class="image-upload__icon material-icons color-hint">
                         upload

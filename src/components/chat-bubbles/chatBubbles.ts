@@ -1,47 +1,78 @@
 import './chatBubbles.css';
-import Block from 'core/Block';
-import BubbleGroup, { BubbleGroupProps } from 'components/bubble/bubble-group/bubbleGroup';
+import { Block } from 'core';
+import { Bubble, BubbleProps } from 'components/bubble';
+import { BubbleGroup, BubbleGroupProps } from 'components/bubble-group';
 
 export interface ChatBubblesProps extends Props {
     bubbleGroupProps?: BubbleGroupProps[],
 }
 
+type DayItem = { day: string, i: number };
+
 export default class ChatBubbles extends Block<ChatBubblesProps> {
     static readonly componentName = 'ChatBubbles';
 
-    constructor({ ...props }: ChatBubblesProps) {
-        super(props);
+    private _groupBubblesByDay(bubbles: BubbleProps[]): BubbleGroupProps[] {
+        const bubblesAsDayItems: DayItem[] = bubbles.map((bubble, i) => ({
+            day: bubble.date.toLocaleDateString('ru-RU'), i,
+        }));
+
+        const lastDayItems = this._getLastDayItems(bubblesAsDayItems);
+
+        const groups: BubbleGroupProps[] = [];
+
+        lastDayItems.forEach((lastDayItem, index, self) => {
+            const start = index > 0 ? self[index - 1].i + 1 : 0;
+
+            groups.push({
+                bubbleProps: bubbles.slice(start, lastDayItem.i + 1),
+                bubblesDate: lastDayItem.day,
+            });
+        });
+
+        return groups;
     }
 
-    private chatUsersCache: { [key: number]: string } = {};
+    private _getLastDayItems(dayItems: DayItem[]) {
+        return dayItems
+            .map((item) => item.day)
+            .reduce((res, day, _, self) => {
+                const lastItem = dayItems
+                    .find((item) => self.lastIndexOf(day) === item.i);
 
-    concatBubbleGroups(bubbleGroupProps: BubbleGroupProps[]) {
-        const bubbleGroups = this.getRefs<BubbleGroup>(this.refs.bubbleGroupsRef);
+                const isUnique = lastItem && !res
+                    .find((item) => item.i === lastItem.i && item.day === lastItem.day);
 
-        if (bubbleGroups) {
-            bubbleGroups.forEach((group) => {
-                group?.getBubbles()?.forEach((bubble) => {
-                    if (bubble.name) this.chatUsersCache[bubble.userId] = bubble.name;
-                });
-            });
+                return isUnique ? [...res, lastItem] : res;
+            }, [] as DayItem[]);
+    }
+
+    private _getCurrentBubbleProps(): BubbleProps[] {
+        const refs = this.getRefs<BubbleGroup>(this.refs.bubbleGroupsRef);
+
+        if (refs !== undefined && refs.length > 0) {
+            return refs
+                .reduce((a, b) => a.concat(b.getBubbles()!), [] as Bubble[])
+                .map((bubble) => bubble.getProps());
         }
 
-        const current = this.props.bubbleGroupProps;
+        return [];
+    }
 
-        const result = current ? current.concat(bubbleGroupProps) : bubbleGroupProps;
+    updateBubbles(bubbleProps: BubbleProps[], isOld: boolean) {
+        const currentProps = this._getCurrentBubbleProps();
 
-        result.forEach((groups) => {
-            groups.bubbleProps?.forEach((bubbleProps) => {
-                /* eslint-disable-next-line */
-                bubbleProps.name = this.chatUsersCache[bubbleProps.userId];
-            });
-        });
-
-        console.log(result);
+        const nextProps = isOld
+            ? bubbleProps.concat(currentProps)
+            : currentProps.concat(bubbleProps);
 
         this.setProps({
-            bubbleGroupProps: result,
+            bubbleGroupProps: this._groupBubblesByDay(nextProps),
         });
+    }
+
+    getGroups() {
+        return this.getRefs<BubbleGroup>(this.refs.bubbleGroupsRef);
     }
 
     protected render() {
@@ -54,6 +85,7 @@ export default class ChatBubbles extends Block<ChatBubblesProps> {
                         ref="bubbleGroupsRef" 
                         bubblesDate=bubblesDate
                         bubbleProps=bubbleProps
+                        last=last
                     }}}
                 {{/with}}
             {{/each}}

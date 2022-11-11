@@ -1,5 +1,5 @@
-import { Block } from 'core';
 import './userListItem.css';
+import { Block } from 'core';
 
 export interface UserListItemProps extends Props {
     userId?: number,

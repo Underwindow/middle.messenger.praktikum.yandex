@@ -1,10 +1,10 @@
 import './chatActionForm.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { ValidationType } from 'utils/validateValue';
 import { Input } from 'components/input';
 import { UserListItemProps } from 'components/user-list-item/userListItem';
-import { Button } from 'components/button/button';
 import { UserList } from 'components/user-list';
+import { Button } from 'components/button';
 
 export interface ChatActionFormProps extends Props {
     title: string,
@@ -20,7 +20,7 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
     constructor(props: ChatActionFormProps) {
         super({
             ...props,
-            onInput: () => {
+            onSearch: () => {
                 const searchInput = this.refs.searchInputRef as Input;
 
                 clearTimeout(this._inputTimeout!);
@@ -37,6 +37,16 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
                 this._selectedItems = [];
                 this._updateUsersList();
                 this.hide();
+            },
+            events: {
+                submit: (e: SubmitEvent) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (this._selectedItems) {
+                        this.props.onSubmit();
+                    }
+                },
             },
         });
     }
@@ -64,6 +74,11 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
         const userListRef = this.refs.userListRef as UserList;
 
         userListRef.setProps({ usersList });
+
+        this._selectedItems.forEach((id) => {
+            userListRef.getUsersList().find((userItem) => userItem.getId() === id)
+                ?.setActive(true);
+        });
     }
 
     private _updateButton() {
@@ -124,32 +139,31 @@ export default class ChatActionForm extends Block<ChatActionFormProps> {
                             {{title}}
                         </div>
                         <div class="chat-action-form__input">
-                            {{{Input 
-                                ref="searchInputRef" 
+                            {{{Input
+                                ref="searchInputRef"
                                 type="text"
                                 placeholder="Поиск по логину"
-                                onInput=onInput
+                                onInput=onSearch
                                 validationType="${ValidationType.INPUT_LOGIN_SEARCH}"
                             }}}
                         </div>
                         <div class="chat-action-form__users-list">
-                            {{{UserList 
+                            {{{UserList
                                 ref="userListRef"
                             }}}
                         </div>
                         <div class="chat-action-form__footer">
                             <div class="chat-action-form__button">
-                                {{{ButtonPrimary 
+                                {{{ButtonPrimary
                                     ref="submitButtonRef"
-                                    onClick=onSubmit
-                                    type="button" 
+                                    type="submit"
                                     text=submitText
                                 }}}
                             </div>
                             <div class="chat-action-form__button">
-                                {{{ButtonSecondary 
-                                    onClick=onClose 
-                                    type="button" 
+                                {{{ButtonSecondary
+                                    onClick=onClose
+                                    type="button"
                                     text="Закрыть"
                                 }}}
                             </div>

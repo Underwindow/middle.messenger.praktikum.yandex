@@ -16,10 +16,6 @@
   background-color: var(--hover);
 }
 
-/* .user-list-item.item-active__text {
-  pointer-events: none;
-} */
-
 .user-list-item__active-hint {
   position: absolute;
   top: 0.431vh;
@@ -36,7 +32,7 @@
   position: relative;
   flex: auto;
   overflow: hidden;
-  padding: 1 0 1 9;
+  padding: 1px 0 1px 9px;
   box-sizing: border-box;
 }
 

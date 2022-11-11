@@ -1,18 +1,14 @@
 import './avatar.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 import { resources } from 'utils/request';
 
-export interface AvatarProps {
-    src?: string
-    alt?: string
+export interface AvatarProps extends Props {
+    src?: string,
+    alt?: string,
 }
 
 export default class Avatar extends Block<AvatarProps> {
     static readonly componentName: string = 'Avatar';
-
-    constructor(props: AvatarProps) {
-        super({ ...props });
-    }
 
     protected render(): string {
         const src = this.props.src

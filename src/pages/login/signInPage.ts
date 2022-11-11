@@ -1,19 +1,18 @@
 import './login.css';
-import Block from 'core/Block';
-import { CoreRouter, Store } from 'core';
-import { Input } from 'components/input';
+import { Block, CoreRouter, Store } from 'core';
+import { Screens, withRouter, withStore } from 'utils';
 import { ValidationType } from 'utils/validateValue';
 import { login } from 'services';
 import { LoginRequestData } from 'api';
-import { Screens, withRouter, withStore } from 'utils';
+import { Input } from 'components/input';
 
-type SignInPageProps = {
-    router: CoreRouter;
-    store: Store<AppState>;
-    formError?: () => string | null;
+interface SignInPageProps extends Props {
+    router: CoreRouter,
+    store: Store<AppState>,
+    formError?: () => string | null,
     onSubmit: Callback,
     onClick: Callback,
-};
+}
 
 export class SignInPage extends Block<SignInPageProps> {
     static readonly componentName = 'SignInPage';
@@ -23,22 +22,23 @@ export class SignInPage extends Block<SignInPageProps> {
 
         this.setProps({
             formError: () => this.props.store.getState().loginFormError,
-            onSubmit: (e: Event) => {
-                e.preventDefault();
-
-                this.getStateFromProps();
-
-                const loginInput = this.refs.loginRef as Input;
-                const passwordInput = this.refs.passwordRef as Input;
-                const isValid = Input.validateFieldset([loginInput, passwordInput]);
-
-                if (isValid) {
-                    this.props.store.dispatch(login, this.state.loginData);
-                }
-            },
             onClick: () => {
-                this.props.store.dispatch({ loginFormError: null });
-                this.props.router.go(Screens.SignUp);
+                this.props.store.dispatch({ screen: Screens.SignUp, loginFormError: null });
+            },
+            events: {
+                submit: (e: Event) => {
+                    e.preventDefault();
+
+                    this.getStateFromProps();
+
+                    const loginInput = this.refs.loginRef as Input;
+                    const passwordInput = this.refs.passwordRef as Input;
+                    const isValid = Input.validateFieldset([loginInput, passwordInput]);
+
+                    if (isValid) {
+                        this.props.store.dispatch(login, this.state.loginData);
+                    }
+                },
             },
         });
     }
@@ -69,7 +69,7 @@ export class SignInPage extends Block<SignInPageProps> {
 
         // language=hbs
         return `
-        <div class="entry whole content-center">
+        <div data-testid="sign-in-screen" class="entry whole content-center">
             <form class="entry__form" action="">
                 <div class="entry__header content-center">Вход</div>
                 <div class="entry__fieldset content-center">
@@ -99,7 +99,7 @@ export class SignInPage extends Block<SignInPageProps> {
                 </div>
                 <div class="entry__footer content-center">
                     <div class="entry__button">
-                        {{{ButtonPrimary onClick=onSubmit type="submit" text="Войти"}}}
+                        {{{ButtonPrimary type="submit" text="Войти"}}}
                     </div>
                     <div class="entry__button">
                         {{{ButtonSecondary onClick=onClick type="button" text="Нет аккаунта?"}}}

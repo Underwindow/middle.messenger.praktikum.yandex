@@ -1,5 +1,5 @@
 import './chatStub.css';
-import Block from 'core/Block';
+import { Block } from 'core';
 
 export default class ChatStub extends Block<Props> {
     static readonly componentName = 'ChatStub';

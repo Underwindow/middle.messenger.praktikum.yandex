@@ -19,6 +19,7 @@
 .image-upload__image {
   height: 16.18vh;
   width: 16.18vh;
+  object-fit: cover;
 }
 
 .image-upload__icon-wrapper {
