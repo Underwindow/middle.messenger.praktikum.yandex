@@ -4,7 +4,7 @@
 
 [Дизайн-макет](https://www.figma.com/file/CMuaKeTrpFbWYlssKF3IFE/Wassup?node-id=0%3A1 "Дизайн-макет")
 
-[Netlify-домен](https://elaborate-medovik-c1bd79.netlify.app/ "Netlify-домен")
+[Netlify-домен](https://main--elaborate-medovik-c1bd79.netlify.app "Netlify-домен")
 
 [Heroku-домен](https://wassup-messenger-app.herokuapp.com/ "Heroku-домен")
 
