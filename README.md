@@ -34,7 +34,7 @@
 
 ##### Start dev-server:
 
-`$ npm run dev`
+`$ npm run dev` or `$ npm run dev:parcel`
 
 ##### Run tests:
 
