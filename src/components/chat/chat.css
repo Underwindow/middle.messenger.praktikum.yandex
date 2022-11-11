@@ -10,7 +10,7 @@
 }
 
 .chat__message-container {
-  padding: 8 0 0;
+  padding: 8px 0 0;
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -22,7 +22,7 @@
 .chat__message-wrapper {
   width: 35vw;
   min-width: 400px;
-  padding: 0 0 16;
+  padding: 0 0 16px;
   align-items: center;
   display: flex;
   flex: 0 0 auto;
@@ -52,7 +52,7 @@
   content: "";
   color: var(--white);
   border: var(--hint) solid;
-  border-width: 0 0 0 1;
+  border-width: 0 0 0 1px;
   overflow-wrap: break-word;
   box-sizing: border-box;
   width: inherit;

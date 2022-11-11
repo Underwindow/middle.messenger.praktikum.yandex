@@ -28,15 +28,11 @@ module.exports = {
                 exclude: /(node_modules)/,
             },
             {
-                test: /\.css$/,
+                test: /\.css$/i,
                 use: [
                     'style-loader',
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: 'global',
-                        },
-                    },
+                    'css-loader',
+                    'postcss-loader',
                 ],
             },
             {
@@ -80,5 +76,6 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env': JSON.stringify(process.env),
         }),
+        // new BundleAnalyzerPlugin(),
     ],
 };

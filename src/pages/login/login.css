@@ -23,7 +23,7 @@
 
 .entry__error {
   position: absolute;
-  top: -16;
+  top: -16px;
   right: 0;
   left: 0;
   font-size: clamp(14px, 2vw, 1vh);
